@@ -1,6 +1,7 @@
 package socialnetwork.ui;
 
 import socialnetwork.domain.Prietenie;
+import socialnetwork.domain.Tuple;
 import socialnetwork.domain.Utilizator;
 import socialnetwork.service.PrietenieService;
 import socialnetwork.service.UtilizatoriPrieteniiService;
@@ -8,6 +9,8 @@ import socialnetwork.service.UtilizatorService;
 
 import java.security.KeyException;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -173,11 +176,32 @@ public class Console {
         }
     }
 
+    public void prieteniiUtilizatorDinLuna(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Frist name: ");
+        String firstName = scanner.next();
+        System.out.println("Last name: ");
+        String lastName = scanner.next();
+        System.out.println("Luna a anului(in engleza): ");
+        String monthName = scanner.next();
+        List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
+                prieteniiUtilizatorDinLuna(firstName, lastName, monthName);
+        rezultat.forEach(p -> {
+            Utilizator utilizator = utilizatorService.findOne(p.getLeft());
+            System.out.println(utilizator.getLastName() + '|' + utilizator.getFirstName()
+                                + '|' + p.getRight().toString());
+        });
+    }
+
     public void run_console() {
         Scanner scanner = new Scanner(System.in);
+
+        utilizatoriPrieteniiService.prieteniiUtilizatorDinLuna("Barosan", "Debarosan", "November");
+
         while (true) {
             System.out.println("1. CRUD Utilizator.");
             System.out.println("2. CRUD Prietenie.");
+            System.out.println("3. Prietenii utilizator din luna data");
             System.out.println("x. Exit.");
 
             System.out.println("Optiune = ");
@@ -187,9 +211,13 @@ public class Console {
                 run_meniu_CRUD_Utilizator();
             } else if (Objects.equals(optiune, "2")) {
                 run_meniu_CRUD_Prietenie();
-            } else if (Objects.equals(optiune, "x")) {
+            } else if (Objects.equals(optiune, "3")) {
+                prieteniiUtilizatorDinLuna();
+            }
+            else if (Objects.equals(optiune, "x")) {
                 return;
-            } else {
+            }
+            else {
                 System.out.println("Optiune invalida. Reincercati!");
             }
         }
