@@ -18,6 +18,7 @@ public class Console {
     private final UtilizatorService utilizatorService;
     private final PrietenieService prietenieService;
     private final UtilizatoriPrieteniiService utilizatoriPrieteniiService;
+    private Scanner scanner = new Scanner(System.in);
 
     public Console(UtilizatorService utilizatorService, PrietenieService prietenieService,
                    UtilizatoriPrieteniiService utilizatoriPrieteniiService) {
@@ -26,8 +27,37 @@ public class Console {
         this.utilizatoriPrieteniiService = utilizatoriPrieteniiService;
     }
 
+    private Long readPrietenieID1(){
+        System.out.println("Id1: ");
+        Long id1 = scanner.nextLong();
+        return id1;
+    }
+
+    private Long readPrietenieID2(){
+        System.out.println("Id2: ");
+        Long id2 = scanner.nextLong();
+        return id2;
+    }
+
+    private Long readUserID(){
+        System.out.println("ID: ");
+        Long id = scanner.nextLong();
+        return id;
+    }
+
+    private String readFirstName(){
+        System.out.println("Frist name: ");
+        String firstName = scanner.next();
+        return firstName;
+    }
+
+    private String readLastName(){
+        System.out.println("Last name: ");
+        String lastName = scanner.next();
+        return lastName;
+    }
+
     public void run_meniu_CRUD_Utilizator() {
-        Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("1. Add utilizator.");
             System.out.println("2. Delete utilizator.");
@@ -41,14 +71,9 @@ public class Console {
             optiune = scanner.next();
             if (Objects.equals(optiune, "1")) {
                 try {
-                    System.out.println("Id: ");
-                    Long id = scanner.nextLong();
-                    System.out.println("Frist name: ");
-                    String firstName = scanner.next();
-                    System.out.println("Last name: ");
-                    String lastName = scanner.next();
+                    String firstName = readFirstName();
+                    String lastName = readLastName();
                     Utilizator utilizator = new Utilizator(firstName, lastName);
-                    utilizator.setId(id);
                     this.utilizatorService.addUtilizator(utilizator);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -66,10 +91,8 @@ public class Console {
                 try {
                     System.out.println("Id-ul utilizatorului de updatat: ");
                     Long id = scanner.nextLong();
-                    System.out.println("Frist name: ");
-                    String firstName = scanner.next();
-                    System.out.println("Last name: ");
-                    String lastName = scanner.next();
+                    String firstName = readFirstName();
+                    String lastName = readLastName();
                     Utilizator utilizator = new Utilizator(firstName, lastName);
                     utilizator.setId(id);
                     this.utilizatorService.updateUtilizator(utilizator);
@@ -83,10 +106,8 @@ public class Console {
                     System.out.println(e);
                 }
             }  else if (Objects.equals(optiune, "5")) {
-                System.out.println("Frist name: ");
-                String firstName = scanner.next();
-                System.out.println("Last name: ");
-                String lastName = scanner.next();
+                String firstName = readFirstName();
+                String lastName = readLastName();
                 Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
                 if (utilizator != null)
                     System.out.println(utilizator);
@@ -117,12 +138,10 @@ public class Console {
             optiune = scanner.next();
             if (Objects.equals(optiune, "1")) {
                 try {
-                    System.out.println("Id1: ");
-                    Long id1 = scanner.nextLong();
+                    Long id1 = readPrietenieID1();
                     Utilizator utilizator = utilizatorService.findOne(id1);
                     if (utilizator == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
-                    System.out.println("Id2: ");
-                    Long id2 = scanner.nextLong();
+                    Long id2 = readPrietenieID2();
                     utilizator = utilizatorService.findOne(id2);
                     if (utilizator == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
                     this.prietenieService.addPrietenie(new Prietenie(id1, id2, LocalDateTime.now()));
@@ -140,10 +159,8 @@ public class Console {
                 }
             } else if (Objects.equals(optiune, "3")) {
                 try {
-                    System.out.println("Id1: ");
-                    Long id1 = scanner.nextLong();
-                    System.out.println("Id2: ");
-                    Long id2 = scanner.nextLong();
+                    Long id1 = readPrietenieID1();
+                    Long id2 = readPrietenieID2();
                     this.prietenieService.updatePrietenie(new Prietenie(id1, id2, LocalDateTime.now()));
                 } catch (Exception e) {
                     System.out.println(e);
@@ -178,10 +195,8 @@ public class Console {
 
     public void prieteniiUtilizator(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Frist name: ");
-        String firstName = scanner.next();
-        System.out.println("Last name: ");
-        String lastName = scanner.next();
+        String firstName = readFirstName();
+        String lastName = readLastName();
         List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
                 prieteniiUtilizator(firstName, lastName);
         rezultat.forEach(p -> {
@@ -193,10 +208,8 @@ public class Console {
 
     public void prieteniiUtilizatorDinLuna(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Frist name: ");
-        String firstName = scanner.next();
-        System.out.println("Last name: ");
-        String lastName = scanner.next();
+        String firstName = readFirstName();
+        String lastName = readLastName();
         System.out.println("Luna a anului(in engleza): ");
         String monthName = scanner.next();
         List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
