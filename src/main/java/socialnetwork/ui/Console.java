@@ -227,7 +227,6 @@ public class Console {
                 run_meniu_CRUD_Prietenie();
             }else if(Objects.equals(optiune, "4")) {
                 prieteniiUtilizator();
-            }else if (Objects.equals(optiune, "x")) {
             } else if (Objects.equals(optiune, "3")) {
                 prieteniiUtilizatorDinLuna();
             }
