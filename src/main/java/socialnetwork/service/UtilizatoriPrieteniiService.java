@@ -1,34 +1,25 @@
 package socialnetwork.service;
 
+import socialnetwork.domain.*;
 import socialnetwork.domain.Prietenie;
 import socialnetwork.domain.Tuple;
-import jdk.vm.ci.meta.Local;
-import socialnetwork.domain.Prietenie;
-import socialnetwork.domain.Tuple;
-import socialnetwork.domain.Utilizator;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 public class UtilizatoriPrieteniiService {
     private final UtilizatorService utilizatorService;
     private final PrietenieService prietenieService;
+    private final MesajeService mesajeService;
 
-    public UtilizatoriPrieteniiService(UtilizatorService utilizatorService, PrietenieService prietenieService) {
+    public UtilizatoriPrieteniiService(UtilizatorService utilizatorService, PrietenieService prietenieService, MesajeService mesajeService) {
         this.utilizatorService = utilizatorService;
         this.prietenieService = prietenieService;
+        this.mesajeService = mesajeService;
     }
 
     public void removeUtilizatorAndPrieteniiUtilizator(Long id){
