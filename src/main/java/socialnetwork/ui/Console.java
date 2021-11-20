@@ -176,6 +176,21 @@ public class Console {
         }
     }
 
+    public void prieteniiUtilizator(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Frist name: ");
+        String firstName = scanner.next();
+        System.out.println("Last name: ");
+        String lastName = scanner.next();
+        List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
+                prieteniiUtilizator(firstName, lastName);
+        rezultat.forEach(p -> {
+            Utilizator utilizator = utilizatorService.findOne(p.getLeft());
+            System.out.println(utilizator.getLastName() + '|' + utilizator.getFirstName()
+                    + '|' + p.getRight().toString());
+        });
+    }
+
     public void prieteniiUtilizatorDinLuna(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Frist name: ");
@@ -199,6 +214,7 @@ public class Console {
         while (true) {
             System.out.println("1. CRUD Utilizator.");
             System.out.println("2. CRUD Prietenie.");
+            System.out.println("4. Prietenii utilizator.");
             System.out.println("3. Prietenii utilizator din luna data");
             System.out.println("x. Exit.");
 
@@ -209,13 +225,15 @@ public class Console {
                 run_meniu_CRUD_Utilizator();
             } else if (Objects.equals(optiune, "2")) {
                 run_meniu_CRUD_Prietenie();
+            }else if(Objects.equals(optiune, "4")) {
+                prieteniiUtilizator();
+            }else if (Objects.equals(optiune, "x")) {
             } else if (Objects.equals(optiune, "3")) {
                 prieteniiUtilizatorDinLuna();
             }
             else if (Objects.equals(optiune, "x")) {
                 return;
-            }
-            else {
+            } else {
                 System.out.println("Optiune invalida. Reincercati!");
             }
         }
