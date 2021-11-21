@@ -298,6 +298,20 @@ public class Console {
         }
     }
 
+    public void run_show_all_msg_btw_2_users_cronologicaly_ordered(){
+        System.out.println("Utilizator1: ");
+        String frist_name = readFirstName();
+        String last_name = readLastName();
+        Utilizator utilizator1 = utilizatorService.findByName(frist_name, last_name);
+
+        System.out.println("Utilizator2: ");
+        frist_name = readFirstName();
+        last_name = readLastName();
+        Utilizator utilizator2 = utilizatorService.findByName(frist_name, last_name);
+
+        System.out.println(mesajeService.find_all_msg_btw_2_users_cronologicaly_ordered(utilizator1, utilizator2));
+    }
+
     public void run_console() {
         Scanner scanner = new Scanner(System.in);
 
@@ -307,6 +321,7 @@ public class Console {
             System.out.println("3. Prietenii utilizator.");
             System.out.println("4. Prietenii utilizator din luna data.");
             System.out.println("5. Log in.");
+            System.out.println("6. Toate mesajele intre 2 utilizatori in ordine cronologica.");
             System.out.println("x. Exit.");
 
             System.out.println("Optiune = ");
@@ -320,8 +335,10 @@ public class Console {
                 prieteniiUtilizator();
             } else if (Objects.equals(optiune, "4")) {
                 prieteniiUtilizatorDinLuna();
-            }else if (Objects.equals(optiune, "5")){
+            } else if (Objects.equals(optiune, "5")) {
                 run_gmail_meniu();
+            }else if(Objects.equals(optiune,"6")){
+                run_show_all_msg_btw_2_users_cronologicaly_ordered();
             }else if (Objects.equals(optiune, "x")) {
                 return;
             } else {
