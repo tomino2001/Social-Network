@@ -18,6 +18,8 @@ import socialnetwork.service.UtilizatorService;
 import socialnetwork.service.UtilizatoriPrieteniiService;
 import socialnetwork.ui.Console;
 
+import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -44,7 +46,7 @@ public class Main {
         UtilizatoriPrieteniiService utilizatoriPrieteniiService = new
                 UtilizatoriPrieteniiService(utilizatorService, prietenieService, mesajeService);
 
-        Console console = new Console(utilizatorService, prietenieService, utilizatoriPrieteniiService);
+        Console console = new Console(utilizatorService, prietenieService, utilizatoriPrieteniiService, mesajeService);
         console.run_console();
     }
 }

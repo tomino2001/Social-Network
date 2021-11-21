@@ -1,6 +1,7 @@
 package socialnetwork.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +39,17 @@ public class Message extends Entity<Long>{
 
     public void setTo(List<Utilizator> to) {
         this.to = to;
+    }
+
+    @Override
+    public String toString() {
+        return "Mesaj{" +
+                "id: " + super.getId() +
+                ", from: " + from.getFirstName() + " " + from.getLastName() +
+                ", to: " + to +                 //.get(0).getFirstName() + " " + to.get(0).getLastName() +
+                ", message: " + message +
+                ", date: " + date.format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) +
+                "}";
     }
 
     @Override
