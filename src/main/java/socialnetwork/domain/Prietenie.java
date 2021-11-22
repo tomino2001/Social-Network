@@ -4,13 +4,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-
+/**
+ * Creating a friendship
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!
+ * User must explicitly specify the status
+ * !!!!!!!!!!!!!!!!!!!!!!!
+ */
 public class Prietenie extends Entity<Tuple<Long, Long>> {
 
-    LocalDateTime date;
-
-    public Prietenie() {
-    }
+    private LocalDateTime date;
+    private String status;
 
     public Prietenie(Long id1, Long id2) {
         this.setId(new Tuple<>(id1, id2));
@@ -19,6 +23,14 @@ public class Prietenie extends Entity<Tuple<Long, Long>> {
     public Prietenie(Long id1, Long id2, LocalDateTime date) {
         this.setId(new Tuple<>(id1, id2));
         this.date = date;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     /**
@@ -48,6 +60,7 @@ public class Prietenie extends Entity<Tuple<Long, Long>> {
         return "Prietenie{" +
                 "id=" + getId() +
                 ", date=" + date.format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) +
+                ", status=" + status +
                 '}';
     }
 }

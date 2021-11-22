@@ -26,6 +26,12 @@ public class UtilizatorService {
         return repo.findOne(id);
     }
 
+    /**
+     * finds an user by name
+     * @param firstName
+     * @param lastName
+     * @return null if the user is not found, otherwise return the user
+     */
     public Utilizator findByName(String firstName, String lastName) {
         Iterable<Utilizator> utilizatori = repo.findAll();
         Utilizator utilizator = null;
