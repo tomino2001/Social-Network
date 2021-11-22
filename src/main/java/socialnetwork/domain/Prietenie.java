@@ -29,8 +29,14 @@ public class Prietenie extends Entity<Tuple<Long, Long>> {
         this.status = status;
     }
 
+
+
     public String getStatus() {
         return status;
+    }
+
+    public void setDate(LocalDateTime date){
+        this.date = date;
     }
 
     /**
