@@ -15,13 +15,14 @@ import java.security.KeyException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 public class Console {
-    private final UtilizatorService utilizatorService;
-    private final PrietenieService prietenieService;
-    private final UtilizatoriPrieteniiService utilizatoriPrieteniiService;
-    private final MesajeService mesajeService;
-    private final Scanner scanner = new Scanner(System.in);
+    protected final UtilizatorService utilizatorService;
+    protected final PrietenieService prietenieService;
+    protected final UtilizatoriPrieteniiService utilizatoriPrieteniiService;
+    protected final MesajeService mesajeService;
+    private Scanner scanner = new Scanner(System.in);
 
     public Console(UtilizatorService utilizatorService, PrietenieService prietenieService,
                    UtilizatoriPrieteniiService utilizatoriPrieteniiService, MesajeService mesajeService) {
@@ -31,27 +32,23 @@ public class Console {
         this.mesajeService = mesajeService;
     }
 
-    private Long readPrietenieID1() {
+
+    protected Long readPrietenieID1() {
         System.out.println("Id1: ");
         return scanner.nextLong();
     }
 
-    private Long readPrietenieID2() {
+    protected Long readPrietenieID2() {
         System.out.println("Id2: ");
         return scanner.nextLong();
     }
 
-    private Long readUserID() {
-        System.out.println("ID: ");
-        return scanner.nextLong();
-    }
-
-    private String readFirstName() {
-        System.out.println("Frist name: ");
+    protected String readFirstName() {
+        System.out.println("First name: ");
         return scanner.next();
     }
 
-    private String readLastName() {
+    protected String readLastName() {
         System.out.println("Last name: ");
         return scanner.next();
     }
@@ -142,7 +139,10 @@ public class Console {
                     Long id2 = readPrietenieID2();
                     utilizator = utilizatorService.findOne(id2);
                     if (utilizator == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
-                    this.prietenieService.addPrietenie(new Prietenie(id1, id2, LocalDateTime.now()));
+                    Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.now());
+                    prietenie.setStatus("approved");
+                    if (this.prietenieService.addPrietenie(prietenie) != null)
+                        System.out.println("Prietenia este deja inregistrata");
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -159,13 +159,15 @@ public class Console {
                 try {
                     Long id1 = readPrietenieID1();
                     Long id2 = readPrietenieID2();
+                    Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.now());
+                    prietenie.setStatus("approved");
                     this.prietenieService.updatePrietenie(new Prietenie(id1, id2, LocalDateTime.now()));
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "4")) {
                 try {
-                    this.prietenieService.getAll().forEach(System.out::println);
+                    this.prietenieService.getAllApproved().forEach(System.out::println);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -219,83 +221,20 @@ public class Console {
         });
     }
 
-    public void run_trimite_mesaj(Utilizator utilizatorLogat){
-        List<Utilizator> utilizatorList = new ArrayList<>();
-        System.out.println("Dati numele destinatarilor: ");
-        while (true){
-            String first_name = readFirstName();
-            String last_name = readLastName();
-            Utilizator utilizator = utilizatorService.findByName(first_name, last_name);
-            if(utilizator == null) try {
-                throw new Exception("Nu exista utilizatorul cu numele si prenumele dat.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            utilizatorList.add(utilizator);
 
-            scanner.nextLine();
-            System.out.println("Doriti sa mai adaugati un utilizator la lista de destinatari? (y/n).");
-            String optiune = scanner.nextLine();
-            if(optiune.equals("n")) break;
-        }
-
-        System.out.println("Mesaj: ");
-        String mesaj = scanner.nextLine();
-
-        Message message = new Message(utilizatorLogat, utilizatorList, mesaj, LocalDateTime.now());
-        mesajeService.saveMessage(message);
-    }
-
-    public void run_vizualizare_mesaje_primite(Utilizator utilizatorLogat){
-        System.out.println(mesajeService.find_all_msg_recived_by_user(utilizatorLogat));
-    }
-
-    public void  run_raspunde_la_mesaj(Utilizator utilizatorLogat){
-        System.out.println("Dati id-ul mesajului la care doriti sa raspundeti: ");
-        Long id = scanner.nextLong();
-        Message message = mesajeService.find_one(id);
-
-        scanner.nextLine();
-        System.out.println("Mesaj: ");
-        String mesaj = scanner.nextLine();
-
-        Message message1 = new Message(utilizatorLogat, Arrays.asList(message.getFrom()), mesaj, LocalDateTime.now());
-        mesajeService.saveMessage(message1);
-        mesajeService.updateMessage(message);
-    }
 
     public void run_gmail_meniu(){
-        boolean ok = true;
         System.out.println("Va rugam sa va autentificati.");
         String first_name_log_in = readFirstName();
         String last_name_log_in = readLastName();
         Utilizator utilizatorLogat = utilizatorService.findByName(first_name_log_in, last_name_log_in);
         if(utilizatorLogat == null){
             System.out.println("Nu exista utilizatorul cu numele si prenumele dat.");
-            ok = false;
+            return;
         }
-
-        while (ok) {
-            System.out.println("1. Trimite mesaj.");
-            System.out.println("2. Vizualizare mesaje primite.");
-            System.out.println("3. Raspunde la un mesaj.");
-            System.out.println("b. Back.");
-
-            System.out.println("Optiune = ");
-            String optiune = "";
-            optiune = scanner.next();
-            if (Objects.equals(optiune, "1")) {
-                run_trimite_mesaj(utilizatorLogat);
-            } else if (Objects.equals(optiune, "2")) {
-                run_vizualizare_mesaje_primite(utilizatorLogat);
-            } else if (Objects.equals(optiune, "3")) {
-                run_raspunde_la_mesaj(utilizatorLogat);
-            } else if (Objects.equals(optiune, "b")) {
-                break;
-            } else {
-                System.out.println("Optiune invalida. Reincercati!");
-            }
-        }
+        ConsolaUtilizator consolaUtilizator = new ConsolaUtilizator(utilizatorLogat,
+                utilizatorService, prietenieService, utilizatoriPrieteniiService, mesajeService);
+        consolaUtilizator.run_consola_utilizator();
     }
 
     public void run_show_all_msg_btw_2_users_cronologicaly_ordered(){

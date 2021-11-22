@@ -2,6 +2,7 @@ package socialnetwork.service;
 
 import socialnetwork.domain.Prietenie;
 import socialnetwork.domain.Tuple;
+import socialnetwork.domain.Utilizator;
 import socialnetwork.repository.Repository;
 import socialnetwork.repository.file.PrietenieFileRepository;
 
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class PrietenieService {
     private final Repository<Tuple<Long, Long>, Prietenie> repo;
@@ -21,8 +24,8 @@ public class PrietenieService {
         return repo.findOne(new Tuple<>(l, l1));
     }
 
-    public void addPrietenie(Prietenie messageTask) {
-        repo.save(messageTask);
+    public Prietenie addPrietenie(Prietenie messageTask) {
+        return repo.save(messageTask);
     }
 
     public void removePrietenie(long l, long l1) {
@@ -35,6 +38,12 @@ public class PrietenieService {
 
     public Iterable<Prietenie> getAll() {
         return repo.findAll();
+    }
+
+    public Iterable<Prietenie> getAllApproved() {
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(prietenie -> prietenie.getStatus().equals("approved"))
+                .collect(Collectors.toList());
     }
 
     public int numarComponenteConexe() {
@@ -99,5 +108,12 @@ public class PrietenieService {
             }
         }
         return visited;
+    }
+
+    public List<Prietenie> listaCereriPrietenieUtilizator(Utilizator utilizator){
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(prietenie -> prietenie.getId().getRight().equals(utilizator.getId())
+                            && prietenie.getStatus().equals("pending"))
+                .collect(Collectors.toList());
     }
 }
