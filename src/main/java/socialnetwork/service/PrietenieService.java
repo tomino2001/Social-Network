@@ -67,7 +67,7 @@ public class PrietenieService {
     }
 
     private Tuple<Integer, List<Prietenie>> dfs() {
-        Iterable<Prietenie> friendships = repo.findAll();
+        Iterable<Prietenie> friendships = getAllApproved();
         boolean isEmpty = !friendships.iterator().hasNext();
         if (isEmpty) {
             return new Tuple<>(0, new ArrayList<>());

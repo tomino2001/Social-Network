@@ -93,6 +93,7 @@ public class ConsolaUtilizator extends Console{
                 prietenieService.removePrietenie(utilizatorSursa.getId(), utilizatorLogat.getId());
             else{
                 prietenie.setStatus(status);
+                prietenie.setDate(LocalDateTime.now());
                 prietenieService.updatePrietenie(prietenie);
             }
 
