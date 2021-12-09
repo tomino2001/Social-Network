@@ -1,6 +1,6 @@
 package socialnetwork.ui;
 
-import jdk.jfr.internal.test.WhiteBox;
+
 import socialnetwork.domain.Message;
 import socialnetwork.domain.Prietenie;
 import socialnetwork.domain.Tuple;
@@ -10,7 +10,6 @@ import socialnetwork.service.PrietenieService;
 import socialnetwork.service.UtilizatoriPrieteniiService;
 import socialnetwork.service.UtilizatorService;
 
-import javax.sound.midi.Soundbank;
 import java.security.KeyException;
 import java.time.LocalDateTime;
 import java.time.Month;

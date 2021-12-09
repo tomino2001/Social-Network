@@ -7,7 +7,7 @@ import java.util.Properties;
 public class Config {
 
     public static String CONFIG_LOCATION = Config.class.getClassLoader()
-            .getResource("config.properties").getFile();
+            .getResource("com/example/socialnetwork/config.properties").getFile();
 
     public static Properties getProperties() {
         Properties properties = new Properties();
