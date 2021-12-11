@@ -5,6 +5,7 @@ import socialnetwork.domain.Utilizator;
 import socialnetwork.repository.Repository;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MesajeService {
@@ -47,5 +48,28 @@ public class MesajeService {
         });
 
         return messageList;
+    }
+
+    public List<Message> find_by_idSent_and_date(Long id_sent, LocalDateTime data){
+        List<Message> messageList = new ArrayList<>();
+        for (Message message : repo.findAll()) {
+            if(message.getFrom().getId().equals(id_sent) & message.getDate().equals(data)){
+                messageList.add(message);
+            }
+        }
+        return messageList;
+    }
+
+    public void reply_all(Utilizator utilizatorLogat, Long id_msg, String mesaj){
+        Message message = repo.findOne(id_msg);
+        List<Message> messageList = find_by_idSent_and_date(message.getFrom().getId(), message.getDate());
+        for (Message msg: messageList) {
+            List<Utilizator> id_to = new ArrayList<>();
+            if(utilizatorLogat.getId().equals(msg.getTo().get(0).getId())) id_to.add(msg.getFrom());
+            else id_to.add(msg.getTo().get(0));
+            Message message1 = new Message(utilizatorLogat, id_to, mesaj, LocalDateTime.now());
+            repo.save(message1);
+            repo.update(msg);
+        }
     }
 }
