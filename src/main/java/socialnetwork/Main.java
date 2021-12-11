@@ -18,8 +18,6 @@ import socialnetwork.service.UtilizatorService;
 import socialnetwork.service.UtilizatoriPrieteniiService;
 import socialnetwork.ui.Console;
 
-import java.util.Scanner;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -35,7 +33,7 @@ public class Main {
                 new UtilizatorDbRepository(url, username, password, validatorUtilizator);
         UtilizatorService utilizatorService = new UtilizatorService(utilizatorDbRepository);
 
-        Repository<Tuple<Long, Long>, Prietenie>  prietenieDbRepository =
+        Repository<Tuple<Long, Long>, Prietenie> prietenieDbRepository =
                 new PrieteniiDbRepository(url, username, password, validatorPrietenie);
         PrietenieService prietenieService = new PrietenieService(prietenieDbRepository);
 
