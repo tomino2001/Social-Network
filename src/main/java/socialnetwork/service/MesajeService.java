@@ -53,7 +53,7 @@ public class MesajeService {
     public List<Message> find_by_idSent_and_date(Long id_sent, LocalDateTime data){
         List<Message> messageList = new ArrayList<>();
         for (Message message : repo.findAll()) {
-            if(message.getFrom().getId().equals(id_sent) & message.getDate().equals(data)){
+            if(message.getFrom().getId().equals(id_sent) && message.getDate().equals(data)){
                 messageList.add(message);
             }
         }
