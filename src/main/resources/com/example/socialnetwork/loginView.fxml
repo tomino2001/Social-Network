@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.LoginController">
+   <children>
+      <HBox alignment="BOTTOM_CENTER" layoutX="-1.0" layoutY="341.0" prefHeight="60.0" prefWidth="606.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="341.0" />
+      <HBox alignment="TOP_CENTER" prefHeight="60.0" prefWidth="606.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="341.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label alignment="TOP_CENTER" prefHeight="69.0" prefWidth="226.0" text="Welcome!">
+               <font>
+                  <Font name="Candara Light" size="47.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <GridPane layoutX="29.0" layoutY="99.0" prefHeight="202.0" prefWidth="542.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.0" minWidth="10.0" prefWidth="265.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="0.0" prefWidth="124.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.0" minWidth="10.0" prefWidth="115.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="2.0" minHeight="0.0" prefHeight="2.0" />
+          <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="29.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="13.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label prefHeight="32.0" prefWidth="103.0" text="First name" GridPane.rowIndex="1">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
+            <TextField fx:id="textFieldFirstName" prefHeight="25.0" prefWidth="240.0" promptText="Enter First name" GridPane.rowIndex="2" />
+            <Label text="Last name" GridPane.rowIndex="3">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
+            <TextField fx:id="textFieldLastName" prefHeight="25.0" prefWidth="260.0" promptText="Enter Last name" GridPane.rowIndex="4" />
+            <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#onLoginButtonClicked" prefHeight="54.0" prefWidth="150.0" text="Login" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Times New Roman" size="30.0" />
+               </font>
+            </Button>
+            <Label fx:id="labelUserInexistent" textFill="RED" GridPane.rowIndex="5" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

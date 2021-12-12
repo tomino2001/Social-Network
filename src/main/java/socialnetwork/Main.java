@@ -18,16 +18,14 @@ import socialnetwork.service.UtilizatorService;
 import socialnetwork.service.UtilizatoriPrieteniiService;
 import socialnetwork.ui.Console;
 
+import static socialnetwork.domain.Constants.*;
+
 
 public class Main {
     public static void main(String[] args) {
 
         Validator<Utilizator> validatorUtilizator = new UtilizatorValidator();
         Validator<Prietenie> validatorPrietenie = new PrietenieValidator();
-
-        final String url = ApplicationContext.getPROPERTIES().getProperty("database.socialnetwork.url");
-        final String username = ApplicationContext.getPROPERTIES().getProperty("database.socialnetwork.username");
-        final String password = ApplicationContext.getPROPERTIES().getProperty("database.socialnetwork.password");
 
         Repository<Long, Utilizator> utilizatorDbRepository =
                 new UtilizatorDbRepository(url, username, password, validatorUtilizator);
