@@ -13,13 +13,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import javafx.util.converter.LocalDateTimeStringConverter;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,43 +36,29 @@ public class AccountController {
 
     private Utilizator utilizator;
 
-    Validator<Prietenie> validatorPrietenie = new PrietenieValidator();
-    private Repository<Tuple<Long, Long>, Prietenie> prietenieDbRepository =
-            new PrieteniiDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
-    private PrietenieService prietenieService = new PrietenieService(prietenieDbRepository);
-
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
     }
 
     @FXML
-    private TableView<Prietenie> table;
-    @FXML
-    private TableColumn<Prietenie, String> idCol;
-    @FXML
-    private TableColumn<Prietenie, String> statusCol;
-    @FXML
-    private TableColumn<Prietenie, LocalDateTime> dateCol;
-    private final ObservableList<Prietenie> data = FXCollections.observableArrayList();
-
-    @FXML
-    void initialize() {
-        idCol.setCellValueFactory(cellData -> {
-            Tuple<Long, Long> id = cellData.getValue().getId();
-            return new SimpleStringProperty(id.getLeft().toString() + " -> " + id.getRight().toString());
-        });
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
-        loadTable();
+    public void onFriendReqButtonClicked() throws IOException {
+        Stage stage = (Stage) btnShowAllFrdReq.getScene().getWindow();
+        stage.close();
+        openPrieteniiTable(utilizator);
     }
 
-    public void loadTable() {
-        var iterable = prietenieService.getAll();
-        List<Prietenie> result = new ArrayList<>();
-        iterable.forEach(result::add);
-        data.setAll(result);
-        table.setItems(data);
+    private void openPrieteniiTable(Utilizator utilizator) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/com/example/socialnetwork/prieteniiView.fxml"));
+        Parent parent = loader.load();
+        PrieteniiController prieteniiController = loader.getController();
+        prieteniiController.setUtilizator(utilizator);
+
+        Scene scene = new Scene(parent, 750, 750);
+        Stage stage = new Stage();
+        stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName() + " - Friendship requestes");
+        stage.setScene(scene);
+        stage.show();
     }
 
 }
