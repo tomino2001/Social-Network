@@ -3,18 +3,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.AccountController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.AccountController">
    <children>
-      <Button fx:id="btnShowAllFrdReq" layoutX="38.0" layoutY="38.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="182.0" text="Show all friendship requests" />
-
-      <TableView fx:id="table" prefHeight="190.0" prefWidth="413.0">
-         <columns>
-            <TableColumn fx:id="idCol" prefWidth="63.99999809265137" text="Id1 -&gt; Id2" />
-            <TableColumn fx:id="statusCol" prefWidth="97.59998321533203" text="Status" />
-            <TableColumn fx:id="dateCol" prefWidth="129.6000518798828" text="Date" />
-         </columns>
-      </TableView>
+      <Button fx:id="btnSimple" layoutX="274.0" layoutY="188.0" mnemonicParsing="false" onAction="#onBtnSimpleClick" text="Button" />
    </children>
 </AnchorPane>
