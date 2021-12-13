@@ -115,4 +115,11 @@ public class PrietenieService {
                             && prietenie.getStatus().equals("pending"))
                 .collect(Collectors.toList());
     }
+
+    public List<Prietenie> listaCereriPrietenieUtilizatorALL(Utilizator utilizator){
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(prietenie -> prietenie.getId().getRight().equals(utilizator.getId())
+                        || prietenie.getId().getLeft().equals(utilizator.getId()))
+                .collect(Collectors.toList());
+    }
 }
