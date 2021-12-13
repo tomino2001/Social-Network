@@ -1,8 +1,14 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Constants;
+import com.example.socialnetwork.domain.Prietenie;
+import com.example.socialnetwork.domain.Tuple;
+import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.validators.PrietenieValidator;
 import com.example.socialnetwork.domain.validators.Validator;
+import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
+import com.example.socialnetwork.service.PrietenieService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,18 +19,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.LocalDateTimeStringConverter;
-import com.example.socialnetwork.domain.Prietenie;
-import com.example.socialnetwork.domain.Tuple;
-import com.example.socialnetwork.domain.Utilizator;
-import com.example.socialnetwork.domain.validators.PrietenieValidator;
-import com.example.socialnetwork.repository.Repository;
-import com.example.socialnetwork.service.PrietenieService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountController {
+
+    @FXML
     public Button btnShowAllFrdReq;
 
     private Utilizator utilizator;
@@ -56,8 +58,6 @@ public class AccountController {
         });
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-        statusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus()));
-//        dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate().toString()));
         dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
         loadTable();
     }
