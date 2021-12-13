@@ -1,13 +1,9 @@
 # Project exclude paths
 .gitattributes
 .idea/
-build.gradle
 data.socialnetwork.prietenii
 .gradle/
 build/
 data/
-gradle/
-gradlew
-gradlew.bat
 postgresql-42.3.1.jar
 settings.gradle
