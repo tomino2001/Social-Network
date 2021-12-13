@@ -12,7 +12,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL resource = getClass().getResource("/loginView.fxml");
+        URL resource = getClass().getResource("/com/example/socialnetwork/loginView.fxml");
         fxmlLoader.setLocation(resource);
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Login");

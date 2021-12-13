@@ -53,7 +53,7 @@ public class LoginController {
 
     private void enterAccount(Utilizator utilizator) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/accountView.fxml"));
+        loader.setLocation(getClass().getResource("/com/example/socialnetwork/accountView.fxml"));
         Parent parent = loader.load();
         AccountController accountController = loader.getController();
         accountController.setUtilizator(utilizator);
