@@ -58,7 +58,7 @@ public class LoginController {
         AccountController accountController = loader.getController();
         accountController.setUtilizator(utilizator);
 
-        Scene scene = new Scene(parent, 750, 750);
+        Scene scene = new Scene(parent);
         Stage stage = new Stage();
         stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName());
         stage.setScene(scene);

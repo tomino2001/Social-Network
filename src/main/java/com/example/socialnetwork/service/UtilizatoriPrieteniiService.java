@@ -27,26 +27,37 @@ public class UtilizatoriPrieteniiService {
         this.prietenieService.removePreteniiIfUserIsDeleted(id);
     }
 
-    public List<Tuple<Long, LocalDateTime>> prieteniiUtilizator(String firstName, String lastName){
+    public List<Tuple<Long, LocalDateTime>> prieteniiUtilizator(String firstName, String lastName) {
         Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
         Iterable<Prietenie> prietenii = prietenieService.getAll();
         List<Tuple<Long, LocalDateTime>> rezultat =
                 StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> (prietenie.getId().getLeft() == utilizator.getId()
-                                || Objects.equals(prietenie.getId().getRight(), utilizator.getId())))
+                        .filter(prietenie -> ((prietenie.getId().getLeft() == utilizator.getId()
+                                || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
+                                && prietenie.getStatus().equals("approved")) )
                         .map(prietenie -> {
-                                Long left = prietenie.getId().getLeft();
-                                Long right = prietenie.getId().getRight();
-                                Long idUser = utilizator.getId();
-                                Tuple<Long, LocalDateTime> tuple = null;
-                                if (left != idUser)
-                                        tuple = new Tuple<>(left, prietenie.getDate());
-                                else
-                                    tuple = new Tuple<>(right, prietenie.getDate());
-                                return tuple;
-                            })
-                                .collect(toList());
+                            Long left = prietenie.getId().getLeft();
+                            Long right = prietenie.getId().getRight();
+                            Long idUser = utilizator.getId();
+                            Tuple<Long, LocalDateTime> tuple = null;
+                            if (left != idUser)
+                                tuple = new Tuple<>(left, prietenie.getDate());
+                            else
+                                tuple = new Tuple<>(right, prietenie.getDate());
+                            return tuple;
+                        })
+                        .collect(toList());
         return rezultat;
+    }
+
+    public List<Utilizator> utilizatoriPrieteniCuUtilizator(String firstName, String lastName){
+        return prieteniiUtilizator(firstName, lastName)
+                .stream()
+                .map(x -> {
+                    Utilizator utilizator = utilizatorService.findOne(x.getLeft());
+                    return utilizator;
+                })
+                .collect(toList());
     }
 
     public List<Tuple<Long, LocalDateTime>> prieteniiUtilizatorDinLuna(String firstName, String lastName, String luna){
