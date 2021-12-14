@@ -5,11 +5,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.PrieteniiController">
-    <TableView fx:id="table" prefHeight="208.0" prefWidth="402.0">
+    <TableView fx:id="table" prefHeight="208.0" prefWidth="601.0">
         <columns>
-            <TableColumn fx:id="idCol" prefWidth="63.99999809265137" text="Id1 -&gt; Id2" />
-            <TableColumn fx:id="statusCol" prefWidth="133.60003662109375" text="Status" />
-            <TableColumn fx:id="dateCol" prefWidth="204.0" text="Date" />
+            <TableColumn fx:id="idCol" prefWidth="150.3999481201172" text="Id-col" />
+            <TableColumn fx:id="statusCol" prefWidth="143.199951171875" text="Status" />
+            <TableColumn fx:id="dateCol" prefWidth="176.800048828125" text="Date" />
         </columns>
     </TableView>
 </AnchorPane>
