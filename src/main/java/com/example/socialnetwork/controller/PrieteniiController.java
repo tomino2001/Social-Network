@@ -20,7 +20,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PrieteniiController {
