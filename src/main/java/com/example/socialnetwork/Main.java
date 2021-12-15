@@ -11,7 +11,7 @@ import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
 import com.example.socialnetwork.service.MesajeService;
 import com.example.socialnetwork.service.PrietenieService;
 import com.example.socialnetwork.service.UtilizatorService;
-import com.example.socialnetwork.service.UtilizatoriPrieteniiService;
+import com.example.socialnetwork.service.GlobalService;
 import com.example.socialnetwork.ui.Console;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.Prietenie;
@@ -37,10 +37,10 @@ public class Main {
                 new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
         MesajeService mesajeService = new MesajeService(mesajeRepository);
 
-        UtilizatoriPrieteniiService utilizatoriPrieteniiService = new
-                UtilizatoriPrieteniiService(utilizatorService, prietenieService, mesajeService);
+        GlobalService globalService = new
+                GlobalService(utilizatorService, prietenieService, mesajeService);
 
-        Console console = new Console(utilizatorService, prietenieService, utilizatoriPrieteniiService, mesajeService);
+        Console console = new Console(utilizatorService, prietenieService, globalService, mesajeService);
         console.run_console();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.socialnetwork.controller;
 
+import com.example.socialnetwork.service.GlobalService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,11 +19,7 @@ import com.example.socialnetwork.service.UtilizatorService;
 import java.io.IOException;
 
 public class LoginController {
-
-    private UtilizatorValidator utilizatorValidator = new UtilizatorValidator();
-    private Repository<Long, Utilizator> utilizatorRepository =
-            new UtilizatorDbRepository(Constants.url, Constants.username, Constants.password, utilizatorValidator);
-    private UtilizatorService utilizatorService = new UtilizatorService(utilizatorRepository);
+    private static GlobalService globalService;
 
     @FXML
     private Button btnLogin;
@@ -41,7 +38,7 @@ public class LoginController {
         labelUserInexistent.setText("");
         String firstName = textFieldFirstName.getText();
         String lastName = textFieldLastName.getText();
-        Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
+        Utilizator utilizator = globalService.getUtilizatorService().findByName(firstName, lastName);
         if (utilizator == null)
             labelUserInexistent.setText("User does not exist!");
         else {
@@ -56,6 +53,7 @@ public class LoginController {
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/accountView.fxml"));
         Parent parent = loader.load();
         AccountController accountController = loader.getController();
+        accountController.setGlobalService(globalService);
         accountController.setUtilizator(utilizator);
 
         Scene scene = new Scene(parent);
@@ -63,5 +61,9 @@ public class LoginController {
         stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName());
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setService(GlobalService globalService) {
+        this.globalService = globalService;
     }
 }

@@ -28,6 +28,7 @@ public class UtilizatorService {
 
     /**
      * finds an user by name
+     *
      * @param firstName
      * @param lastName
      * @return null if the user is not found, otherwise return the user
@@ -35,8 +36,8 @@ public class UtilizatorService {
     public Utilizator findByName(String firstName, String lastName) {
         Iterable<Utilizator> utilizatori = repo.findAll();
         Utilizator utilizator = null;
-        for (Utilizator u : utilizatori){
-            if (u.getFirstName().equals(firstName) && u.getLastName().equals(lastName)){
+        for (Utilizator u : utilizatori) {
+            if (u.getFirstName().equals(firstName) && u.getLastName().equals(lastName)) {
                 utilizator = u;
             }
         }
