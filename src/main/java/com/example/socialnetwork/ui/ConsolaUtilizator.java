@@ -6,7 +6,7 @@ import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.MesajeService;
 import com.example.socialnetwork.service.PrietenieService;
 import com.example.socialnetwork.service.UtilizatorService;
-import com.example.socialnetwork.service.UtilizatoriPrieteniiService;
+import com.example.socialnetwork.service.GlobalService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,8 +17,8 @@ public class ConsolaUtilizator extends Console {
 
     public ConsolaUtilizator(Utilizator utilizatorLogat,
                              UtilizatorService utilizatorService, PrietenieService prietenieService,
-                             UtilizatoriPrieteniiService utilizatoriPrieteniiService, MesajeService mesajeService) {
-        super(utilizatorService, prietenieService, utilizatoriPrieteniiService, mesajeService);
+                             GlobalService globalService, MesajeService mesajeService) {
+        super(utilizatorService, prietenieService, globalService, mesajeService);
         this.utilizatorLogat = utilizatorLogat;
     }
 

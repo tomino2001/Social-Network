@@ -7,7 +7,7 @@ import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.MesajeService;
 import com.example.socialnetwork.service.PrietenieService;
 import com.example.socialnetwork.service.UtilizatorService;
-import com.example.socialnetwork.service.UtilizatoriPrieteniiService;
+import com.example.socialnetwork.service.GlobalService;
 
 import java.security.KeyException;
 import java.time.LocalDateTime;
@@ -16,15 +16,15 @@ import java.util.*;
 public class Console {
     protected final UtilizatorService utilizatorService;
     protected final PrietenieService prietenieService;
-    protected final UtilizatoriPrieteniiService utilizatoriPrieteniiService;
+    protected final GlobalService globalService;
     protected final MesajeService mesajeService;
     private Scanner scanner = new Scanner(System.in);
 
     public Console(UtilizatorService utilizatorService, PrietenieService prietenieService,
-                   UtilizatoriPrieteniiService utilizatoriPrieteniiService, MesajeService mesajeService) {
+                   GlobalService globalService, MesajeService mesajeService) {
         this.utilizatorService = utilizatorService;
         this.prietenieService = prietenieService;
-        this.utilizatoriPrieteniiService = utilizatoriPrieteniiService;
+        this.globalService = globalService;
         this.mesajeService = mesajeService;
     }
 
@@ -75,7 +75,7 @@ public class Console {
                     System.out.println("Dati id-ul utilizatoruli de sters: ");
                     Long id = scanner.nextLong();
                     //this.utilizatorService.removeUtilizator(id);
-                    utilizatoriPrieteniiService.removeUtilizatorAndPrieteniiUtilizator(id);
+                    globalService.removeUtilizatorAndPrieteniiUtilizator(id);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -193,7 +193,7 @@ public class Console {
         Scanner scanner = new Scanner(System.in);
         String firstName = readFirstName();
         String lastName = readLastName();
-        List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
+        List<Tuple<Long, LocalDateTime>> rezultat = globalService.
                 prieteniiUtilizator(firstName, lastName);
         rezultat.forEach(p -> {
             Utilizator utilizator = utilizatorService.findOne(p.getLeft());
@@ -208,7 +208,7 @@ public class Console {
         String lastName = readLastName();
         System.out.println("Luna a anului(in engleza): ");
         String monthName = scanner.next();
-        List<Tuple<Long, LocalDateTime>> rezultat = utilizatoriPrieteniiService.
+        List<Tuple<Long, LocalDateTime>> rezultat = globalService.
                 prieteniiUtilizatorDinLuna(firstName, lastName, monthName);
         rezultat.forEach(p -> {
             Utilizator utilizator = utilizatorService.findOne(p.getLeft());
@@ -229,7 +229,7 @@ public class Console {
             return;
         }
         ConsolaUtilizator consolaUtilizator = new ConsolaUtilizator(utilizatorLogat,
-                utilizatorService, prietenieService, utilizatoriPrieteniiService, mesajeService);
+                utilizatorService, prietenieService, globalService, mesajeService);
         consolaUtilizator.run_consola_utilizator();
     }
 

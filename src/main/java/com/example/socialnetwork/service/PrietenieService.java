@@ -19,7 +19,7 @@ public class PrietenieService {
         this.repo = repo;
     }
 
-    public Prietenie findOnePrietenie(long l, long l1){
+    public Prietenie findOnePrietenie(long l, long l1) {
         return repo.findOne(new Tuple<>(l, l1));
     }
 
@@ -53,14 +53,14 @@ public class PrietenieService {
         return dfs().getRight();
     }
 
-    public void removePreteniiIfUserIsDeleted(Long id){
+    public void removePreteniiIfUserIsDeleted(Long id) {
         List<Prietenie> prietenieList = new ArrayList<>();
-        for (Prietenie prietenie: this.repo.findAll()) {
-            if(Objects.equals(prietenie.getId().getLeft(), id) || Objects.equals(prietenie.getId().getRight(), id)){
+        for (Prietenie prietenie : this.repo.findAll()) {
+            if (Objects.equals(prietenie.getId().getLeft(), id) || Objects.equals(prietenie.getId().getRight(), id)) {
                 prietenieList.add(prietenie);
             }
         }
-        for (Prietenie prietenie: prietenieList) {
+        for (Prietenie prietenie : prietenieList) {
             this.repo.delete(prietenie.getId());
         }
     }
@@ -109,14 +109,14 @@ public class PrietenieService {
         return visited;
     }
 
-    public List<Prietenie> listaCereriPrietenieUtilizator(Utilizator utilizator){
+    public List<Prietenie> listaCereriPrietenieUtilizator(Utilizator utilizator) {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
                 .filter(prietenie -> prietenie.getId().getRight().equals(utilizator.getId())
-                            && prietenie.getStatus().equals("pending"))
+                        && prietenie.getStatus().equals("pending"))
                 .collect(Collectors.toList());
     }
 
-    public List<Prietenie> listaCereriPrietenieUtilizatorALL(Utilizator utilizator){
+    public List<Prietenie> listaCereriPrietenieUtilizatorALL(Utilizator utilizator) {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
                 .filter(prietenie -> prietenie.getId().getRight().equals(utilizator.getId())
                         || prietenie.getId().getLeft().equals(utilizator.getId()))

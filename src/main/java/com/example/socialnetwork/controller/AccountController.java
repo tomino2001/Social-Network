@@ -11,7 +11,7 @@ import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
 import com.example.socialnetwork.service.MesajeService;
 import com.example.socialnetwork.service.PrietenieService;
 import com.example.socialnetwork.service.UtilizatorService;
-import com.example.socialnetwork.service.UtilizatoriPrieteniiService;
+import com.example.socialnetwork.service.GlobalService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,26 +26,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class AccountController {
-
-    private Validator<Prietenie> validatorPrietenie = new PrietenieValidator();
-    private Validator<Utilizator> validatorUtilizator = new UtilizatorValidator();
-
-    private Repository<Long, Utilizator> utilizatorDbRepository =
-            new UtilizatorDbRepository(Constants.url, Constants.username, Constants.password, validatorUtilizator);
-    private Repository<Tuple<Long, Long>, Prietenie> prietenieDbRepository =
-            new PrieteniiDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
-    private Repository<Long, Message> mesajeRepository =
-            new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
-
-    private UtilizatorService utilizatorService = new UtilizatorService(utilizatorDbRepository);
-    private PrietenieService prietenieService = new PrietenieService(prietenieDbRepository);
-    private MesajeService mesajeService = new MesajeService(mesajeRepository);
-    private UtilizatoriPrieteniiService utilizatoriPrieteniiService = new
-            UtilizatoriPrieteniiService(utilizatorService, prietenieService, mesajeService);
-
+    private GlobalService globalService;
 
     public AccountController() {
-        prietenieDbRepository = new PrieteniiDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
     }
 
 
@@ -76,10 +59,6 @@ public class AccountController {
 
     @FXML
     private void initialize() {
-//        tableView = new TableView<>();
-//        TableColumn<Utilizator,String> columnName=new TableColumn<>("FirstName");
-//        TableColumn<Utilizator,String> columnLastName=new TableColumn<>("LastName");
-//        tableView.getColumns().addAll(columnName,columnLastName);
 
     }
 
@@ -90,6 +69,7 @@ public class AccountController {
         loadTable();
     }
 
+
     private void loadTable() {
         columnFirstName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("firstName"));
         columnLastName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
@@ -97,7 +77,7 @@ public class AccountController {
     }
 
     private void updateTable() {
-        data.setAll(utilizatoriPrieteniiService.utilizatoriPrieteniCuUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        data.setAll(globalService.utilizatoriPrieteniCuUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
         tableView.setItems(data);
     }
 
@@ -111,6 +91,7 @@ public class AccountController {
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/prieteniiView.fxml"));
         Parent parent = loader.load();
         PrieteniiController prieteniiController = loader.getController();
+        prieteniiController.setService(globalService);
         prieteniiController.setUtilizator(utilizator);
 
         Scene scene = new Scene(parent);
@@ -123,14 +104,14 @@ public class AccountController {
     public void onBtnAddFriendClicked() {
         String firstName = txtFirstName.getText();
         String lastName = txtLastName.getText();
-        Utilizator prieten = utilizatorService.findByName(firstName, lastName);
+        Utilizator prieten = globalService.getUtilizatorService().findByName(firstName, lastName);
         if (prieten == null) {
             alertMessage(Alert.AlertType.WARNING, "Utilizatorul nu exista");
             return;
         }
         Prietenie prietenie = new Prietenie(utilizator.getId(), prieten.getId(), LocalDateTime.now());
         prietenie.setStatus("pending");
-        prietenieService.addPrietenie(prietenie);
+        globalService.getPrietenieService().addPrietenie(prietenie);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
     }
 
@@ -145,9 +126,13 @@ public class AccountController {
             alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat un utilizator!");
             return;
         }
-        prietenieService.removePrietenie(utilizatorSelectat.getId(), utilizator.getId());
-        prietenieService.removePrietenie(utilizator.getId(), utilizatorSelectat.getId());
+        globalService.getPrietenieService().removePrietenie(utilizatorSelectat.getId(), utilizator.getId());
+        globalService.getPrietenieService().removePrietenie(utilizator.getId(), utilizatorSelectat.getId());
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
         updateTable();
+    }
+
+    public void setGlobalService(GlobalService globalService) {
+        this.globalService = globalService;
     }
 }
