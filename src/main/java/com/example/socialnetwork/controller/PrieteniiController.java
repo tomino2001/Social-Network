@@ -8,6 +8,7 @@ import com.example.socialnetwork.domain.validators.PrietenieValidator;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
+import com.example.socialnetwork.service.GlobalService;
 import com.example.socialnetwork.service.PrietenieService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -24,10 +25,7 @@ import java.util.List;
 
 public class PrieteniiController {
     private Utilizator utilizator;
-    Validator<Prietenie> validatorPrietenie = new PrietenieValidator();
-    private Repository<Tuple<Long, Long>, Prietenie> prietenieDbRepository =
-            new PrieteniiDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
-    private PrietenieService prietenieService = new PrietenieService(prietenieDbRepository);
+    private GlobalService globalService;
 
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
@@ -57,11 +55,12 @@ public class PrieteniiController {
     }
 
     public void loadTable() {
-        // var iterable = prietenieService.getAll();
-        // List<Prietenie> result = new ArrayList<>();
-        List<Prietenie> prietenieList = prietenieService.listaCereriPrietenieUtilizatorALL(utilizator);
-        //  iterable.forEach(result::add);
+        List<Prietenie> prietenieList = globalService.getPrietenieService().listaCereriPrietenieUtilizatorALL(utilizator);
         data.setAll(prietenieList);
         table.setItems(data);
+    }
+
+    public void setService(GlobalService globalService) {
+        this.globalService = globalService;
     }
 }
