@@ -33,14 +33,6 @@ public class AccountController {
 
 
     private final ObservableList<Utilizator> data = FXCollections.observableArrayList();
-    @FXML
-    private Button btnAddFriend;
-
-    @FXML
-    private Button btnRemoveFriend;
-
-    @FXML
-    private Button btnShowAllFrdReq;
 
     @FXML
     private TableView<Utilizator> tableView;
