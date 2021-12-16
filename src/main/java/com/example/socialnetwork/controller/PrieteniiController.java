@@ -14,6 +14,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +27,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class PrieteniiController {
+    public Button btnCancelFrdReq;
+    public Button btnAcceptFrdReq;
+    public Button btnDeleteFrdReq;
     private GlobalService globalService;
     private Utilizator utilizator;
 
@@ -85,5 +90,50 @@ public class PrieteniiController {
         table.setItems(data);
     }
 
+    private void alertMessage(Alert.AlertType tipAlerta, String mesaj) {
+        Alert alert = new Alert(tipAlerta, mesaj);
+        alert.show();
+    }
 
+    public void onBtnAcceptFriendReqClicked() {
+        Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
+        if (prietenieSelectata == null){
+            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+            return;
+        }
+        if(Objects.equals(prietenieSelectata.getStatus(), "approved")){
+            alertMessage(Alert.AlertType.WARNING,"Ati acceptat deja prietenia selectata!" );
+            return;
+        }
+        prietenieSelectata.setStatus("approved");
+        globalService.getPrietenieService().updatePrietenie(prietenieSelectata);
+        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+        loadTable();
+    }
+
+    public void onBtnCancelFriendReqClicked() {
+        Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
+        if (prietenieSelectata == null){
+            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+            return;
+        }
+        if(Objects.equals(prietenieSelectata.getStatus(), "approved")){
+            alertMessage(Alert.AlertType.WARNING,"Prietenia a fost deja acceptata!" );
+            return;
+        }
+        globalService.getPrietenieService().removePrietenie(prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+        loadTable();
+    }
+
+    public void onBtnDeleteFriendReqClicked() {
+        Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
+        if (prietenieSelectata == null){
+            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+            return;
+        }
+        globalService.getPrietenieService().removePrietenie(prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+        loadTable();
+    }
 }
