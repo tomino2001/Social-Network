@@ -4,9 +4,11 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="430.0" prefWidth="702.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.PrieteniiController">
-    <TableView fx:id="table" prefHeight="247.0" prefWidth="702.0">
+<AnchorPane prefHeight="433.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.PrieteniiController">
+    <TableView fx:id="table" prefHeight="247.0" prefWidth="701.0">
         <columns>
             <TableColumn fx:id="sentRecivedCol" prefWidth="126.39999085664749" text="Sent/Recived" />
             <TableColumn fx:id="firstNameCol" prefWidth="144.8000030517578" text="First name" />
@@ -15,7 +17,17 @@
             <TableColumn fx:id="dateCol" prefWidth="145.60003662109375" text="Date" />
         </columns>
     </TableView>
-    <Button fx:id="btnAcceptFrdReq" layoutX="42.0" layoutY="272.0" mnemonicParsing="false" onAction="#onBtnAcceptFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Accept" />
-    <Button fx:id="btnCancelFrdReq" layoutX="42.0" layoutY="315.0" mnemonicParsing="false" onAction="#onBtnCancelFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Cancel " />
-    <Button fx:id="btnDeleteFrdReq" onAction="#onBtnDeleteFriendReqClicked" layoutX="42.0" layoutY="357.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="151.0" text="Delete" />
+    <Button fx:id="btnAcceptFrdReq" layoutX="42.0" layoutY="261.0" mnemonicParsing="false" onAction="#onBtnAcceptFriendReqClicked" prefHeight="31.0" prefWidth="151.0" style="-fx-background-color: green;" text="Accept">
+      <font>
+         <Font name="Times New Roman Bold" size="16.0" />
+      </font></Button>
+    <Button fx:id="btnCancelFrdReq" layoutX="42.0" layoutY="310.0" mnemonicParsing="false" onAction="#onBtnCancelFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Cancel ">
+      <font>
+         <Font name="Times New Roman Bold" size="16.0" />
+      </font></Button>
+    <Button fx:id="btnDeleteFrdReq" layoutX="42.0" layoutY="357.0" mnemonicParsing="false" onAction="#onBtnDeleteFriendReqClicked" prefHeight="26.0" prefWidth="151.0" style="-fx-background-color: red;" text="Delete">
+      <font>
+         <Font name="Times New Roman" size="16.0" />
+      </font></Button>
+   <HBox layoutX="-1.0" layoutY="395.0" prefHeight="38.0" prefWidth="702.0" style="-fx-background-color: SLATEGREY;" />
 </AnchorPane>

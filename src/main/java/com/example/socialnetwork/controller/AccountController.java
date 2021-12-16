@@ -1,5 +1,6 @@
 package com.example.socialnetwork.controller;
 
+import com.example.socialnetwork.MainApp;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.GlobalService;
@@ -20,6 +21,7 @@ public class AccountController {
     public Button btnShowAllFrdReq;
     public Button btnAddFriend;
     public Button btnRemoveFriend;
+
     private GlobalService globalService;
 
     public AccountController() {
