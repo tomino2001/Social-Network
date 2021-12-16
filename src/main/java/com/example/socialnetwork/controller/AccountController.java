@@ -1,16 +1,7 @@
 package com.example.socialnetwork.controller;
 
-import com.example.socialnetwork.domain.*;
-import com.example.socialnetwork.domain.validators.PrietenieValidator;
-import com.example.socialnetwork.domain.validators.UtilizatorValidator;
-import com.example.socialnetwork.domain.validators.Validator;
-import com.example.socialnetwork.repository.Repository;
-import com.example.socialnetwork.repository.db.MessagesDbRepository;
-import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
-import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
-import com.example.socialnetwork.service.MesajeService;
-import com.example.socialnetwork.service.PrietenieService;
-import com.example.socialnetwork.service.UtilizatorService;
+import com.example.socialnetwork.domain.Prietenie;
+import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.GlobalService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,11 +17,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class AccountController {
+    public Button btnShowAllFrdReq;
+    public Button btnAddFriend;
+    public Button btnRemoveFriend;
     private GlobalService globalService;
 
     public AccountController() {
     }
-
 
     private final ObservableList<Utilizator> data = FXCollections.observableArrayList();
 
@@ -63,8 +56,8 @@ public class AccountController {
 
 
     private void loadTable() {
-        columnFirstName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("firstName"));
-        columnLastName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
+        columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         updateTable();
     }
 

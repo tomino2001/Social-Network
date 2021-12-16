@@ -22,10 +22,15 @@ import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class PrieteniiController {
-    private Utilizator utilizator;
     private GlobalService globalService;
+    private Utilizator utilizator;
+
+    public void setService(GlobalService globalService) {
+        this.globalService = globalService;
+    }
 
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
@@ -35,7 +40,11 @@ public class PrieteniiController {
     @FXML
     private TableView<Prietenie> table;
     @FXML
-    private TableColumn<Prietenie, String> idCol;
+    private TableColumn<Prietenie, String> sentRecivedCol;
+    @FXML
+    private TableColumn<Prietenie, String> firstNameCol;
+    @FXML
+    private TableColumn<Prietenie, String> lastNameCol;
     @FXML
     private TableColumn<Prietenie, String> statusCol;
     @FXML
@@ -45,9 +54,25 @@ public class PrieteniiController {
 
     @FXML
     void initialize() {
-        idCol.setCellValueFactory(cellData -> {
-            Tuple<Long, Long> id = cellData.getValue().getId();
-            return new SimpleStringProperty(id.getLeft().toString() + " -> " + id.getRight().toString());
+        sentRecivedCol.setCellValueFactory(cellData ->{
+            if(Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
+                return new SimpleStringProperty("Sent to");
+            return new SimpleStringProperty("Recived from");
+        });
+
+        firstNameCol.setCellValueFactory(cellData ->{
+            if (!Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
+                return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                        cellData.getValue().getId().getLeft()).getFirstName());
+            return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                    cellData.getValue().getId().getRight()).getFirstName());
+        });
+        lastNameCol.setCellValueFactory(cellData ->{
+            if (!Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
+                return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                        cellData.getValue().getId().getLeft()).getLastName());
+            return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                    cellData.getValue().getId().getRight()).getLastName());
         });
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -60,7 +85,5 @@ public class PrieteniiController {
         table.setItems(data);
     }
 
-    public void setService(GlobalService globalService) {
-        this.globalService = globalService;
-    }
+
 }
