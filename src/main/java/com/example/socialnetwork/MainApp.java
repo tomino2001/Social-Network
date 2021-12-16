@@ -57,8 +57,7 @@ public class MainApp extends Application {
                 new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
         MesajeService mesajeService = new MesajeService(mesajeRepository);
 
-        GlobalService globalService = new
+        return new
                 GlobalService(utilizatorService, prietenieService, mesajeService);
-        return globalService;
     }
 }
