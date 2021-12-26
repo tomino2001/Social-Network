@@ -74,11 +74,13 @@ public class MessagesDbRepository implements Repository<Long, Message> {
 
     @Override
     public void update(Message entity) {
-        String sql = "update messages_info set replied=? where id_mesaj = ?";
+        String sql = "update messages_info set replied=? where id_mesaj = ? and id_sursa = ? and id_dest = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setBoolean(1, true);
             ps.setLong(2, entity.getId());
+            ps.setLong(3, entity.getFrom().getId());
+            ps.setLong(4, entity.getTo().get(0).getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
