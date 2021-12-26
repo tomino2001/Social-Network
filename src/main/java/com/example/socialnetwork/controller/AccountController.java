@@ -7,6 +7,7 @@ import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class AccountController {
     public Button btnShowAllFrdReq;
     public Button btnAddFriend;
     public Button btnRemoveFriend;
+    public Button btnLogout;
 
     private GlobalService globalService;
     private Utilizator utilizator;
@@ -71,9 +74,10 @@ public class AccountController {
             return new SimpleStringProperty(prieten.getLastName());
     }
 
-    public void initAccount(Utilizator utilizator) {
+    public void initAccount(Utilizator utilizator, GlobalService globalService) {
+        setGlobalService(globalService);
         this.utilizator = utilizator;
-        data.addAll(globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        data.addAll(this.globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
         tableView.setItems(data);
     }
 
@@ -130,5 +134,20 @@ public class AccountController {
 
     public void setGlobalService(GlobalService globalService) {
         this.globalService = globalService;
+    }
+
+    public void onBtnLogoutAction() throws IOException {
+        Stage accountStage = (Stage) btnLogout.getScene().getWindow();
+        accountStage.close();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/loginView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setService(globalService);
+
+        Stage stage = new Stage();
+        stage.setTitle("Login");
+        stage.setScene(scene);
+        stage.show();
     }
 }

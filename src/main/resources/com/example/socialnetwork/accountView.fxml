@@ -47,7 +47,7 @@
             </font>
         </Label>
     </GridPane>
-    <Button fx:id="btnShowAllFrdReq" layoutX="473.0" layoutY="433.0" mnemonicParsing="false" onAction="#onFriendReqButtonClicked" prefHeight="38.0" prefWidth="216.0" text="Show all friendship requests" textFill="#b23200">
+    <Button fx:id="btnShowAllFrdReq" layoutX="473.0" layoutY="336.0" mnemonicParsing="false" onAction="#onFriendReqButtonClicked" prefHeight="38.0" prefWidth="216.0" text="Show all friendship requests" textFill="#b23200">
         <font>
           <Font name="Calibri Light Italic" size="15.0" />
         </font>
@@ -66,4 +66,9 @@
       <font>
          <Font name="Times New Roman Bold" size="14.0" />
       </font></Button>
+   <Button fx:id="btnLogout" layoutX="527.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBtnLogoutAction" text="Logout">
+      <font>
+         <Font name="Calibri Light" size="26.0" />
+      </font>
+   </Button>
 </AnchorPane>
