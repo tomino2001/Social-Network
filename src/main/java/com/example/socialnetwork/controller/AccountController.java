@@ -56,8 +56,8 @@ public class AccountController {
     }
 
     public SimpleStringProperty extractFriendLastName(TableColumn.CellDataFeatures<Prietenie, String> cellData, boolean extractFirst) {
-        if (Objects.equals(cellData.getValue().getStatus(), "approved"))
-            return null;
+        if (!Objects.equals(cellData.getValue().getStatus(), "approved"))
+            return new SimpleStringProperty("-----");
         Utilizator prieten;
         Long left = cellData.getValue().getId().getLeft();
         Long right = cellData.getValue().getId().getRight();
