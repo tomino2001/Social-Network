@@ -4,6 +4,7 @@ import com.example.socialnetwork.MainApp;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.GlobalService;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class AccountController {
     public Button btnShowAllFrdReq;
@@ -23,20 +27,21 @@ public class AccountController {
     public Button btnRemoveFriend;
 
     private GlobalService globalService;
+    private Utilizator utilizator;
 
     public AccountController() {
     }
 
-    private final ObservableList<Utilizator> data = FXCollections.observableArrayList();
+    private final ObservableList<Prietenie> data = FXCollections.observableArrayList();
 
     @FXML
-    private TableView<Utilizator> tableView;
+    private TableView<Prietenie> tableView;
 
     @FXML
-    private TableColumn<Utilizator, String> columnFirstName;
+    private TableColumn<Prietenie, String> columnFirstName;
 
     @FXML
-    private TableColumn<Utilizator, String> columnLastName;
+    private TableColumn<Prietenie, String> columnLastName;
 
     @FXML
     private TextField txtFirstName;
@@ -46,40 +51,39 @@ public class AccountController {
 
     @FXML
     private void initialize() {
-
+        columnFirstName.setCellValueFactory(cellData -> extractFriendLastName(cellData, true));
+        columnLastName.setCellValueFactory(cellData -> extractFriendLastName(cellData, false));
     }
 
-    private Utilizator utilizator;
+    public SimpleStringProperty extractFriendLastName(TableColumn.CellDataFeatures<Prietenie, String> cellData, boolean extractFirst) {
+        if (Objects.equals(cellData.getValue().getStatus(), "approved"))
+            return null;
+        Utilizator prieten;
+        Long left = cellData.getValue().getId().getLeft();
+        Long right = cellData.getValue().getId().getRight();
+        if (left.equals(utilizator.getId()))
+            prieten = globalService.getUtilizatorService().findOne(right);
+        else
+            prieten = globalService.getUtilizatorService().findOne(left);
+        if (extractFirst)
+            return new SimpleStringProperty(prieten.getFirstName());
+        else
+            return new SimpleStringProperty(prieten.getLastName());
+    }
 
-    public void setUtilizator(Utilizator utilizator) {
+    public void initAccount(Utilizator utilizator) {
         this.utilizator = utilizator;
-        loadTable();
-    }
-
-
-    private void loadTable() {
-        columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        updateTable();
-    }
-
-    private void updateTable() {
-        data.setAll(globalService.utilizatoriPrieteniCuUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        data.addAll(globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
         tableView.setItems(data);
     }
 
     @FXML
     public void onFriendReqButtonClicked() throws IOException {
-        openPrieteniiTable(utilizator);
-    }
-
-    private void openPrieteniiTable(Utilizator utilizator) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/prieteniiView.fxml"));
         Parent parent = loader.load();
         PrieteniiController prieteniiController = loader.getController();
-        prieteniiController.setService(globalService);
-        prieteniiController.setUtilizator(utilizator);
+        prieteniiController.setAll(globalService, utilizator, data);
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
@@ -98,7 +102,8 @@ public class AccountController {
         }
         Prietenie prietenie = new Prietenie(utilizator.getId(), prieten.getId(), LocalDateTime.now());
         prietenie.setStatus("pending");
-        globalService.getPrietenieService().addPrietenie(prietenie);
+        if (globalService.getPrietenieService().addPrietenie(prietenie) == null)
+            data.add(prietenie);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
     }
 
@@ -108,15 +113,19 @@ public class AccountController {
     }
 
     public void onBtnRemoveFriendClicked() {
-        Utilizator utilizatorSelectat = tableView.getSelectionModel().getSelectedItem();
-        if (utilizatorSelectat == null){
-            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat un utilizator!");
+        Prietenie prietenieSelectata = tableView.getSelectionModel().getSelectedItem();
+        if (prietenieSelectata == null) {
+            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat un u" +
+                    "tilizator!");
             return;
         }
-        globalService.getPrietenieService().removePrietenie(utilizatorSelectat.getId(), utilizator.getId());
-        globalService.getPrietenieService().removePrietenie(utilizator.getId(), utilizatorSelectat.getId());
+        globalService.getPrietenieService().removePrietenie(
+                prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        globalService.getPrietenieService().removePrietenie(
+                prietenieSelectata.getId().getRight(), prietenieSelectata.getId().getLeft());
+
+        data.remove(prietenieSelectata);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
-        updateTable();
     }
 
     public void setGlobalService(GlobalService globalService) {

@@ -39,7 +39,6 @@ public class PrieteniiController {
 
     public void setUtilizator(Utilizator utilizator) {
         this.utilizator = utilizator;
-        loadTable();
     }
 
     @FXML
@@ -55,24 +54,23 @@ public class PrieteniiController {
     @FXML
     private TableColumn<Prietenie, LocalDateTime> dateCol;
 
-    private final ObservableList<Prietenie> data = FXCollections.observableArrayList();
+    private ObservableList<Prietenie> data;
 
     @FXML
     void initialize() {
-        sentRecivedCol.setCellValueFactory(cellData ->{
-            if(Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
+        sentRecivedCol.setCellValueFactory(cellData -> {
+            if (Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
                 return new SimpleStringProperty("Sent to");
             return new SimpleStringProperty("Recived from");
         });
-
-        firstNameCol.setCellValueFactory(cellData ->{
+        firstNameCol.setCellValueFactory(cellData -> {
             if (!Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
                 return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
                         cellData.getValue().getId().getLeft()).getFirstName());
             return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
                     cellData.getValue().getId().getRight()).getFirstName());
         });
-        lastNameCol.setCellValueFactory(cellData ->{
+        lastNameCol.setCellValueFactory(cellData -> {
             if (!Objects.equals(cellData.getValue().getId().getLeft(), utilizator.getId()))
                 return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
                         cellData.getValue().getId().getLeft()).getLastName());
@@ -84,12 +82,6 @@ public class PrieteniiController {
         dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
     }
 
-    public void loadTable() {
-        List<Prietenie> prietenieList = globalService.getPrietenieService().listaCereriPrietenieUtilizatorALL(utilizator);
-        data.setAll(prietenieList);
-        table.setItems(data);
-    }
-
     private void alertMessage(Alert.AlertType tipAlerta, String mesaj) {
         Alert alert = new Alert(tipAlerta, mesaj);
         alert.show();
@@ -97,43 +89,59 @@ public class PrieteniiController {
 
     public void onBtnAcceptFriendReqClicked() {
         Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
-        if (prietenieSelectata == null){
+        if (prietenieSelectata == null) {
             alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
             return;
         }
-        if(Objects.equals(prietenieSelectata.getStatus(), "approved")){
-            alertMessage(Alert.AlertType.WARNING,"Ati acceptat deja prietenia selectata!" );
+        if (Objects.equals(prietenieSelectata.getStatus(), "approved")) {
+            alertMessage(Alert.AlertType.WARNING, "Ati acceptat deja prietenia selectata!");
             return;
         }
+        data.remove(prietenieSelectata);
         prietenieSelectata.setStatus("approved");
         globalService.getPrietenieService().updatePrietenie(prietenieSelectata);
+        Prietenie prietenieAux = new Prietenie
+                (prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        prietenieAux.setStatus("approved");
+        prietenieAux.setDate(LocalDateTime.now());
+        data.add(prietenieAux);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
-        loadTable();
     }
 
     public void onBtnCancelFriendReqClicked() {
         Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
-        if (prietenieSelectata == null){
+        if (prietenieSelectata == null) {
             alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
             return;
         }
-        if(Objects.equals(prietenieSelectata.getStatus(), "approved")){
-            alertMessage(Alert.AlertType.WARNING,"Prietenia a fost deja acceptata!" );
+        if (Objects.equals(prietenieSelectata.getStatus(), "approved")) {
+            alertMessage(Alert.AlertType.WARNING, "Prietenia a fost deja acceptata!");
             return;
         }
         globalService.getPrietenieService().removePrietenie(prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        data.remove(prietenieSelectata);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
-        loadTable();
     }
 
     public void onBtnDeleteFriendReqClicked() {
         Prietenie prietenieSelectata = table.getSelectionModel().getSelectedItem();
-        if (prietenieSelectata == null){
+        if (prietenieSelectata == null) {
             alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
             return;
         }
         globalService.getPrietenieService().removePrietenie(prietenieSelectata.getId().getLeft(), prietenieSelectata.getId().getRight());
+        data.remove(prietenieSelectata);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
-        loadTable();
+    }
+
+    public void setAll(GlobalService globalService, Utilizator utilizator, ObservableList<Prietenie> data) {
+        setService(globalService);
+        setUtilizator(utilizator);
+        setObservableList(data);
+        table.setItems(data);
+    }
+
+    private void setObservableList(ObservableList<Prietenie> data) {
+        this.data = data;
     }
 }

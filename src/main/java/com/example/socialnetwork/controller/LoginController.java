@@ -49,7 +49,7 @@ public class LoginController {
         Parent parent = loader.load();
         AccountController accountController = loader.getController();
         accountController.setGlobalService(globalService);
-        accountController.setUtilizator(utilizator);
+        accountController.initAccount(utilizator);
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();

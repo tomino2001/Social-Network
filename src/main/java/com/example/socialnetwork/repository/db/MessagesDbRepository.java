@@ -27,21 +27,39 @@ public class MessagesDbRepository implements Repository<Long, Message> {
 
     @Override
     public Message save(Message entity) {
-        String sql = "insert into messages (id_sursa, id_dest, mesaj, data_expediere) values (?, ?, ?, ?)";
+        String sql_messages = "insert into messages (mesaj, data_expediere) values (?, ?)";
+        String sql_messages_info = "insert into messages_info (id_mesaj, id_sursa, id_dest, replied) values (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);) {
             Long idSursa = entity.getFrom().getId();
-            entity.getTo().forEach(utilizator -> {
-                try {
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    statement.setLong(1, idSursa);
-                    statement.setLong(2, utilizator.getId());
-                    statement.setString(3, entity.getMessage());
-                    statement.setString(4, String.valueOf(entity.getDate()));
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
+            Long messageId;
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql_messages, Statement.RETURN_GENERATED_KEYS);
+
+                statement.setString(1, entity.getMessage());
+                statement.setString(2, String.valueOf(entity.getDate()));
+                statement.executeUpdate();
+
+                ResultSet keys = statement.getGeneratedKeys();
+                keys.next();
+                messageId = keys.getLong(1);
+
+                entity.getTo().forEach(utilizator -> {
+                    try {
+                        PreparedStatement statement2 = connection.prepareStatement(sql_messages_info);
+                        statement2.setLong(1, messageId);
+                        statement2.setLong(2, idSursa);
+                        statement2.setLong(3, utilizator.getId());
+                        statement2.setBoolean(4, false);
+                        statement2.executeUpdate();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -56,7 +74,7 @@ public class MessagesDbRepository implements Repository<Long, Message> {
 
     @Override
     public void update(Message entity) {
-        String sql = "update messages set replied=? where id = ?";
+        String sql = "update messages_info set replied=? where id_mesaj = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setBoolean(1, true);
@@ -72,7 +90,7 @@ public class MessagesDbRepository implements Repository<Long, Message> {
         String sql = "select * from messages where id=?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql)){
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
@@ -119,7 +137,10 @@ public class MessagesDbRepository implements Repository<Long, Message> {
     @Override
     public Iterable<Message> findAll() {
         Set<Message> mesaje = new HashSet<>();
-        String sql = "select * from messages";
+        String sql =
+                "select m.id, mi.id_sursa, mi.id_dest, m.mesaj, m.data_expediere from messages m " +
+                "inner join messages_info mi " +
+                "on m.id = mi.id_mesaj";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(sql);

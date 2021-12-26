@@ -45,7 +45,7 @@ public class GlobalService {
         Iterable<Prietenie> prietenii = prietenieService.getAll();
         List<Tuple<Long, LocalDateTime>> rezultat =
                 StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> ((prietenie.getId().getLeft() == utilizator.getId()
+                        .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), utilizator.getId())
                                 || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
                                 && prietenie.getStatus().equals("approved")))
                         .map(prietenie -> mapPrietenie(utilizator, prietenie))
@@ -53,13 +53,13 @@ public class GlobalService {
         return rezultat;
     }
 
-    public List<Utilizator> utilizatoriPrieteniCuUtilizator(String firstName, String lastName) {
-        return prieteniiUtilizator(firstName, lastName)
-                .stream()
-                .map(x -> {
-                    Utilizator utilizator = utilizatorService.findOne(x.getLeft());
-                    return utilizator;
-                })
+    public List<Prietenie> listaPrieteniUtilizator(String firstName, String lastName) {
+        Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
+        return StreamSupport.stream(prietenieService.getAll().spliterator(), false)
+                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), utilizator.getId()))
+                        || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
+                        && prietenie.getStatus().equals("approved")
+                )
                 .collect(toList());
     }
 
