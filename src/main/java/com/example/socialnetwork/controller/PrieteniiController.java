@@ -97,6 +97,10 @@ public class PrieteniiController {
             alertMessage(Alert.AlertType.WARNING, "Ati acceptat deja prietenia selectata!");
             return;
         }
+        if (prietenieSelectata.getId().getLeft().equals(utilizator.getId())) {
+            alertMessage(Alert.AlertType.ERROR, "Action denied");
+            return;
+        }
         data.remove(prietenieSelectata);
         prietenieSelectata.setStatus("approved");
         globalService.getPrietenieService().updatePrietenie(prietenieSelectata);

@@ -58,7 +58,6 @@ public class GlobalService {
         return StreamSupport.stream(prietenieService.getAll().spliterator(), false)
                 .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), utilizator.getId()))
                         || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
-                        && prietenie.getStatus().equals("approved")
                 )
                 .collect(toList());
     }

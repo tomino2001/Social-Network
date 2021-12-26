@@ -1,12 +1,14 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.MainApp;
+import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +18,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -25,6 +30,9 @@ public class AccountController {
     public Button btnShowAllFrdReq;
     public Button btnAddFriend;
     public Button btnRemoveFriend;
+    public Button btnLogout;
+    public Button btnSendMessage;
+
 
     private GlobalService globalService;
     private Utilizator utilizator;
@@ -50,14 +58,18 @@ public class AccountController {
     private TextField txtLastName;
 
     @FXML
+    private TextArea txtMessage;
+
+    @FXML
     private void initialize() {
         columnFirstName.setCellValueFactory(cellData -> extractFriendLastName(cellData, true));
         columnLastName.setCellValueFactory(cellData -> extractFriendLastName(cellData, false));
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     public SimpleStringProperty extractFriendLastName(TableColumn.CellDataFeatures<Prietenie, String> cellData, boolean extractFirst) {
         if (!Objects.equals(cellData.getValue().getStatus(), "approved"))
-            return null;
+            return new SimpleStringProperty("-----");
         Utilizator prieten;
         Long left = cellData.getValue().getId().getLeft();
         Long right = cellData.getValue().getId().getRight();
@@ -71,9 +83,10 @@ public class AccountController {
             return new SimpleStringProperty(prieten.getLastName());
     }
 
-    public void initAccount(Utilizator utilizator) {
+    public void initAccount(Utilizator utilizator, GlobalService globalService) {
+        setGlobalService(globalService);
         this.utilizator = utilizator;
-        data.addAll(globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        data.addAll(this.globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
         tableView.setItems(data);
     }
 
@@ -130,5 +143,36 @@ public class AccountController {
 
     public void setGlobalService(GlobalService globalService) {
         this.globalService = globalService;
+    }
+
+    public void onBtnLogoutAction() throws IOException {
+        Stage accountStage = (Stage) btnLogout.getScene().getWindow();
+        accountStage.close();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/loginView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setService(globalService);
+
+        Stage stage = new Stage();
+        stage.setTitle("Login");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void onBtnSendMessageClicked() {
+        List<Prietenie> prietenieList = tableView.getSelectionModel().getSelectedItems();
+        List<Utilizator> utilizatorList = new ArrayList<>();
+        String message = txtMessage.getText();
+
+        for (Prietenie prietenie: prietenieList) {
+            if(prietenie.getId().getLeft().equals(utilizator.getId()))
+                utilizatorList.add(globalService.getUtilizatorService().findOne(prietenie.getId().getRight()));
+            else
+                utilizatorList.add(globalService.getUtilizatorService().findOne(prietenie.getId().getLeft()));
+        }
+        Message message1 = new Message(utilizator, utilizatorList, message, LocalDateTime.now());
+        globalService.getMesajeService().saveMessage(message1);
+        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
     }
 }

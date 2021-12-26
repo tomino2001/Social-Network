@@ -48,8 +48,7 @@ public class LoginController {
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/accountView.fxml"));
         Parent parent = loader.load();
         AccountController accountController = loader.getController();
-        accountController.setGlobalService(globalService);
-        accountController.initAccount(utilizator);
+        accountController.initAccount(utilizator, globalService);
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
