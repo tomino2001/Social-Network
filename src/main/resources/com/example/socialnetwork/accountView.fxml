@@ -63,7 +63,7 @@
         </font>
     </Label>
    <HBox layoutX="-1.0" layoutY="494.0" prefHeight="39.0" prefWidth="761.0" style="-fx-background-color: SLATEGREY;" />
-    <Button fx:id="btnRemoveFriend" layoutX="412.0" layoutY="259.0" mnemonicParsing="false" onAction="#onBtnRemoveFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: LIGHTSLATEGRAY;" text="Delete friend">
+    <Button fx:id="btnRemoveFriend" layoutX="412.0" layoutY="256.0" mnemonicParsing="false" onAction="#onBtnRemoveFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: LIGHTSLATEGRAY;" text="Delete friend">
       <font>
          <Font name="Times New Roman Bold" size="14.0" />
       </font></Button>
