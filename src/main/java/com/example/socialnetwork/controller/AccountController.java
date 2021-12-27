@@ -32,6 +32,7 @@ public class AccountController {
     public Button btnRemoveFriend;
     public Button btnLogout;
     public Button btnSendMessage;
+    public Button btnShowAllMessages;
 
 
     private GlobalService globalService;
@@ -174,5 +175,19 @@ public class AccountController {
         Message message1 = new Message(utilizator, utilizatorList, message, LocalDateTime.now());
         globalService.getMesajeService().saveMessage(message1);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+    }
+
+    public void btnShowAllMessagesClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/com/example/socialnetwork/messageView.fxml"));
+        Parent parent = loader.load();
+        MessageController messageController = loader.getController();
+        messageController.setAll(globalService, utilizator);
+
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName() + " - All recived messages");
+        stage.setScene(scene);
+        stage.show();
     }
 }

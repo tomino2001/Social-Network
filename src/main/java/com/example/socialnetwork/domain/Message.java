@@ -10,13 +10,11 @@ public class Message extends Entity<Long>{
     private List<Utilizator> to;
     private String message;
     private LocalDateTime date;
-    private boolean replied;
 
     public Message(Utilizator from, List<Utilizator> to, String message, LocalDateTime date) {
         this.from = from;
         this.to = to;
         this.message = message;
-        replied = false;
         this.date = date;
     }
 

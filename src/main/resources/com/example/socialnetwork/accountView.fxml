@@ -48,12 +48,12 @@
             </font>
         </Label>
     </GridPane>
-    <Button fx:id="btnShowAllFrdReq" layoutX="473.0" layoutY="374.0" mnemonicParsing="false" onAction="#onFriendReqButtonClicked" prefHeight="38.0" prefWidth="216.0" text="Show all friendship requests" textFill="#b23200">
+    <Button fx:id="btnShowAllFrdReq" layoutX="473.0" layoutY="385.0" mnemonicParsing="false" onAction="#onFriendReqButtonClicked" prefHeight="38.0" prefWidth="216.0" text="Show all friendship requests" textFill="#b23200">
         <font>
           <Font name="Calibri Light Italic" size="15.0" />
         </font>
     </Button>
-    <Button fx:id="btnAddFriend" layoutX="412.0" layoutY="197.0" mnemonicParsing="false" onAction="#onBtnAddFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: SKYBLUE;" text="Add friend">
+    <Button fx:id="btnAddFriend" layoutX="412.0" layoutY="174.0" mnemonicParsing="false" onAction="#onBtnAddFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: SKYBLUE;" text="Add friend">
       <font>
          <Font name="Times New Roman Bold" size="14.0" />
       </font></Button>
@@ -63,19 +63,24 @@
         </font>
     </Label>
    <HBox layoutX="-1.0" layoutY="494.0" prefHeight="39.0" prefWidth="761.0" style="-fx-background-color: SLATEGREY;" />
-    <Button fx:id="btnRemoveFriend" layoutX="412.0" layoutY="256.0" mnemonicParsing="false" onAction="#onBtnRemoveFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: LIGHTSLATEGRAY;" text="Delete friend">
+    <Button fx:id="btnRemoveFriend" layoutX="412.0" layoutY="227.0" mnemonicParsing="false" onAction="#onBtnRemoveFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: LIGHTSLATEGRAY;" text="Delete friend">
       <font>
          <Font name="Times New Roman Bold" size="14.0" />
       </font></Button>
-   <Button fx:id="btnLogout" layoutX="527.0" layoutY="432.0" mnemonicParsing="false" onAction="#onBtnLogoutAction" text="Logout">
+   <Button fx:id="btnLogout" layoutX="527.0" layoutY="436.0" mnemonicParsing="false" onAction="#onBtnLogoutAction" text="Logout">
       <font>
          <Font name="Calibri Light" size="26.0" />
       </font>
    </Button>
-   <Button fx:id="btnSendMessage" layoutX="412.0" layoutY="315.0" mnemonicParsing="false" onAction="#onBtnSendMessageClicked" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: green;" text="Send message">
+   <Button fx:id="btnSendMessage" layoutX="411.0" layoutY="280.0" mnemonicParsing="false" onAction="#onBtnSendMessageClicked" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: green;" text="Send message">
       <font>
          <Font name="Times New Roman Bold" size="14.0" />
       </font>
    </Button>
    <TextArea fx:id="txtMessage" blendMode="MULTIPLY" layoutY="354.0" prefHeight="139.0" prefWidth="400.0" promptText="write a message" AnchorPane.bottomAnchor="40.00000000000006" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="354.0" />
+   <Button fx:id="btnShowAllMessages" layoutX="472.0" layoutY="336.0" mnemonicParsing="false" onAction="#btnShowAllMessagesClicked" prefHeight="38.0" prefWidth="216.0" text="Show all messages" textFill="#b23200">
+      <font>
+         <Font name="Calibri Light Italic" size="15.0" />
+      </font>
+   </Button>
 </AnchorPane>
