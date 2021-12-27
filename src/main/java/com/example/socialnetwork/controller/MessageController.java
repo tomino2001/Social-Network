@@ -2,13 +2,11 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Message;
 
-import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
