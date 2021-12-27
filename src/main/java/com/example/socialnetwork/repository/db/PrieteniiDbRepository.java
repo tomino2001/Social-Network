@@ -129,4 +129,9 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
         }
     }
 
+    @Override
+    public void remove(Prietenie entity) {
+
+    }
+
 }

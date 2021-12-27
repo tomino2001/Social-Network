@@ -85,4 +85,9 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
 
     }
 
+    @Override
+    public void remove(E entity) {
+
+    }
+
 }

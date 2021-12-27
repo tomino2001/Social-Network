@@ -68,8 +68,20 @@ public class MessagesDbRepository implements Repository<Long, Message> {
     }
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(Long id) {
+    }
 
+    public void remove(Message entity){
+        String sql = "Delete from messages_info where id_mesaj = ? and id_sursa = ? and id_dest = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, entity.getId());
+            ps.setLong(2, entity.getFrom().getId());
+            ps.setLong(3, entity.getTo().get(0).getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

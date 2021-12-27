@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="475.0" prefWidth="775.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.MessageController">
    <children>
-      <TableView fx:id="table" prefHeight="238.0" prefWidth="781.0">
+      <TableView fx:id="table" prefHeight="269.0" prefWidth="782.0">
         <columns>
           <TableColumn fx:id="firstNameCol" prefWidth="104.00000154972076" text="First Name" />
           <TableColumn fx:id="lastNameCol" prefWidth="112.79991912841797" text="Last Name" />
@@ -14,5 +16,8 @@
           <TableColumn fx:id="dateCol" prefWidth="117.60000000000002" text="Date" />
         </columns>
       </TableView>
+      <Button fx:id="btnReply" onAction="#onBtnReplyClicked" layoutX="576.0" layoutY="382.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" text="Reply" />
+      <Button fx:id="btnDeleteMessage" onAction="#onBtnDeleteMessageClicked" layoutX="576.0" layoutY="315.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="149.0" text="Delete message" />
+      <TextArea fx:id="txtMessage" layoutY="270.0" prefHeight="206.0" prefWidth="474.0" promptText="write a message" />
    </children>
 </AnchorPane>

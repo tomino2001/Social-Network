@@ -113,4 +113,9 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
         }
     }
 
+    @Override
+    public void remove(Utilizator entity) {
+
+    }
+
 }

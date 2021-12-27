@@ -22,6 +22,8 @@ public class MesajeService {
         this.repo.update(message);
     }
 
+    public void removeMessage(Message message){this.repo.remove(message);}
+
     public Message find_one(Long id) {
         return repo.findOne(id);
     }
