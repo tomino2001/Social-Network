@@ -5,13 +5,11 @@ import com.example.socialnetwork.domain.validators.PrietenieValidator;
 import com.example.socialnetwork.domain.validators.UtilizatorValidator;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
+import com.example.socialnetwork.repository.db.AccountDbRepository;
 import com.example.socialnetwork.repository.db.MessagesDbRepository;
 import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
 import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
-import com.example.socialnetwork.service.MesajeService;
-import com.example.socialnetwork.service.PrietenieService;
-import com.example.socialnetwork.service.UtilizatorService;
-import com.example.socialnetwork.service.GlobalService;
+import com.example.socialnetwork.service.*;
 import com.example.socialnetwork.ui.Console;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.Prietenie;
@@ -37,9 +35,11 @@ public class Main {
                 new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
         MesajeService mesajeService = new MesajeService(mesajeRepository);
 
-        GlobalService globalService = new
-                GlobalService(utilizatorService, prietenieService, mesajeService);
+        Repository<Long, Account> accountRepository =
+                new AccountDbRepository(Constants.url, Constants.username, Constants.password, null);
+        AccountService accountService = new AccountService(accountRepository);
 
+        GlobalService globalService = new GlobalService(utilizatorService, prietenieService, mesajeService, accountService);
         Console console = new Console(utilizatorService, prietenieService, globalService, mesajeService);
         console.run_console();
     }

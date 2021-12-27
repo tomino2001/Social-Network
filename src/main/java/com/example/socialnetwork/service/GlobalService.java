@@ -16,6 +16,8 @@ public class GlobalService {
     private final UtilizatorService utilizatorService;
     private final PrietenieService prietenieService;
     private final MesajeService mesajeService;
+    private final AccountService accountService;
+
 
     public UtilizatorService getUtilizatorService() {
         return utilizatorService;
@@ -29,10 +31,13 @@ public class GlobalService {
         return mesajeService;
     }
 
-    public GlobalService(UtilizatorService utilizatorService, PrietenieService prietenieService, MesajeService mesajeService) {
+    public   AccountService getAccountService(){return accountService;}
+
+    public GlobalService(UtilizatorService utilizatorService, PrietenieService prietenieService, MesajeService mesajeService, AccountService accountService) {
         this.utilizatorService = utilizatorService;
         this.prietenieService = prietenieService;
         this.mesajeService = mesajeService;
+        this.accountService = accountService;
     }
 
     public void removeUtilizatorAndPrieteniiUtilizator(Long id) {

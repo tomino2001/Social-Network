@@ -1,7 +1,11 @@
 package com.example.socialnetwork.controller;
 
+import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.service.AccountService;
 import com.example.socialnetwork.service.GlobalService;
+import com.example.socialnetwork.service.HashPasswordService;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +19,8 @@ import java.io.IOException;
 
 public class LoginController {
     private static GlobalService globalService;
+    private static final HashPasswordService hashPasswordService = new HashPasswordService();
+    public Button btnRegister;
 
     @FXML
     private Button btnLogin;
@@ -23,17 +29,18 @@ public class LoginController {
     private Label labelUserInexistent;
 
     @FXML
-    private TextField textFieldFirstName;
+    private TextField textFieldUsername;
 
     @FXML
-    private TextField textFieldLastName;
+    private TextField textFieldPassword;
 
     @FXML
     public void onLoginButtonClicked() throws IOException {
         labelUserInexistent.setText("");
-        String firstName = textFieldFirstName.getText();
-        String lastName = textFieldLastName.getText();
-        Utilizator utilizator = globalService.getUtilizatorService().findByName(firstName, lastName);
+        String username = textFieldUsername.getText();
+        String password = hashPasswordService.hashPassword(textFieldPassword.getText());
+        Account account = globalService.getAccountService().getAccountByUsernameAndPassword(username, password);
+        Utilizator utilizator = globalService.getUtilizatorService().findOne(account.getId());
         if (utilizator == null)
             labelUserInexistent.setText("User does not exist!");
         else {
@@ -59,5 +66,9 @@ public class LoginController {
 
     public void setService(GlobalService globalService) {
         LoginController.globalService = globalService;
+    }
+
+    public void onBtnRegisterClicked() {
+
     }
 }

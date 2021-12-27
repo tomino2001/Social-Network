@@ -6,13 +6,11 @@ import com.example.socialnetwork.domain.validators.PrietenieValidator;
 import com.example.socialnetwork.domain.validators.UtilizatorValidator;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
+import com.example.socialnetwork.repository.db.AccountDbRepository;
 import com.example.socialnetwork.repository.db.MessagesDbRepository;
 import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
 import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
-import com.example.socialnetwork.service.GlobalService;
-import com.example.socialnetwork.service.MesajeService;
-import com.example.socialnetwork.service.PrietenieService;
-import com.example.socialnetwork.service.UtilizatorService;
+import com.example.socialnetwork.service.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -57,7 +55,11 @@ public class MainApp extends Application {
                 new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
         MesajeService mesajeService = new MesajeService(mesajeRepository);
 
+        Repository<Long, Account> accountRepository =
+                new AccountDbRepository(Constants.url, Constants.username, Constants.password, null);
+        AccountService accountService = new AccountService(accountRepository);
+
         return new
-                GlobalService(utilizatorService, prietenieService, mesajeService);
+                GlobalService(utilizatorService, prietenieService, mesajeService, accountService);
     }
 }
