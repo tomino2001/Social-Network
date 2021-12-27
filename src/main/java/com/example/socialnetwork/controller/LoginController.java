@@ -36,14 +36,13 @@ public class LoginController {
 
     @FXML
     public void onLoginButtonClicked() throws IOException {
-        labelUserInexistent.setText("");
         String username = textFieldUsername.getText();
         String password = hashPasswordService.hashPassword(textFieldPassword.getText());
         Account account = globalService.getAccountService().getAccountByUsernameAndPassword(username, password);
-        Utilizator utilizator = globalService.getUtilizatorService().findOne(account.getId());
-        if (utilizator == null)
-            labelUserInexistent.setText("User does not exist!");
+        if (account == null)
+            labelUserInexistent.setText("Username or password wrong!");
         else {
+            Utilizator utilizator = globalService.getUtilizatorService().findOne(account.getId());
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.close();
             enterAccount(utilizator);
