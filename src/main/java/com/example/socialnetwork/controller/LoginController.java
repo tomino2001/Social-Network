@@ -67,7 +67,18 @@ public class LoginController {
         LoginController.globalService = globalService;
     }
 
-    public void onBtnRegisterClicked() {
+    public void onBtnRegisterClicked() throws IOException {
+        Stage accountStage = (Stage) btnRegister.getScene().getWindow();
+        accountStage.close();
 
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/registerView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        RegisterController registerController = fxmlLoader.getController();
+        registerController.setService(globalService);
+
+        Stage stage = new Stage();
+        stage.setTitle("Register");
+        stage.setScene(scene);
+        stage.show();
     }
 }
