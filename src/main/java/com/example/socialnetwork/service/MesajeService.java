@@ -6,6 +6,8 @@ import com.example.socialnetwork.domain.Utilizator;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class MesajeService {
     private final Repository<Long, Message> repo;
@@ -72,5 +74,22 @@ public class MesajeService {
             repo.save(message1);
             repo.update(msg);
         }
+    }
+
+    public List<Message> listaMesajePrimiteDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(message -> (message.getFrom().equals(utilizator) ||
+                        message.getTo().get(0).equals(utilizator))
+                        && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
+                .collect(Collectors.toList());
+    }
+
+    public List<Message> listaMesajePrimiteDeLaUtilizatorXInPerioadaX(Utilizator utilizatorLogat, Utilizator utilizator,
+                                                                      LocalDateTime st, LocalDateTime dr){
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(message -> (message.getFrom().equals(utilizatorLogat) ||
+                        message.getTo().get(0).equals(utilizator))
+                        && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
+                .collect(Collectors.toList());
     }
 }
