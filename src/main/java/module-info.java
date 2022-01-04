@@ -6,7 +6,7 @@ module com.example.socialnetwork {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
-    requires itextpdf;
+    requires org.apache.pdfbox;
 
     opens com.example.socialnetwork to javafx.fxml;
     opens com.example.socialnetwork.domain to javafx.fxml;

@@ -5,8 +5,6 @@ import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.Utilizator;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfPTable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -4,16 +4,17 @@ import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Tuple;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.pdfbox.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.PDTableAttributeObject;
+
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -108,13 +109,29 @@ public class GlobalService {
         List<Prietenie> prietenieList = prietenieService.listaPrieteniiDinPerioadaX(utilizator, st, dr);
         List<Message> messageList = mesajeService.listaMesajePrimiteDinPerioadaX(utilizator, st, dr);
 
-        Document document = new Document();
+        PDDocument document = new PDDocument();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("Prietenii si mesaje din perioad data",false));
-            document.open();
 
-            PdfPTable tablePrietenii = new PdfPTable(2);
-            PdfPTable tableMesaje = new PdfPTable(3);
+            document.save("PrieteniiSiMesaje.pdf");
+            //PDfWriter.getInstance(document, new FileOutputStream("Prietenii si mesaje din perioad data",false));
+            //document.open();
+            PDPage page = new PDPage(PDRectangle.A4);
+            // PDRectangle.LETTER and others are also possible
+            PDRectangle rect = page.getMediaBox();
+            // rect can be used to get the page width and height
+            document.addPage(page);
+            // Start a new content stream which will "hold" the to be created content
+            PDPageContentStream cos = new PDPageContentStream(document, page);
+
+            //Dummy Table
+            float margin = 50;
+            // starting y position is whole page height subtracted by top and bottom margin
+            float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
+            // we want table across whole page width (subtracted by left and right margin ofcourse)
+            float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+
+            //PdfPTable tablePrietenii = new PdfPTable(2);
+            //PdfPTable tableMesaje = new PdfPTable(3);
 
             addTableHeader(tablePrietenii,"Name","Date");
             addTablePrieteniiRows(tablePrietenii, utilizator, prietenieList);
@@ -126,6 +143,8 @@ public class GlobalService {
             document.add(tableMesaje);
             document.close();
         } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
