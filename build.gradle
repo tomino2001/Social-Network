@@ -13,7 +13,7 @@ repositories {
 }
 
 ext {
-    junitVersion = '5.8.1'
+    junitVersion = '5.8.2'
 }
 
 sourceCompatibility = '17'
@@ -34,8 +34,8 @@ javafx {
 }
 
 dependencies {
-    implementation('org.controlsfx:controlsfx:11.1.0')
-    implementation('com.dlsc.formsfx:formsfx-core:11.3.2') {
+    implementation('org.controlsfx:controlsfx:11.1.1')
+    implementation('com.dlsc.formsfx:formsfx-core:11.4.2') {
         exclude(group: 'org.openjfx')
     }
     implementation('org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0')
@@ -45,6 +45,9 @@ dependencies {
 
     implementation 'org.postgresql:postgresql:42.3.1'
 
+    implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.24'
+    //implementation group: 'com.github.dhorions', name: 'boxable', version: '1.3'
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: '21.4.0.0.1'
 }
 
 test {

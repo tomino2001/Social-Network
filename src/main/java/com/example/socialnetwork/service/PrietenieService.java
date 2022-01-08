@@ -1,10 +1,12 @@
 package com.example.socialnetwork.service;
 
+import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.Utilizator;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -120,6 +122,15 @@ public class PrietenieService {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
                 .filter(prietenie -> prietenie.getId().getRight().equals(utilizator.getId())
                         || prietenie.getId().getLeft().equals(utilizator.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Prietenie> listaPrieteniiDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .filter(prietenie -> (prietenie.getId().getLeft().equals(utilizator.getId()) ||
+                        prietenie.getId().getRight().equals(utilizator.getId()))
+                        && prietenie.getStatus().equals("approved")
+                        && prietenie.getDate().isAfter(st) && prietenie.getDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 }

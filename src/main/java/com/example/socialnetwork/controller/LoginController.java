@@ -2,10 +2,8 @@ package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.Utilizator;
-import com.example.socialnetwork.service.AccountService;
 import com.example.socialnetwork.service.GlobalService;
 import com.example.socialnetwork.service.HashPasswordService;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
