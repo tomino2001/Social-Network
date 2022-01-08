@@ -1,6 +1,5 @@
 package com.example.socialnetwork.controller;
 
-import com.example.socialnetwork.MainApp;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Utilizator;
@@ -14,17 +13,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class AccountController {
     public Button btnShowAllFrdReq;
@@ -33,6 +28,7 @@ public class AccountController {
     public Button btnLogout;
     public Button btnSendMessage;
     public Button btnShowAllMessages;
+    public Button btnRefresh;
 
 
     private GlobalService globalService;
@@ -96,6 +92,11 @@ public class AccountController {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/prieteniiView.fxml"));
         Parent parent = loader.load();
+
+        data.clear();
+        data.addAll(this.globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        tableView.setItems(data);
+
         PrieteniiController prieteniiController = loader.getController();
         prieteniiController.setAll(globalService, utilizator, data);
 
@@ -189,5 +190,11 @@ public class AccountController {
         stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName() + " - All recived messages");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void onBtnRefreshClicked(ActionEvent actionEvent) {
+        data.clear();
+        data.addAll(this.globalService.listaPrieteniUtilizator(utilizator.getFirstName(), utilizator.getLastName()));
+        tableView.setItems(data);
     }
 }

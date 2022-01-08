@@ -1,17 +1,9 @@
 package com.example.socialnetwork.controller;
 
-import com.example.socialnetwork.domain.Constants;
 import com.example.socialnetwork.domain.Prietenie;
-import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.Utilizator;
-import com.example.socialnetwork.domain.validators.PrietenieValidator;
-import com.example.socialnetwork.domain.validators.Validator;
-import com.example.socialnetwork.repository.Repository;
-import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
 import com.example.socialnetwork.service.GlobalService;
-import com.example.socialnetwork.service.PrietenieService;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -23,7 +15,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 public class PrieteniiController {
