@@ -1,28 +1,24 @@
 package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Tuple;
-import org.apache.pdfbox.*;
+import com.example.socialnetwork.domain.Utilizator;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.documentinterchange.taggedpdf.PDTableAttributeObject;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Stream;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
-
-import java.time.Month;
 
 public class GlobalService {
     private final UtilizatorService utilizatorService;
@@ -105,105 +101,101 @@ public class GlobalService {
         return tuple;
     }
 
-    public void exportPdfPrieteniiSiMesajeDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
+    public void exportPdfActivitateUtilizatorDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
         List<Prietenie> prietenieList = prietenieService.listaPrieteniiDinPerioadaX(utilizator, st, dr);
         List<Message> messageList = mesajeService.listaMesajePrimiteDinPerioadaX(utilizator, st, dr);
+        String pathPrietenie = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Prietenie.pdf";
+        String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Mesaje.pdf";
 
-        PDDocument document = new PDDocument();
-        try {
+        writeToPdfPrietenii(prietenieList, pathPrietenie);
+        writeToPdfMesaje(messageList, pathMessage);
+    }
 
-            document.save("PrieteniiSiMesaje.pdf");
-            //PDfWriter.getInstance(document, new FileOutputStream("Prietenii si mesaje din perioad data",false));
-            //document.open();
-            PDPage page = new PDPage(PDRectangle.A4);
-            // PDRectangle.LETTER and others are also possible
-            PDRectangle rect = page.getMediaBox();
-            // rect can be used to get the page width and height
-            document.addPage(page);
-            // Start a new content stream which will "hold" the to be created content
-            PDPageContentStream cos = new PDPageContentStream(document, page);
+    public void exportToPdfListaMesajePrimiteDeLaUtilizatorXInPerioadaX(Utilizator utilizatorLogat,Utilizator utilizator
+            ,LocalDateTime st, LocalDateTime dr ){
+        List<Message> messageList = mesajeService.listaMesajePrimiteDeLaUtilizatorXInPerioadaX(utilizatorLogat ,utilizator, st, dr);
+        String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\MesajeV2.pdf";
+        writeToPdfMesaje(messageList, pathMessage);
+    }
 
-            //Dummy Table
-            float margin = 50;
-            // starting y position is whole page height subtracted by top and bottom margin
-            float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
-            // we want table across whole page width (subtracted by left and right margin ofcourse)
-            float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+    public void writeToPdfPrietenii(List<Prietenie> valuesToExport, String filePath) {
+        try (PDDocument doc = new PDDocument()) {
+            PDFont font = PDType1Font.HELVETICA;
+            PDPage page = new PDPage();
+            doc.addPage(page);
+            PDPageContentStream content = new PDPageContentStream(doc, page);
+            content.setFont(font, 12);
+            int lines = 1;
+            float pageHeight = page.getMediaBox().getHeight();
 
-            //PdfPTable tablePrietenii = new PdfPTable(2);
-            //PdfPTable tableMesaje = new PdfPTable(3);
+            for (Prietenie row : valuesToExport) {
+                int startX = 0;
 
-            addTableHeader(tablePrietenii,"Name","Date");
-            addTablePrieteniiRows(tablePrietenii, utilizator, prietenieList);
+                content.beginText();
+                content.newLineAtOffset(startX, pageHeight - 50 * lines);
+                startX += startX + 100;
+                content.showText("From: " + utilizatorService.findOne(row.getId().getLeft()).getFirstName() + " " +
+                        utilizatorService.findOne(row.getId().getLeft()).getLastName() + ", to: " +
+                        utilizatorService.findOne(row.getId().getRight()).getFirstName()  + " " +
+                        utilizatorService.findOne(row.getId().getRight()).getLastName() + " " +
+                        row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) + " " + row.getStatus());
+                content.endText();
+                ++lines;
 
-            addTableHeader(tableMesaje, "From", "Message", "Date");
-            addTableMesajeRows(tableMesaje, messageList);
-
-            document.add(tablePrietenii);
-            document.add(tableMesaje);
-            document.close();
-        } catch (DocumentException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+                if (lines > 10) {
+                    page = new PDPage();
+                    doc.addPage(page);
+                    content.close();
+                    content = new PDPageContentStream(doc, page);
+                    content.setFont(font, 12);
+                }
+            }
+            content.close();
+            doc.save(filePath);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    private void addTableHeader(PdfPTable table,String... firstCol) {
-        Stream.of(firstCol)
-                .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
-                    header.setPhrase(new Phrase(columnTitle));
-                    table.addCell(header);
-                });
-    }
+    public void writeToPdfMesaje(List<Message> valuesToExport, String filePath) {
+        try (PDDocument doc = new PDDocument()) {
+            PDFont font = PDType1Font.TIMES_BOLD_ITALIC;
+            PDPage page = new PDPage();
+            doc.addPage(page);
+            PDPageContentStream content = new PDPageContentStream(doc, page);
+            content.setFont(font, 10);
+            int lines = 1;
+            float pageHeight = page.getMediaBox().getHeight();
 
-    private void addTablePrieteniiRows(PdfPTable tablePrietenii, Utilizator utilizator, List<Prietenie> prietenieList) {
-        prietenieList.forEach(x -> {
-            String name;
-            if (x.getId().getLeft().equals(utilizator.getId())){
-                Utilizator utilizator1 = utilizatorService.findOne(x.getId().getRight());
-                name = utilizator1.getFirstName() + ' ' + utilizator1.getLastName();
-            }else{
-                Utilizator utilizator1 = utilizatorService.findOne(x.getId().getLeft());
-                name = utilizator1.getFirstName() + ' ' + utilizator1.getLastName();
+            for (Message row : valuesToExport) {
+                int startX = 0;
+
+                content.beginText();
+                content.newLineAtOffset(startX, pageHeight - 50 * lines);
+                startX += startX + 100;
+                String string = "From: " + row.getFrom().getFirstName() + " " +
+                        row.getFrom().getLastName() + ", to: " +
+                        row.getTo().get(0).getFirstName()  + " " + row.getTo().get(0).getLastName() + ", message: " +
+                        row.getMessage() + " " +
+                        row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss")));
+                string = string.replace("\n", "").replace("\r", "");
+                content.showText(string);
+                content.endText();
+                ++lines;
+
+                if (lines > 10) {
+                    page = new PDPage();
+                    doc.addPage(page);
+                    content.close();
+                    content = new PDPageContentStream(doc, page);
+                    content.setFont(font, 12);
+                }
             }
-
-            PdfPCell cell1 = new PdfPCell();
-            cell1.setPhrase(new Phrase(name));
-            PdfPCell cell2 = new PdfPCell();
-            cell2.setPhrase(new Phrase(x.getDate().toString()));
-            tablePrietenii.addCell(cell1);
-            tablePrietenii.addCell(cell2);
-        });
-        ifNoDataToExport(prietenieList,tablePrietenii);
-    }
-
-    private void addTableMesajeRows(PdfPTable tableMesaje, List<Message> messageList) {
-        messageList.forEach(x -> {
-            PdfPCell cell1 = new PdfPCell();
-            cell1.setPhrase(new Phrase(x.getFrom().getFirstName() + " " + x.getFrom().getLastName()));
-            PdfPCell cell2 = new PdfPCell();
-            cell2.setPhrase(new Phrase(x.getMessage()));
-            PdfPCell cell3 = new PdfPCell();
-            cell3.setPhrase(new Phrase(x.getDate().toString()));
-            tableMesaje.addCell(cell1);
-            tableMesaje.addCell(cell2);
-            tableMesaje.addCell(cell3);
-        });
-        ifNoDataToExport(messageList,tableMesaje);
-    }
-
-    private void ifNoDataToExport(List<?> aList, PdfPTable table){
-        if(aList.size()==0){
-            PdfPCell cell1 = new PdfPCell();
-            cell1.setPhrase(new Phrase("No data in application"));
-            PdfPCell cell2 = new PdfPCell();
-            cell1.setPhrase(new Phrase("to export"));
-            table.addCell(cell1);
-            table.addCell(cell2);
+            content.close();
+            doc.save(filePath);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
+
