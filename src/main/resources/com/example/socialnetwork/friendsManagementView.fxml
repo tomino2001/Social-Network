@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="433.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.PrieteniiController">
+<AnchorPane prefHeight="433.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.FriendsManagementController">
     <TableView fx:id="table" prefHeight="247.0" prefWidth="701.0">
         <columns>
             <TableColumn fx:id="sentRecivedCol" prefWidth="126.39999085664749" text="Sent/Recived" />

@@ -2,80 +2,49 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="551.0" prefWidth="755.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.AccountController">
-    <TableView fx:id="tableView" layoutY="85.0" prefHeight="326.0" prefWidth="400.0">
-      <columns>
-          <TableColumn fx:id="columnFirstName" prefWidth="202.0" text="FirstName" />
-          <TableColumn fx:id="columnLastName" prefWidth="196.0" text="LastName" />
-      </columns>
-    </TableView>
-    <GridPane layoutX="414.0" layoutY="85.0" prefHeight="76.0" prefWidth="334.0">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0" minWidth="10.0" prefWidth="101.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="251.0" minWidth="0.0" prefWidth="251.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints maxHeight="158.0" minHeight="10.0" prefHeight="53.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="157.0" minHeight="10.0" prefHeight="76.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-        <Label prefHeight="30.0" prefWidth="90.0" text="FirstName:">
-            <font>
-                <Font size="17.0" />
-            </font>
-        </Label>
-        <Label prefHeight="30.0" prefWidth="90.0" text="LastName:" GridPane.rowIndex="1">
-            <font>
-                <Font size="17.0" />
-            </font>
-        </Label>
-        <TextField fx:id="txtFirstName" prefHeight="25.0" prefWidth="0.0" GridPane.columnIndex="1" />
-        <TextField fx:id="txtLastName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    </GridPane>
-    <Button fx:id="btnShowAllFrdReq" layoutX="460.0" layoutY="352.0" mnemonicParsing="false" onAction="#onFriendReqButtonClicked" prefHeight="38.0" prefWidth="242.0" text="Show all friendship requests" textFill="#b23200">
-        <font>
-          <Font name="Calibri Light Italic" size="15.0" />
-        </font>
-    </Button>
-    <Button fx:id="btnAddFriend" layoutX="414.0" layoutY="178.0" mnemonicParsing="false" onAction="#onBtnAddFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: SKYBLUE;" text="Add friend">
-      <font>
-         <Font name="Times New Roman Bold" size="14.0" />
-      </font></Button>
-    <Label layoutX="14.0" layoutY="30.0" prefHeight="32.0" prefWidth="77.0" text="Prieteni">
-        <font>
-          <Font size="22.0" />
-        </font>
-    </Label>
-   <HBox layoutY="519.0" prefHeight="32.0" prefWidth="794.0" style="-fx-background-color: SLATEGREY;" />
-    <Button fx:id="btnRemoveFriend" layoutX="414.0" layoutY="236.0" mnemonicParsing="false" onAction="#onBtnRemoveFriendClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: LIGHTSLATEGRAY;" text="Delete friend">
-      <font>
-         <Font name="Times New Roman Bold" size="14.0" />
-      </font></Button>
-   <Button fx:id="btnLogout" layoutX="527.0" layoutY="458.0" mnemonicParsing="false" onAction="#onBtnLogoutAction" text="Logout">
-      <font>
-         <Font name="Calibri Light" size="26.0" />
-      </font>
-   </Button>
-   <Button fx:id="btnSendMessage" layoutX="414.0" layoutY="296.0" mnemonicParsing="false" onAction="#onBtnSendMessageClicked" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: green;" text="Send message">
-      <font>
-         <Font name="Times New Roman Bold" size="14.0" />
-      </font>
-   </Button>
-   <TextArea fx:id="txtMessage" blendMode="MULTIPLY" layoutX="-1.0" layoutY="409.0" prefHeight="110.0" prefWidth="400.0" promptText="write a message" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="395.0" AnchorPane.topAnchor="409.0" />
-   <Button fx:id="btnShowAllMessages" layoutX="462.0" layoutY="402.0" mnemonicParsing="false" onAction="#btnShowAllMessagesClicked" prefHeight="39.0" prefWidth="242.0" text="Show all messages" textFill="#b23200">
-      <font>
-         <Font name="Calibri Light Italic" size="15.0" />
-      </font>
-   </Button>
-   <Button fx:id="btnRefresh" layoutX="688.0" layoutY="49.0" mnemonicParsing="false" onAction="#onBtnRefreshClicked" prefHeight="26.0" prefWidth="63.0" text="Refresh" />
+<AnchorPane prefHeight="692.0" prefWidth="996.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.AccountController">
+   <children>
+      <HBox fx:id="mainHBox" prefHeight="692.0" prefWidth="996.0">
+         <children>
+            <VBox prefHeight="624.0" prefWidth="173.0">
+               <children>
+                  <Button fx:id="friendsBtn" mnemonicParsing="false" onAction="#onFriendsBtnClick" prefHeight="79.0" prefWidth="171.0" text="Friends">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="chatBtn" mnemonicParsing="false" onAction="#onChatBtnClick" prefHeight="79.0" prefWidth="171.0" text="Chat">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="logoutBtn" layoutX="10.0" layoutY="89.0" mnemonicParsing="false" onAction="#onLogoutBtnClicked" prefHeight="79.0" prefWidth="171.0" text="Logout">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+            <AnchorPane fx:id="currentPane" prefHeight="692.0" prefWidth="825.0">
+               <children>
+                  <Label fx:id="nameLabel" layoutX="324.0" layoutY="311.0">
+                     <font>
+                        <Font size="40.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="325.0" layoutY="247.0" text="Welcome,">
+                     <font>
+                        <Font size="40.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </children>
 </AnchorPane>

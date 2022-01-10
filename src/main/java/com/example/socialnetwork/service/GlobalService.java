@@ -1,9 +1,9 @@
 package com.example.socialnetwork.service;
 
+import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Prietenie;
 import com.example.socialnetwork.domain.Tuple;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -21,104 +21,104 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 
 public class GlobalService {
-    private final UtilizatorService utilizatorService;
-    private final PrietenieService prietenieService;
-    private final MesajeService mesajeService;
-    private final AccountService accountService;
+    private final UsersService usersService;
+    private final FriendshipsService friendshipsService;
+    private final MessagesService messagesService;
+    private final AccountsService accountsService;
 
 
-    public UtilizatorService getUtilizatorService() {
-        return utilizatorService;
+    public UsersService getUtilizatorService() {
+        return usersService;
     }
 
-    public PrietenieService getPrietenieService() {
-        return prietenieService;
+    public FriendshipsService getPrietenieService() {
+        return friendshipsService;
     }
 
-    public MesajeService getMesajeService() {
-        return mesajeService;
+    public MessagesService getMesajeService() {
+        return messagesService;
     }
 
-    public   AccountService getAccountService(){return accountService;}
+    public AccountsService getAccountService(){return accountsService;}
 
-    public GlobalService(UtilizatorService utilizatorService, PrietenieService prietenieService, MesajeService mesajeService, AccountService accountService) {
-        this.utilizatorService = utilizatorService;
-        this.prietenieService = prietenieService;
-        this.mesajeService = mesajeService;
-        this.accountService = accountService;
+    public GlobalService(UsersService usersService, FriendshipsService friendshipsService, MessagesService messagesService, AccountsService accountsService) {
+        this.usersService = usersService;
+        this.friendshipsService = friendshipsService;
+        this.messagesService = messagesService;
+        this.accountsService = accountsService;
     }
 
     public void removeUtilizatorAndPrieteniiUtilizator(Long id) {
-        this.utilizatorService.removeUtilizator(id);
-        this.prietenieService.removePreteniiIfUserIsDeleted(id);
+        this.usersService.removeUtilizator(id);
+        this.friendshipsService.removePreteniiIfUserIsDeleted(id);
     }
 
     public List<Tuple<Long, LocalDateTime>> prieteniiUtilizator(String firstName, String lastName) {
-        Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
-        Iterable<Prietenie> prietenii = prietenieService.getAll();
+        User user = usersService.findByName(firstName, lastName);
+        Iterable<Friendship> prietenii = friendshipsService.getAll();
         List<Tuple<Long, LocalDateTime>> rezultat =
                 StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), utilizator.getId())
-                                || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
+                        .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId())
+                                || Objects.equals(prietenie.getId().getRight(), user.getId()))
                                 && prietenie.getStatus().equals("approved")))
-                        .map(prietenie -> mapPrietenie(utilizator, prietenie))
+                        .map(prietenie -> mapPrietenie(user, prietenie))
                         .collect(toList());
         return rezultat;
     }
 
-    public List<Prietenie> listaPrieteniUtilizator(String firstName, String lastName) {
-        Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
-        return StreamSupport.stream(prietenieService.getAll().spliterator(), false)
-                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), utilizator.getId()))
-                        || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
+    public List<Friendship> listaPrieteniUtilizator(String firstName, String lastName) {
+        User user = usersService.findByName(firstName, lastName);
+        return StreamSupport.stream(friendshipsService.getAll().spliterator(), false)
+                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId()))
+                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
                 )
                 .collect(toList());
     }
 
     public List<Tuple<Long, LocalDateTime>> prieteniiUtilizatorDinLuna(String firstName, String lastName, String luna) {
-        Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
-        Iterable<Prietenie> prietenii = prietenieService.getAll();
+        User user = usersService.findByName(firstName, lastName);
+        Iterable<Friendship> prietenii = friendshipsService.getAll();
 
         List<Tuple<Long, LocalDateTime>> rezultat =
                 StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> (prietenie.getId().getLeft() == utilizator.getId()
-                                || Objects.equals(prietenie.getId().getRight(), utilizator.getId()))
+                        .filter(prietenie -> (prietenie.getId().getLeft() == user.getId()
+                                || Objects.equals(prietenie.getId().getRight(), user.getId()))
                                 && prietenie.getDate().getMonth() == Month.valueOf(luna.toUpperCase()))
-                        .map(prietenie -> mapPrietenie(utilizator, prietenie))
+                        .map(prietenie -> mapPrietenie(user, prietenie))
                         .collect(toList());
         return rezultat;
     }
 
-    private Tuple<Long, LocalDateTime> mapPrietenie(Utilizator utilizator, Prietenie prietenie) {
-        Long left = prietenie.getId().getLeft();
-        Long right = prietenie.getId().getRight();
-        Long idUser = utilizator.getId();
+    private Tuple<Long, LocalDateTime> mapPrietenie(User user, Friendship friendship) {
+        Long left = friendship.getId().getLeft();
+        Long right = friendship.getId().getRight();
+        Long idUser = user.getId();
         Tuple<Long, LocalDateTime> tuple = null;
         if (!Objects.equals(left, idUser))
-            tuple = new Tuple<>(left, prietenie.getDate());
+            tuple = new Tuple<>(left, friendship.getDate());
         else
-            tuple = new Tuple<>(right, prietenie.getDate());
+            tuple = new Tuple<>(right, friendship.getDate());
         return tuple;
     }
 
-    public void exportPdfActivitateUtilizatorDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
-        List<Prietenie> prietenieList = prietenieService.listaPrieteniiDinPerioadaX(utilizator, st, dr);
-        List<Message> messageList = mesajeService.listaMesajePrimiteDinPerioadaX(utilizator, st, dr);
-        String pathPrietenie = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Prietenie.pdf";
+    public void exportPdfActivitateUtilizatorDinPerioadaX(User user, LocalDateTime st, LocalDateTime dr){
+        List<Friendship> friendshipList = friendshipsService.listaPrieteniiDinPerioadaX(user, st, dr);
+        List<Message> messageList = messagesService.listaMesajePrimiteDinPerioadaX(user, st, dr);
+        String pathPrietenie = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Friendship.pdf";
         String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Mesaje.pdf";
 
-        writeToPdfPrietenii(prietenieList, pathPrietenie);
+        writeToPdfPrietenii(friendshipList, pathPrietenie);
         writeToPdfMesaje(messageList, pathMessage);
     }
 
-    public void exportToPdfListaMesajePrimiteDeLaUtilizatorXInPerioadaX(Utilizator utilizatorLogat,Utilizator utilizator
-            ,LocalDateTime st, LocalDateTime dr ){
-        List<Message> messageList = mesajeService.listaMesajePrimiteDeLaUtilizatorXInPerioadaX(utilizatorLogat ,utilizator, st, dr);
+    public void exportToPdfListaMesajePrimiteDeLaUtilizatorXInPerioadaX(User userLogat, User user
+            , LocalDateTime st, LocalDateTime dr ){
+        List<Message> messageList = messagesService.listaMesajePrimiteDeLaUtilizatorXInPerioadaX(userLogat, user, st, dr);
         String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\MesajeV2.pdf";
         writeToPdfMesaje(messageList, pathMessage);
     }
 
-    public void writeToPdfPrietenii(List<Prietenie> valuesToExport, String filePath) {
+    public void writeToPdfPrietenii(List<Friendship> valuesToExport, String filePath) {
         try (PDDocument doc = new PDDocument()) {
             PDFont font = PDType1Font.HELVETICA;
             PDPage page = new PDPage();
@@ -128,16 +128,16 @@ public class GlobalService {
             int lines = 1;
             float pageHeight = page.getMediaBox().getHeight();
 
-            for (Prietenie row : valuesToExport) {
+            for (Friendship row : valuesToExport) {
                 int startX = 0;
 
                 content.beginText();
                 content.newLineAtOffset(startX, pageHeight - 50 * lines);
                 startX += startX + 100;
-                content.showText("From: " + utilizatorService.findOne(row.getId().getLeft()).getFirstName() + " " +
-                        utilizatorService.findOne(row.getId().getLeft()).getLastName() + ", to: " +
-                        utilizatorService.findOne(row.getId().getRight()).getFirstName()  + " " +
-                        utilizatorService.findOne(row.getId().getRight()).getLastName() + " " +
+                content.showText("From: " + usersService.findOne(row.getId().getLeft()).getFirstName() + " " +
+                        usersService.findOne(row.getId().getLeft()).getLastName() + ", to: " +
+                        usersService.findOne(row.getId().getRight()).getFirstName()  + " " +
+                        usersService.findOne(row.getId().getRight()).getLastName() + " " +
                         row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) + " " + row.getStatus());
                 content.endText();
                 ++lines;

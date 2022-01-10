@@ -1,7 +1,7 @@
 package com.example.socialnetwork.repository.db;
 
 
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
 
@@ -9,13 +9,13 @@ import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
+public class UsersDbRepository implements Repository<Long, User> {
     private final String url;
     private final String username;
     private final String password;
-    private final Validator<Utilizator> validator;
+    private final Validator<User> validator;
 
-    public UtilizatorDbRepository(String url, String username, String password, Validator<Utilizator> validator) {
+    public UsersDbRepository(String url, String username, String password, Validator<User> validator) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -23,7 +23,7 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public Utilizator findOne(Long id) {
+    public User findOne(Long id) {
         String sql = "select * from users where id=?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -34,9 +34,9 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
             Long id1 = resultSet.getLong("id");
             String firstName = resultSet.getString("first_name");
             String lastName = resultSet.getString("last_name");
-            Utilizator utilizator = new Utilizator(firstName, lastName);
-            utilizator.setId(id1);
-            return utilizator;
+            User user = new User(firstName, lastName);
+            user.setId(id1);
+            return user;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,8 +45,8 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public Iterable<Utilizator> findAll() {
-        Set<Utilizator> users = new HashSet<>();
+    public Iterable<User> findAll() {
+        Set<User> users = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("SELECT * from users");
              ResultSet resultSet = statement.executeQuery()) {
@@ -56,9 +56,9 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
 
-                Utilizator utilizator = new Utilizator(firstName, lastName);
-                utilizator.setId(id);
-                users.add(utilizator);
+                User user = new User(firstName, lastName);
+                user.setId(id);
+                users.add(user);
             }
             return users;
         } catch (SQLException e) {
@@ -68,7 +68,7 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public Utilizator save(Utilizator entity) {
+    public User save(User entity) {
 
         String sql = "insert into users (first_name, last_name ) values (?, ?)";
 
@@ -99,7 +99,7 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public void update(Utilizator entity) {
+    public void update(User entity) {
         String sql = "update users set first_name=?, last_name=? where id=?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -114,7 +114,7 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public void remove(Utilizator entity) {
+    public void remove(User entity) {
 
     }
 

@@ -1,12 +1,12 @@
 package com.example.socialnetwork.ui;
 
 
-import com.example.socialnetwork.domain.Prietenie;
+import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Tuple;
-import com.example.socialnetwork.domain.Utilizator;
-import com.example.socialnetwork.service.MesajeService;
-import com.example.socialnetwork.service.PrietenieService;
-import com.example.socialnetwork.service.UtilizatorService;
+import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.service.MessagesService;
+import com.example.socialnetwork.service.FriendshipsService;
+import com.example.socialnetwork.service.UsersService;
 import com.example.socialnetwork.service.GlobalService;
 
 import java.security.KeyException;
@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Console {
-    protected final UtilizatorService utilizatorService;
-    protected final PrietenieService prietenieService;
+    protected final UsersService usersService;
+    protected final FriendshipsService friendshipsService;
     protected final GlobalService globalService;
-    protected final MesajeService mesajeService;
+    protected final MessagesService messagesService;
     private Scanner scanner = new Scanner(System.in);
 
-    public Console(UtilizatorService utilizatorService, PrietenieService prietenieService,
-                   GlobalService globalService, MesajeService mesajeService) {
-        this.utilizatorService = utilizatorService;
-        this.prietenieService = prietenieService;
+    public Console(UsersService usersService, FriendshipsService friendshipsService,
+                   GlobalService globalService, MessagesService messagesService) {
+        this.usersService = usersService;
+        this.friendshipsService = friendshipsService;
         this.globalService = globalService;
-        this.mesajeService = mesajeService;
+        this.messagesService = messagesService;
     }
 
 
@@ -65,8 +65,8 @@ public class Console {
                 try {
                     String firstName = readFirstName();
                     String lastName = readLastName();
-                    Utilizator utilizator = new Utilizator(firstName, lastName);
-                    this.utilizatorService.addUtilizator(utilizator);
+                    User user = new User(firstName, lastName);
+                    this.usersService.addUtilizator(user);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -74,7 +74,7 @@ public class Console {
                 try {
                     System.out.println("Dati id-ul utilizatoruli de sters: ");
                     Long id = scanner.nextLong();
-                    //this.utilizatorService.removeUtilizator(id);
+                    //this.usersService.removeUtilizator(id);
                     globalService.removeUtilizatorAndPrieteniiUtilizator(id);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -85,24 +85,24 @@ public class Console {
                     Long id = scanner.nextLong();
                     String firstName = readFirstName();
                     String lastName = readLastName();
-                    Utilizator utilizator = new Utilizator(firstName, lastName);
-                    utilizator.setId(id);
-                    this.utilizatorService.updateUtilizator(utilizator);
+                    User user = new User(firstName, lastName);
+                    user.setId(id);
+                    this.usersService.updateUtilizator(user);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "4")) {
                 try {
-                    this.utilizatorService.getAll().forEach(System.out::println);
+                    this.usersService.getAll().forEach(System.out::println);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "5")) {
                 String firstName = readFirstName();
                 String lastName = readLastName();
-                Utilizator utilizator = utilizatorService.findByName(firstName, lastName);
-                if (utilizator != null)
-                    System.out.println(utilizator);
+                User user = usersService.findByName(firstName, lastName);
+                if (user != null)
+                    System.out.println(user);
                 else
                     System.out.println("Doesn't exist!");
             } else if (Objects.equals(optiune, "b"))
@@ -130,14 +130,14 @@ public class Console {
             if (Objects.equals(optiune, "1")) {
                 try {
                     Long id1 = readPrietenieID1();
-                    Utilizator utilizator = utilizatorService.findOne(id1);
-                    if (utilizator == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
+                    User user = usersService.findOne(id1);
+                    if (user == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
                     Long id2 = readPrietenieID2();
-                    utilizator = utilizatorService.findOne(id2);
-                    if (utilizator == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
-                    Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.now());
-                    prietenie.setStatus("approved");
-                    if (this.prietenieService.addPrietenie(prietenie) != null)
+                    user = usersService.findOne(id2);
+                    if (user == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
+                    Friendship friendship = new Friendship(id1, id2, LocalDateTime.now());
+                    friendship.setStatus("approved");
+                    if (this.friendshipsService.addPrietenie(friendship) != null)
                         System.out.println("Prietenia este deja inregistrata");
                 } catch (Exception e) {
                     System.out.println(e);
@@ -147,7 +147,7 @@ public class Console {
                     System.out.println("Dati id-ul prieteniei de sters: ");
                     long id1 = scanner.nextLong();
                     long id2 = scanner.nextLong();
-                    this.prietenieService.removePrietenie(id1, id2);
+                    this.friendshipsService.removePrietenie(id1, id2);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -155,29 +155,29 @@ public class Console {
                 try {
                     Long id1 = readPrietenieID1();
                     Long id2 = readPrietenieID2();
-                    Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.now());
-                    prietenie.setStatus("approved");
-                    this.prietenieService.updatePrietenie(new Prietenie(id1, id2, LocalDateTime.now()));
+                    Friendship friendship = new Friendship(id1, id2, LocalDateTime.now());
+                    friendship.setStatus("approved");
+                    this.friendshipsService.updatePrietenie(new Friendship(id1, id2, LocalDateTime.now()));
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "4")) {
                 try {
-                    this.prietenieService.getAllApproved().forEach(System.out::println);
+                    this.friendshipsService.getAllApproved().forEach(System.out::println);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "5")) {
                 try {
 
-                    System.out.println("Numarul de componete conexe:  " + prietenieService.numarComponenteConexe());
+                    System.out.println("Numarul de componete conexe:  " + friendshipsService.numarComponenteConexe());
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "6")) {
                 try {
                     System.out.println("Cel mai sociabila comunitate este: ");
-                    System.out.println(prietenieService.celMaiLungDrum());
+                    System.out.println(friendshipsService.celMaiLungDrum());
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -196,8 +196,8 @@ public class Console {
         List<Tuple<Long, LocalDateTime>> rezultat = globalService.
                 prieteniiUtilizator(firstName, lastName);
         rezultat.forEach(p -> {
-            Utilizator utilizator = utilizatorService.findOne(p.getLeft());
-            System.out.println(utilizator.getLastName() + '|' + utilizator.getFirstName()
+            User user = usersService.findOne(p.getLeft());
+            System.out.println(user.getLastName() + '|' + user.getFirstName()
                     + '|' + p.getRight().toString());
         });
     }
@@ -211,8 +211,8 @@ public class Console {
         List<Tuple<Long, LocalDateTime>> rezultat = globalService.
                 prieteniiUtilizatorDinLuna(firstName, lastName, monthName);
         rezultat.forEach(p -> {
-            Utilizator utilizator = utilizatorService.findOne(p.getLeft());
-            System.out.println(utilizator.getLastName() + '|' + utilizator.getFirstName()
+            User user = usersService.findOne(p.getLeft());
+            System.out.println(user.getLastName() + '|' + user.getFirstName()
                     + '|' + p.getRight().toString());
         });
     }
@@ -223,13 +223,13 @@ public class Console {
         System.out.println("Va rugam sa va autentificati.");
         String first_name_log_in = readFirstName();
         String last_name_log_in = readLastName();
-        Utilizator utilizatorLogat = utilizatorService.findByName(first_name_log_in, last_name_log_in);
-        if(utilizatorLogat == null){
+        User userLogat = usersService.findByName(first_name_log_in, last_name_log_in);
+        if(userLogat == null){
             System.out.println("Nu exista utilizatorul cu numele si prenumele dat.");
             return;
         }
-        ConsolaUtilizator consolaUtilizator = new ConsolaUtilizator(utilizatorLogat,
-                utilizatorService, prietenieService, globalService, mesajeService);
+        ConsolaUtilizator consolaUtilizator = new ConsolaUtilizator(userLogat,
+                usersService, friendshipsService, globalService, messagesService);
         consolaUtilizator.run_consola_utilizator();
     }
 
@@ -237,14 +237,14 @@ public class Console {
         System.out.println("Utilizator1: ");
         String frist_name = readFirstName();
         String last_name = readLastName();
-        Utilizator utilizator1 = utilizatorService.findByName(frist_name, last_name);
+        User user1 = usersService.findByName(frist_name, last_name);
 
         System.out.println("Utilizator2: ");
         frist_name = readFirstName();
         last_name = readLastName();
-        Utilizator utilizator2 = utilizatorService.findByName(frist_name, last_name);
+        User user2 = usersService.findByName(frist_name, last_name);
 
-        System.out.println(mesajeService.find_all_msg_btw_2_users_cronologicaly_ordered(utilizator1, utilizator2));
+        System.out.println(messagesService.find_all_msg_btw_2_users_cronologicaly_ordered(user1, user2));
     }
 
     public void run_console() {
@@ -252,7 +252,7 @@ public class Console {
 
         while (true) {
             System.out.println("1. CRUD Utilizator.");
-            System.out.println("2. CRUD Prietenie.");
+            System.out.println("2. CRUD Friendship.");
             System.out.println("3. Prietenii utilizator.");
             System.out.println("4. Prietenii utilizator din luna data.");
             System.out.println("5. Log in.");

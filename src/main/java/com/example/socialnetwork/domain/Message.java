@@ -6,23 +6,23 @@ import java.util.List;
 import java.util.Objects;
 
 public class Message extends Entity<Long>{
-    private Utilizator from;
-    private List<Utilizator> to;
+    private User from;
+    private List<User> to;
     private String message;
     private LocalDateTime date;
 
-    public Message(Utilizator from, List<Utilizator> to, String message, LocalDateTime date) {
+    public Message(User from, List<User> to, String message, LocalDateTime date) {
         this.from = from;
         this.to = to;
         this.message = message;
         this.date = date;
     }
 
-    public Utilizator getFrom() {
+    public User getFrom() {
         return from;
     }
 
-    public List<Utilizator> getTo() {
+    public List<User> getTo() {
         return to;
     }
 
@@ -34,7 +34,7 @@ public class Message extends Entity<Long>{
         return date;
     }
 
-    public void setTo(List<Utilizator> to) {
+    public void setTo(List<User> to) {
         this.to = to;
     }
 

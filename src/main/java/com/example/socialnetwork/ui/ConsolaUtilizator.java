@@ -1,40 +1,40 @@
 package com.example.socialnetwork.ui;
 
+import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Prietenie;
-import com.example.socialnetwork.domain.Utilizator;
-import com.example.socialnetwork.service.MesajeService;
-import com.example.socialnetwork.service.PrietenieService;
-import com.example.socialnetwork.service.UtilizatorService;
+import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.service.MessagesService;
+import com.example.socialnetwork.service.FriendshipsService;
+import com.example.socialnetwork.service.UsersService;
 import com.example.socialnetwork.service.GlobalService;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class ConsolaUtilizator extends Console {
-    private final Utilizator utilizatorLogat;
+    private final User userLogat;
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsolaUtilizator(Utilizator utilizatorLogat,
-                             UtilizatorService utilizatorService, PrietenieService prietenieService,
-                             GlobalService globalService, MesajeService mesajeService) {
-        super(utilizatorService, prietenieService, globalService, mesajeService);
-        this.utilizatorLogat = utilizatorLogat;
+    public ConsolaUtilizator(User userLogat,
+                             UsersService usersService, FriendshipsService friendshipsService,
+                             GlobalService globalService, MessagesService messagesService) {
+        super(usersService, friendshipsService, globalService, messagesService);
+        this.userLogat = userLogat;
     }
 
     private void run_trimite_mesaj() {
-        List<Utilizator> utilizatorList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
         System.out.println("Dati numele destinatarilor: ");
         while (true) {
             String first_name = readFirstName();
             String last_name = readLastName();
-            Utilizator utilizator = utilizatorService.findByName(first_name, last_name);
-            if (utilizator == null) try {
+            User user = usersService.findByName(first_name, last_name);
+            if (user == null) try {
                 throw new Exception("Nu exista utilizatorul cu numele si prenumele dat.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            utilizatorList.add(utilizator);
+            userList.add(user);
 
             scanner.nextLine();
             System.out.println("Doriti sa mai adaugati un utilizator la lista de destinatari? (y/n).");
@@ -45,32 +45,32 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Mesaj: ");
         String mesaj = scanner.nextLine();
 
-        Message message = new Message(utilizatorLogat, utilizatorList, mesaj, LocalDateTime.now());
-        mesajeService.saveMessage(message);
+        Message message = new Message(userLogat, userList, mesaj, LocalDateTime.now());
+        messagesService.saveMessage(message);
     }
 
     public void run_vizualizare_mesaje_primite() {
-        System.out.println(mesajeService.find_all_msg_recived_by_user(utilizatorLogat));
+        System.out.println(messagesService.find_all_msg_recived_by_user(userLogat));
     }
 
     public void run_raspunde_la_mesaj() {
         System.out.println("Dati id-ul mesajului la care doriti sa raspundeti: ");
         Long id = scanner.nextLong();
-        Message message = mesajeService.find_one(id);
+        Message message = messagesService.find_one(id);
 
         scanner.nextLine();
         System.out.println("Mesaj: ");
         String mesaj = scanner.nextLine();
 
-        Message message1 = new Message(utilizatorLogat, List.of(message.getFrom()), mesaj, LocalDateTime.now());
-        mesajeService.saveMessage(message1);
-        mesajeService.updateMessage(message);
+        Message message1 = new Message(userLogat, List.of(message.getFrom()), mesaj, LocalDateTime.now());
+        messagesService.saveMessage(message1);
+        messagesService.updateMessage(message);
     }
 
     public void run_vezi_cereri_prietenie() {
         System.out.println("Cereri primite de la:");
-        prietenieService.listaCereriPrietenieUtilizator(this.utilizatorLogat)
-                .forEach(prietenie -> System.out.println(utilizatorService.findOne(prietenie.getId().getLeft())));
+        friendshipsService.listaCereriPrietenieUtilizator(this.userLogat)
+                .forEach(prietenie -> System.out.println(usersService.findOne(prietenie.getId().getLeft())));
         System.out.println();
     }
 
@@ -78,21 +78,21 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Introduceti prenumele si numele utilizatorului:");
         String firstName = readFirstName();
         String lastName = readLastName();
-        Utilizator utilizatorSursa = utilizatorService.findByName(firstName, lastName);
-        if (utilizatorSursa == null) {
+        User userSursa = usersService.findByName(firstName, lastName);
+        if (userSursa == null) {
             System.out.println("Nu exista utilizatorul");
             return;
         }
-        Prietenie prietenie = prietenieService.findOnePrietenie(utilizatorSursa.getId(), utilizatorLogat.getId());
-        if (prietenie == null)
+        Friendship friendship = friendshipsService.findOnePrietenie(userSursa.getId(), userLogat.getId());
+        if (friendship == null)
             System.out.println("Nu aveti cerere de la utilizatorul introdus");
         else {
             if (Objects.equals(status, "rejected"))
-                prietenieService.removePrietenie(utilizatorSursa.getId(), utilizatorLogat.getId());
+                friendshipsService.removePrietenie(userSursa.getId(), userLogat.getId());
             else {
-                prietenie.setStatus(status);
-                prietenie.setDate(LocalDateTime.now());
-                prietenieService.updatePrietenie(prietenie);
+                friendship.setStatus(status);
+                friendship.setDate(LocalDateTime.now());
+                friendshipsService.updatePrietenie(friendship);
             }
         }
     }
@@ -101,15 +101,15 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Cui doriti sa trimiteti cerere?");
         String firstName = readFirstName();
         String lastName = readLastName();
-        Utilizator utilizatorDestinatie = utilizatorService.findByName(firstName, lastName);
-        if (utilizatorDestinatie == null) {
+        User userDestinatie = usersService.findByName(firstName, lastName);
+        if (userDestinatie == null) {
             System.out.println("Nu exista utilizatorul!");
             return;
         }
-        Prietenie prietenie = new Prietenie(utilizatorLogat.getId(), utilizatorDestinatie.getId(),
+        Friendship friendship = new Friendship(userLogat.getId(), userDestinatie.getId(),
                 LocalDateTime.now());
-        prietenie.setStatus("pending");
-        if (prietenieService.addPrietenie(prietenie) != null) {
+        friendship.setStatus("pending");
+        if (friendshipsService.addPrietenie(friendship) != null) {
             System.out.println("Prietenia este deja inregistrata");
         }
     }
@@ -117,8 +117,8 @@ public class ConsolaUtilizator extends Console {
     private void run_replay_all_mesaj() {
         System.out.println("Dati id-ul mesajului la care doriti sa raspundeti: ");
         Long id = scanner.nextLong();
-//        Message message = mesajeService.find_one(id);
-        if(mesajeService.find_one(id) == null){
+//        Message message = messagesService.find_one(id);
+        if(messagesService.find_one(id) == null){
             System.out.println("Nu exista mesajul cu id-ul daat!");
             return;
         }
@@ -127,12 +127,12 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Mesaj: ");
         String mesaj = scanner.nextLine();
 
-        mesajeService.reply_all(utilizatorLogat, id, mesaj);
+        messagesService.reply_all(userLogat, id, mesaj);
 //        Message message1 = new Message(utilizatorLogat, List.of(message.getFrom()), mesaj, LocalDateTime.now());
 //
 //
-//        mesajeService.saveMessage(message1);
-//        mesajeService.updateMessage(message)
+//        messagesService.saveMessage(message1);
+//        messagesService.updateMessage(message)
     }
 
     public void run_consola_utilizator() {
