@@ -1,7 +1,7 @@
-package com.example.socialnetwork.controller;
+package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.domain.Account;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.service.GlobalService;
 import com.example.socialnetwork.service.HashPasswordService;
 import javafx.fxml.FXML;
@@ -40,23 +40,23 @@ public class LoginController {
         if (account == null)
             labelUserInexistent.setText("Username or password wrong!");
         else {
-            Utilizator utilizator = globalService.getUtilizatorService().findOne(account.getId());
+            User user = globalService.getUtilizatorService().findOne(account.getId());
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.close();
-            enterAccount(utilizator);
+            enterAccount(user);
         }
     }
 
-    private void enterAccount(Utilizator utilizator) throws IOException {
+    private void enterAccount(User user) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/com/example/socialnetwork/accountView.fxml"));
         Parent parent = loader.load();
         AccountController accountController = loader.getController();
-        accountController.initAccount(utilizator, globalService);
+        accountController.initAccount(user, globalService);
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
-        stage.setTitle(utilizator.getFirstName() + ' ' + utilizator.getLastName());
+        stage.setTitle(user.getFirstName() + ' ' + user.getLastName());
         stage.setScene(scene);
         stage.show();
     }

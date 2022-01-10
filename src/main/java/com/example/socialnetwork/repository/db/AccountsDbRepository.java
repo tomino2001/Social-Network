@@ -1,7 +1,7 @@
 package com.example.socialnetwork.repository.db;
 
 import com.example.socialnetwork.domain.Account;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
 
@@ -9,13 +9,13 @@ import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AccountDbRepository implements Repository<Long, Account> {
+public class AccountsDbRepository implements Repository<Long, Account> {
     private final String url;
     private final String username;
     private final String password;
-    private final Validator<Utilizator> validator;
+    private final Validator<User> validator;
 
-    public AccountDbRepository(String url, String username, String password, Validator<Utilizator> validator) {
+    public AccountsDbRepository(String url, String username, String password, Validator<User> validator) {
         this.url = url;
         this.username = username;
         this.password = password;

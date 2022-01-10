@@ -11,16 +11,16 @@ import java.util.Objects;
  * User must explicitly specify the status
  * !!!!!!!!!!!!!!!!!!!!!!!
  */
-public class Prietenie extends Entity<Tuple<Long, Long>> {
+public class Friendship extends Entity<Tuple<Long, Long>> {
 
     private LocalDateTime date;
     private String status;
 
-    public Prietenie(Long id1, Long id2) {
+    public Friendship(Long id1, Long id2) {
         this.setId(new Tuple<>(id1, id2));
     }
 
-    public Prietenie(Long id1, Long id2, LocalDateTime date) {
+    public Friendship(Long id1, Long id2, LocalDateTime date) {
         this.setId(new Tuple<>(id1, id2));
         this.date = date;
     }
@@ -50,10 +50,10 @@ public class Prietenie extends Entity<Tuple<Long, Long>> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Prietenie prietenie = (Prietenie) o;
-        return Objects.equals(date, prietenie.date)
-                && Objects.equals(getId().getLeft(), prietenie.getId().getLeft())
-                && Objects.equals(getId().getRight(), prietenie.getId().getRight());
+        Friendship friendship = (Friendship) o;
+        return Objects.equals(date, friendship.date)
+                && Objects.equals(getId().getLeft(), friendship.getId().getLeft())
+                && Objects.equals(getId().getRight(), friendship.getId().getRight());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Prietenie extends Entity<Tuple<Long, Long>> {
 
     @Override
     public String toString() {
-        return "Prietenie{" +
+        return "Friendship{" +
                 "id=" + getId() +
                 ", date=" + date.format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) +
                 ", status=" + status +

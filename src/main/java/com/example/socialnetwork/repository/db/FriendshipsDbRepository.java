@@ -1,7 +1,7 @@
 package com.example.socialnetwork.repository.db;
 
 
-import com.example.socialnetwork.domain.Prietenie;
+import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
@@ -12,13 +12,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prietenie> {
+public class FriendshipsDbRepository implements Repository<Tuple<Long, Long>, Friendship> {
     private final String url;
     private final String username;
     private final String password;
-    private final Validator<Prietenie> validator;
+    private final Validator<Friendship> validator;
 
-    public PrieteniiDbRepository(String url, String username, String password, Validator<Prietenie> validator) {
+    public FriendshipsDbRepository(String url, String username, String password, Validator<Friendship> validator) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -26,7 +26,7 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
     }
 
     @Override
-    public Prietenie findOne(Tuple<Long, Long> id) {
+    public Friendship findOne(Tuple<Long, Long> id) {
         String sql = "select * from friendships where id_friend1=? and id_friend2=?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -39,9 +39,9 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
                 Long id2 = resultSet.getLong("id_friend2");
                 String date = resultSet.getString("creation_date");
                 String status = resultSet.getString("status");
-                Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
-                prietenie.setStatus(status);
-                return prietenie;
+                Friendship friendship = new Friendship(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
+                friendship.setStatus(status);
+                return friendship;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,8 +50,8 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
     }
 
     @Override
-    public Iterable<Prietenie> findAll() {
-        Set<Prietenie> prietenii = new HashSet<>();
+    public Iterable<Friendship> findAll() {
+        Set<Friendship> prietenii = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("SELECT * from friendships");
              ResultSet resultSet = statement.executeQuery()) {
@@ -61,9 +61,9 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
                 Long id2 = resultSet.getLong("id_friend2");
                 String date = resultSet.getString("creation_date");
                 String status = resultSet.getString("status");
-                Prietenie prietenie = new Prietenie(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
-                prietenie.setStatus(status);
-                prietenii.add(prietenie);
+                Friendship friendship = new Friendship(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
+                friendship.setStatus(status);
+                prietenii.add(friendship);
             }
             return prietenii;
         } catch (SQLException e) {
@@ -73,7 +73,7 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
     }
 
     @Override
-    public Prietenie save(Prietenie entity) {
+    public Friendship save(Friendship entity) {
         Tuple<Long, Long> id1 = entity.getId();
         Tuple<Long, Long> id2 = new Tuple<>(entity.getId().getRight(), entity.getId().getLeft());
 
@@ -110,7 +110,7 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
     }
 
     @Override
-    public void update(Prietenie entity) {
+    public void update(Friendship entity) {
         String sql = "update friendships set id_friend1=?, id_friend2=?, creation_date=?, status = ? " +
                 "where id_friend1=? and id_friend2=?";
 
@@ -130,7 +130,7 @@ public class PrieteniiDbRepository implements Repository<Tuple<Long, Long>, Prie
     }
 
     @Override
-    public void remove(Prietenie entity) {
+    public void remove(Friendship entity) {
 
     }
 

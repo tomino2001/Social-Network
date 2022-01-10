@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controller.LoginController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.LoginController">
     <HBox alignment="BOTTOM_CENTER" layoutX="-1.0" layoutY="341.0" prefHeight="60.0" prefWidth="606.0" style="-fx-background-color: CHARTREUSE;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="341.0" />
     <HBox alignment="TOP_CENTER" prefHeight="60.0" prefWidth="606.0" style="-fx-background-color: CHARTREUSE;" AnchorPane.bottomAnchor="341.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Label alignment="TOP_CENTER" prefHeight="69.0" prefWidth="226.0" text="Welcome!">

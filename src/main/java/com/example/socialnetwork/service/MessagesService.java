@@ -2,17 +2,17 @@ package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class MesajeService {
+public class MessagesService {
     private final Repository<Long, Message> repo;
 
-    public MesajeService(Repository<Long, Message> repo) {
+    public MessagesService(Repository<Long, Message> repo) {
         this.repo = repo;
     }
 
@@ -30,11 +30,11 @@ public class MesajeService {
         return repo.findOne(id);
     }
 
-    public List<Message> find_all_msg_btw_2_users_cronologicaly_ordered(Utilizator utilizator1, Utilizator utilizator2) {
+    public List<Message> find_all_msg_btw_2_users_cronologicaly_ordered(User user1, User user2) {
         List<Message> messageList = new ArrayList<>();
         this.repo.findAll().forEach(message -> {
-            if ((message.getFrom().getId().equals(utilizator1.getId()) && message.getTo().get(0).getId().equals(utilizator2.getId()))
-                    || (message.getFrom().getId().equals(utilizator2.getId()) && message.getTo().get(0).getId().equals(utilizator1.getId()))) {
+            if ((message.getFrom().getId().equals(user1.getId()) && message.getTo().get(0).getId().equals(user2.getId()))
+                    || (message.getFrom().getId().equals(user2.getId()) && message.getTo().get(0).getId().equals(user1.getId()))) {
                 messageList.add(message);
             }
         });
@@ -42,11 +42,11 @@ public class MesajeService {
         return messageList;
     }
 
-    public List<Message> find_all_msg_recived_by_user(Utilizator utilizatorLogat) {
+    public List<Message> find_all_msg_recived_by_user(User userLogat) {
         List<Message> messageList = new ArrayList<>();
         this.repo.findAll().forEach(message -> {
-            Utilizator utilizator = message.getTo().get(0);
-            if (Objects.equals(utilizator.getId(), utilizatorLogat.getId()))
+            User user = message.getTo().get(0);
+            if (Objects.equals(user.getId(), userLogat.getId()))
                 messageList.add(message);
         });
 
@@ -63,32 +63,32 @@ public class MesajeService {
         return messageList;
     }
 
-    public void reply_all(Utilizator utilizatorLogat, Long id_msg, String mesaj) {
+    public void reply_all(User userLogat, Long id_msg, String mesaj) {
         Message message = repo.findOne(id_msg);
         List<Message> messageList = find_by_idSent_and_date(message.getFrom().getId(), message.getDate());
         for (Message msg : messageList) {
-            List<Utilizator> id_to = new ArrayList<>();
-            if (utilizatorLogat.getId().equals(msg.getTo().get(0).getId())) id_to.add(msg.getFrom());
+            List<User> id_to = new ArrayList<>();
+            if (userLogat.getId().equals(msg.getTo().get(0).getId())) id_to.add(msg.getFrom());
             else id_to.add(msg.getTo().get(0));
-            Message message1 = new Message(utilizatorLogat, id_to, mesaj, LocalDateTime.now());
+            Message message1 = new Message(userLogat, id_to, mesaj, LocalDateTime.now());
             repo.save(message1);
             repo.update(msg);
         }
     }
 
-    public List<Message> listaMesajePrimiteDinPerioadaX(Utilizator utilizator, LocalDateTime st, LocalDateTime dr){
+    public List<Message> listaMesajePrimiteDinPerioadaX(User user, LocalDateTime st, LocalDateTime dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(message -> (message.getFrom().equals(utilizator) ||
-                        message.getTo().get(0).equals(utilizator))
+                .filter(message -> (message.getFrom().equals(user) ||
+                        message.getTo().get(0).equals(user))
                         && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 
-    public List<Message> listaMesajePrimiteDeLaUtilizatorXInPerioadaX(Utilizator utilizatorLogat, Utilizator utilizator,
+    public List<Message> listaMesajePrimiteDeLaUtilizatorXInPerioadaX(User userLogat, User user,
                                                                       LocalDateTime st, LocalDateTime dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(message -> (message.getFrom().equals(utilizatorLogat) ||
-                        message.getTo().get(0).equals(utilizator))
+                .filter(message -> (message.getFrom().equals(userLogat) ||
+                        message.getTo().get(0).equals(user))
                         && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
                 .collect(Collectors.toList());
     }

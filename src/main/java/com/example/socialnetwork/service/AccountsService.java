@@ -1,16 +1,14 @@
 package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.domain.Account;
-import com.example.socialnetwork.domain.Utilizator;
 import com.example.socialnetwork.repository.Repository;
 
-import java.util.List;
 import java.util.Objects;
 
-public class AccountService {
+public class AccountsService {
     private final Repository<Long, Account> repo;
 
-    public AccountService(Repository<Long, Account> repo) {
+    public AccountsService(Repository<Long, Account> repo) {
         this.repo = repo;
     }
 

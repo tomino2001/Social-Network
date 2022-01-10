@@ -1,8 +1,8 @@
-package com.example.socialnetwork.controller;
+package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.domain.Message;
 
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,19 +22,19 @@ public class MessageController {
 
     public Button btnReply;
     public Button btnDeleteMessage;
-    private Utilizator utilizator;
+    private User user;
     private GlobalService globalService;
 
     public void setService(GlobalService globalService) {
         this.globalService = globalService;
     }
 
-    public void setUtilizator(Utilizator utilizator) {
-        this.utilizator = utilizator;
+    public void setUtilizator(User user) {
+        this.user = user;
     }
 
     private void setData() {
-        data.addAll(globalService.getMesajeService().find_all_msg_recived_by_user(utilizator));
+        data.addAll(globalService.getMesajeService().find_all_msg_recived_by_user(user));
     }
 
     @FXML
@@ -62,9 +62,9 @@ public class MessageController {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    public void setAll(GlobalService globalService, Utilizator utilizator) {
+    public void setAll(GlobalService globalService, User user) {
         setService(globalService);
-        setUtilizator(utilizator);
+        setUtilizator(user);
         setData();
         table.setItems(data);
     }
@@ -76,14 +76,14 @@ public class MessageController {
 
     public void onBtnReplyClicked() {
         List<Message> messageList = table.getSelectionModel().getSelectedItems();
-        List<Utilizator> utilizatorList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
         String messageToSend = txtMessage.getText();
 
         for (Message message: messageList) {
-            utilizatorList.add(message.getFrom());
+            userList.add(message.getFrom());
             globalService.getMesajeService().updateMessage(message);
         }
-        Message message = new Message(utilizator, utilizatorList, messageToSend, LocalDateTime.now());
+        Message message = new Message(user, userList, messageToSend, LocalDateTime.now());
         globalService.getMesajeService().saveMessage(message);
         alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
     }

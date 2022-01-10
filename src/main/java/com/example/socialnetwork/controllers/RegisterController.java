@@ -1,11 +1,9 @@
-package com.example.socialnetwork.controller;
+package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.domain.Account;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.service.GlobalService;
 import com.example.socialnetwork.service.HashPasswordService;
-import com.example.socialnetwork.service.UtilizatorService;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,9 +37,9 @@ public class RegisterController {
         String username = txtFieldUsername.getText();
         String password = hashPasswordService.hashPassword(txtFieldPassword.getText());
 
-        Utilizator utilizator = new Utilizator(firstName, lastName);
-        utilizator.setId(1000L);
-        globalService.getUtilizatorService().addUtilizator(utilizator);
+        User user = new User(firstName, lastName);
+        user.setId(1000L);
+        globalService.getUtilizatorService().addUtilizator(user);
         Account account = new Account(username, password);
         account.setId(1000L);
         globalService.getAccountService().addUAccount(account);

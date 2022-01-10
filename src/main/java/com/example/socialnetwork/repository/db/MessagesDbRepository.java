@@ -2,7 +2,7 @@ package com.example.socialnetwork.repository.db;
 
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Utilizator;
+import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.repository.Repository;
 
 import java.sql.*;
@@ -16,9 +16,9 @@ public class MessagesDbRepository implements Repository<Long, Message> {
     private final String url;
     private final String username;
     private final String password;
-    private final Validator<Utilizator> validator;
+    private final Validator<User> validator;
 
-    public MessagesDbRepository(String url, String username, String password, Validator<Utilizator> validator) {
+    public MessagesDbRepository(String url, String username, String password, Validator<User> validator) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -122,8 +122,8 @@ public class MessagesDbRepository implements Repository<Long, Message> {
             Long id1 = userResultSet.getLong("id");
             String firstName = userResultSet.getString("first_name");
             String lastName = userResultSet.getString("last_name");
-            Utilizator utilizator1 = new Utilizator(firstName, lastName);
-            utilizator1.setId(id1);
+            User user1 = new User(firstName, lastName);
+            user1.setId(id1);
 
             userStatement = connection.prepareStatement(userSql);
             userStatement.setLong(1, idSursa);
@@ -133,10 +133,10 @@ public class MessagesDbRepository implements Repository<Long, Message> {
             id1 = userResultSet.getLong("id");
             firstName = userResultSet.getString("first_name");
             lastName = userResultSet.getString("last_name");
-            Utilizator utilizator2 = new Utilizator(firstName, lastName);
-            utilizator2.setId(id1);
+            User user2 = new User(firstName, lastName);
+            user2.setId(id1);
 
-            Message message = new Message(utilizator2, Arrays.asList(utilizator1), text, LocalDateTime.parse(data, DateTimeFormatter.ISO_DATE_TIME));
+            Message message = new Message(user2, Arrays.asList(user1), text, LocalDateTime.parse(data, DateTimeFormatter.ISO_DATE_TIME));
             message.setId(id);
 
             return message;
@@ -154,7 +154,8 @@ public class MessagesDbRepository implements Repository<Long, Message> {
         String sql =
                 "select m.id, mi.id_sursa, mi.id_dest, m.mesaj, m.data_expediere from messages m " +
                 "inner join messages_info mi " +
-                "on m.id = mi.id_mesaj";
+                "on m.id = mi.id_mesaj " +
+                "order by m.data_expediere desc";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(sql);
@@ -176,8 +177,8 @@ public class MessagesDbRepository implements Repository<Long, Message> {
                 Long id1 = userResultSet.getLong("id");
                 String firstName = userResultSet.getString("first_name");
                 String lastName = userResultSet.getString("last_name");
-                Utilizator utilizator1 = new Utilizator(firstName, lastName);
-                utilizator1.setId(id1);
+                User user1 = new User(firstName, lastName);
+                user1.setId(id1);
 
                 userStatement = connection.prepareStatement(userSql);
                 userStatement.setLong(1, idSursa);
@@ -187,10 +188,10 @@ public class MessagesDbRepository implements Repository<Long, Message> {
                 id1 = userResultSet.getLong("id");
                 firstName = userResultSet.getString("first_name");
                 lastName = userResultSet.getString("last_name");
-                Utilizator utilizator2 = new Utilizator(firstName, lastName);
-                utilizator2.setId(id1);
+                User user2 = new User(firstName, lastName);
+                user2.setId(id1);
 
-                Message message = new Message(utilizator2, Arrays.asList(utilizator1), text, LocalDateTime.parse(data, DateTimeFormatter.ISO_DATE_TIME));
+                Message message = new Message(user2, Arrays.asList(user1), text, LocalDateTime.parse(data, DateTimeFormatter.ISO_DATE_TIME));
                 message.setId(id);
                 mesaje.add(message);
             }

@@ -1,15 +1,15 @@
 package com.example.socialnetwork;
 
-import com.example.socialnetwork.controller.LoginController;
+import com.example.socialnetwork.controllers.LoginController;
 import com.example.socialnetwork.domain.*;
-import com.example.socialnetwork.domain.validators.PrietenieValidator;
-import com.example.socialnetwork.domain.validators.UtilizatorValidator;
+import com.example.socialnetwork.domain.validators.FriendshipValidator;
+import com.example.socialnetwork.domain.validators.UserValidator;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
-import com.example.socialnetwork.repository.db.AccountDbRepository;
+import com.example.socialnetwork.repository.db.AccountsDbRepository;
 import com.example.socialnetwork.repository.db.MessagesDbRepository;
-import com.example.socialnetwork.repository.db.PrieteniiDbRepository;
-import com.example.socialnetwork.repository.db.UtilizatorDbRepository;
+import com.example.socialnetwork.repository.db.FriendshipsDbRepository;
+import com.example.socialnetwork.repository.db.UsersDbRepository;
 import com.example.socialnetwork.service.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -39,27 +39,27 @@ public class MainApp extends Application {
         launch();
     }
 
-    private GlobalService constructGlobalService(){
-        Validator<Utilizator> validatorUtilizator = new UtilizatorValidator();
-        Validator<Prietenie> validatorPrietenie = new PrietenieValidator();
+    private GlobalService constructGlobalService() {
+        Validator<User> validatorUtilizator = new UserValidator();
+        Validator<Friendship> validatorPrietenie = new FriendshipValidator();
 
-        Repository<Long, Utilizator> utilizatorDbRepository =
-                new UtilizatorDbRepository(Constants.url, Constants.username, Constants.password, validatorUtilizator);
-        UtilizatorService utilizatorService = new UtilizatorService(utilizatorDbRepository);
+        Repository<Long, User> utilizatorDbRepository =
+                new UsersDbRepository(Constants.url, Constants.username, Constants.password, validatorUtilizator);
+        UsersService usersService = new UsersService(utilizatorDbRepository);
 
-        Repository<Tuple<Long, Long>, Prietenie> prietenieDbRepository =
-                new PrieteniiDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
-        PrietenieService prietenieService = new PrietenieService(prietenieDbRepository);
+        Repository<Tuple<Long, Long>, Friendship> prietenieDbRepository =
+                new FriendshipsDbRepository(Constants.url, Constants.username, Constants.password, validatorPrietenie);
+        FriendshipsService friendshipsService = new FriendshipsService(prietenieDbRepository);
 
         Repository<Long, Message> mesajeRepository =
                 new MessagesDbRepository(Constants.url, Constants.username, Constants.password, null);
-        MesajeService mesajeService = new MesajeService(mesajeRepository);
+        MessagesService messagesService = new MessagesService(mesajeRepository);
 
         Repository<Long, Account> accountRepository =
-                new AccountDbRepository(Constants.url, Constants.username, Constants.password, null);
-        AccountService accountService = new AccountService(accountRepository);
+                new AccountsDbRepository(Constants.url, Constants.username, Constants.password, null);
+        AccountsService accountsService = new AccountsService(accountRepository);
 
         return new
-                GlobalService(utilizatorService, prietenieService, mesajeService, accountService);
+                GlobalService(usersService, friendshipsService, messagesService, accountsService);
     }
 }
