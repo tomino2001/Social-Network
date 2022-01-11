@@ -17,7 +17,7 @@ public class EventDbRepository implements Repository<Long, Event> {
     private final String password;
     private final String url;
 
-    public EventDbRepository(String username, String password, String url) {
+    public EventDbRepository(String url, String username, String password) {
         this.username = username;
         this.password = password;
         this.url = url;

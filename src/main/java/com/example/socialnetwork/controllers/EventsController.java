@@ -22,6 +22,8 @@ public class EventsController {
     public Button btnCreateEvent;
     public Button btnJoinEvent;
     public Button btnDeleteEvent;
+    public Button btnCreateNotification;
+    public Button btnDeleteNotification;
     private User user;
     private GlobalService globalService;
 
@@ -40,6 +42,17 @@ public class EventsController {
     private TableColumn<Notification, String>  messageCol;
     @FXML
     private TableColumn<Notification, String> dateNotificationCol;
+
+    @FXML
+    private TextField txtNotificationMessage;
+    @FXML
+    private DatePicker dateNotificationReminder;
+    @FXML
+    private TextField txtEventTitle;
+    @FXML
+    private TextField txtEventDescription;
+    @FXML
+    private DatePicker dateEventStart;
 
     private final ObservableList<Event> dataEvent = FXCollections.observableArrayList();
     private final ObservableList<Notification> dataNotification = FXCollections.observableArrayList();
@@ -86,12 +99,18 @@ public class EventsController {
         alert.show();
     }
 
-    public void onBtnCreateEvenetClicked(ActionEvent actionEvent) {
+    public void onBtnCreateEvenetClicked() {
     }
 
-    public void onBtnJoinEventClicked(ActionEvent actionEvent) {
+    public void onBtnJoinEventClicked() {
     }
 
-    public void onBtnDeleteEventClicked(ActionEvent actionEvent) {
+    public void onBtnDeleteEventClicked() {
+    }
+
+    public void onBtnCreateNotificationClicked() {
+    }
+
+    public void onBtnDeleteNotificationClicked(ActionEvent actionEvent) {
     }
 }
