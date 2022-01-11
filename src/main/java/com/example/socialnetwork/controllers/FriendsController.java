@@ -7,7 +7,6 @@ import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,9 @@ public class FriendsController {
     public Button btnRemoveFriend;
     public Button btnSendMessage;
     public Button btnRefresh;
+    public DatePicker startDate;
+    public DatePicker endDate;
+    public Button btnExportActivityToPdf;
 
 
     private GlobalService globalService;
@@ -55,6 +58,10 @@ public class FriendsController {
 
     @FXML
     private TextArea txtMessage;
+    @FXML
+    private DatePicker dateStart;
+    @FXML
+    private DatePicker dateEnd;
 
     @FXML
     private void initialize() {
@@ -161,5 +168,20 @@ public class FriendsController {
         data.clear();
         data.addAll(this.globalService.listaPrieteniUtilizator(user.getFirstName(), user.getLastName()));
         tableView.setItems(data);
+    }
+
+    public void onBtnExportActivityClicked() {
+        LocalDate startDate = dateStart.getValue();
+        LocalDate endDate = dateEnd.getValue();
+
+        List<Friendship> friendshipList = globalService.getPrietenieService().listaPrieteniiDinPerioadaX(user, startDate, endDate);
+
+        data.clear();
+        data.addAll(friendshipList);
+        tableView.setItems(data);
+
+        globalService.exportPdfActivitateUtilizatorDinPerioadaX(user, startDate, endDate);
+
+        alertMessage(Alert.AlertType.INFORMATION, "Exported in pdfData file.");
     }
 }

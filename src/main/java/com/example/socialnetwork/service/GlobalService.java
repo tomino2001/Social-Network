@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,8 @@ public class GlobalService {
     private final FriendshipsService friendshipsService;
     private final MessagesService messagesService;
     private final AccountsService accountsService;
+    private final EventService eventService;
+    private final NotificationService notificationService;
 
 
     public UsersService getUtilizatorService() {
@@ -41,11 +44,18 @@ public class GlobalService {
 
     public AccountsService getAccountService(){return accountsService;}
 
-    public GlobalService(UsersService usersService, FriendshipsService friendshipsService, MessagesService messagesService, AccountsService accountsService) {
+    public EventService getEventService(){return eventService;}
+
+    public NotificationService getNotificationService(){return notificationService;}
+
+    public GlobalService(UsersService usersService, FriendshipsService friendshipsService, MessagesService messagesService,
+                         AccountsService accountsService, EventService eventService, NotificationService notificationService) {
         this.usersService = usersService;
         this.friendshipsService = friendshipsService;
         this.messagesService = messagesService;
         this.accountsService = accountsService;
+        this.eventService = eventService;
+        this.notificationService = notificationService;
     }
 
     public void removeUtilizatorAndPrieteniiUtilizator(Long id) {
@@ -56,14 +66,12 @@ public class GlobalService {
     public List<Tuple<Long, LocalDateTime>> prieteniiUtilizator(String firstName, String lastName) {
         User user = usersService.findByName(firstName, lastName);
         Iterable<Friendship> prietenii = friendshipsService.getAll();
-        List<Tuple<Long, LocalDateTime>> rezultat =
-                StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId())
-                                || Objects.equals(prietenie.getId().getRight(), user.getId()))
-                                && prietenie.getStatus().equals("approved")))
-                        .map(prietenie -> mapPrietenie(user, prietenie))
-                        .collect(toList());
-        return rezultat;
+        return StreamSupport.stream(prietenii.spliterator(), false)
+                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId())
+                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
+                        && prietenie.getStatus().equals("approved")))
+                .map(prietenie -> mapPrietenie(user, prietenie))
+                .collect(toList());
     }
 
     public List<Friendship> listaPrieteniUtilizator(String firstName, String lastName) {
@@ -79,14 +87,12 @@ public class GlobalService {
         User user = usersService.findByName(firstName, lastName);
         Iterable<Friendship> prietenii = friendshipsService.getAll();
 
-        List<Tuple<Long, LocalDateTime>> rezultat =
-                StreamSupport.stream(prietenii.spliterator(), false)
-                        .filter(prietenie -> (prietenie.getId().getLeft() == user.getId()
-                                || Objects.equals(prietenie.getId().getRight(), user.getId()))
-                                && prietenie.getDate().getMonth() == Month.valueOf(luna.toUpperCase()))
-                        .map(prietenie -> mapPrietenie(user, prietenie))
-                        .collect(toList());
-        return rezultat;
+        return StreamSupport.stream(prietenii.spliterator(), false)
+                .filter(prietenie -> (prietenie.getId().getLeft() == user.getId()
+                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
+                        && prietenie.getDate().getMonth() == Month.valueOf(luna.toUpperCase()))
+                .map(prietenie -> mapPrietenie(user, prietenie))
+                .collect(toList());
     }
 
     private Tuple<Long, LocalDateTime> mapPrietenie(User user, Friendship friendship) {
@@ -101,7 +107,7 @@ public class GlobalService {
         return tuple;
     }
 
-    public void exportPdfActivitateUtilizatorDinPerioadaX(User user, LocalDateTime st, LocalDateTime dr){
+    public void exportPdfActivitateUtilizatorDinPerioadaX(User user, LocalDate st, LocalDate dr){
         List<Friendship> friendshipList = friendshipsService.listaPrieteniiDinPerioadaX(user, st, dr);
         List<Message> messageList = messagesService.listaMesajePrimiteDinPerioadaX(user, st, dr);
         String pathPrietenie = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Friendship.pdf";
@@ -112,7 +118,7 @@ public class GlobalService {
     }
 
     public void exportToPdfListaMesajePrimiteDeLaUtilizatorXInPerioadaX(User userLogat, User user
-            , LocalDateTime st, LocalDateTime dr ){
+            , LocalDate st, LocalDate dr ){
         List<Message> messageList = messagesService.listaMesajePrimiteDeLaUtilizatorXInPerioadaX(userLogat, user, st, dr);
         String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\MesajeV2.pdf";
         writeToPdfMesaje(messageList, pathMessage);

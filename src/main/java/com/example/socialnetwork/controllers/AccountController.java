@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -20,6 +19,10 @@ public class AccountController {
     public AnchorPane currentPane;
     public HBox mainHBox;
     public Button logoutBtn;
+    public Button friendsBtn;
+    public Button chatBtn;
+    public Button logoutBtn1;
+    public Button eventsBtn;
     private GlobalService globalService;
     private User user;
 
@@ -39,6 +42,14 @@ public class AccountController {
         FriendsController friendsController = fxmlLoader.getController();
         friendsController.initController(user, globalService);
         mainHBox.getChildren().set(1, friendsPane);
+    }
+
+    public void onEventsBtnClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/eventsView.fxml"));
+        AnchorPane eventsPane = loader.load();
+        EventsController eventsController = loader.getController();
+        eventsController.setAll(globalService, user);
+        mainHBox.getChildren().set(1, eventsPane);
     }
 
     public void initAccount(User user, GlobalService globalService) {

@@ -1,11 +1,14 @@
 package com.example.socialnetwork.service;
 
-import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.repository.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -76,20 +79,19 @@ public class MessagesService {
         }
     }
 
-    public List<Message> listaMesajePrimiteDinPerioadaX(User user, LocalDateTime st, LocalDateTime dr){
+    public List<Message> listaMesajePrimiteDinPerioadaX(User user, LocalDate st, LocalDate dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(message -> (message.getFrom().equals(user) ||
-                        message.getTo().get(0).equals(user))
-                        && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
+                .filter(message -> (message.getTo().get(0).equals(user))
+                        && message.getDate().toLocalDate().isAfter(st) && message.getDate().toLocalDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 
     public List<Message> listaMesajePrimiteDeLaUtilizatorXInPerioadaX(User userLogat, User user,
-                                                                      LocalDateTime st, LocalDateTime dr){
+                                                                      LocalDate st, LocalDate dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(message -> (message.getFrom().equals(userLogat) ||
-                        message.getTo().get(0).equals(user))
-                        && message.getDate().isAfter(st) && message.getDate().isBefore(dr))
+                .filter(message -> (message.getFrom().equals(user) &&
+                        message.getTo().get(0).equals(userLogat))
+                        && message.getDate().toLocalDate().isAfter(st) && message.getDate().toLocalDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 }

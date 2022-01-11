@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="475.0" prefWidth="775.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.MessageController">
+<AnchorPane prefHeight="590.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.MessageController">
    <children>
-      <TableView fx:id="table" prefHeight="247.0" prefWidth="782.0">
+      <TableView fx:id="table" prefHeight="247.0" prefWidth="795.0">
         <columns>
           <TableColumn fx:id="firstNameCol" prefWidth="104.00000154972076" text="First Name" />
           <TableColumn fx:id="lastNameCol" prefWidth="112.79991912841797" text="Last Name" />
           <TableColumn fx:id="messageCol" prefWidth="444.8000793457031" text="Message" />
-          <TableColumn fx:id="dateCol" prefWidth="117.60000000000002" text="Date" />
+          <TableColumn fx:id="dateCol" prefWidth="131.20000000000005" text="Date" />
         </columns>
       </TableView>
-      <Button fx:id="btnReply" layoutX="576.0" layoutY="382.0" mnemonicParsing="false" onAction="#onBtnReplyClicked" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: green;" text="Reply" />
-      <Button fx:id="btnDeleteMessage" layoutX="576.0" layoutY="315.0" mnemonicParsing="false" onAction="#onBtnDeleteMessageClicked" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: red;" text="Delete message" />
-      <TextArea fx:id="txtMessage" layoutY="247.0" prefHeight="196.0" prefWidth="488.0" promptText="write a message" />
-      <HBox layoutY="443.0" prefHeight="35.0" prefWidth="782.0" style="-fx-background-color: SLATEGREY;" />
+      <Button fx:id="btnReply" layoutX="576.0" layoutY="491.0" mnemonicParsing="false" onAction="#onBtnReplyClicked" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: green;" text="Reply" />
+      <Button fx:id="btnDeleteMessage" layoutX="576.0" layoutY="432.0" mnemonicParsing="false" onAction="#onBtnDeleteMessageClicked" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: red;" text="Delete message" />
+      <TextArea fx:id="txtMessage" layoutY="247.0" prefHeight="306.0" prefWidth="488.0" promptText="write a message" />
+      <HBox layoutY="554.0" prefHeight="35.0" prefWidth="795.0" style="-fx-background-color: SLATEGREY;" />
+      <Button fx:id="btnShowMessage" layoutX="501.0" layoutY="367.0" mnemonicParsing="false" onAction="#onBtnShowMessageClicked" prefHeight="35.0" prefWidth="130.0" text="Show message" />
+      <Button fx:id="btnExportPdf" layoutX="650.0" layoutY="367.0" mnemonicParsing="false" onAction="#onBtnExportPdfClicked" prefHeight="35.0" prefWidth="130.0" text="Export pdf" />
+      <DatePicker fx:id="dateStart" layoutX="501.0" layoutY="262.0" prefHeight="26.0" prefWidth="130.0" promptText="begin" />
+      <DatePicker fx:id="dateEnd" layoutX="650.0" layoutY="262.0" prefHeight="26.0" prefWidth="130.0" promptText="end" />
+      <TextField fx:id="firstNameTxt" layoutX="501.0" layoutY="313.0" prefHeight="26.0" prefWidth="130.0" promptText="First name" />
+      <TextField fx:id="lastNameTxt" layoutX="650.0" layoutY="313.0" prefHeight="26.0" prefWidth="130.0" promptText="Last name" />
    </children>
 </AnchorPane>

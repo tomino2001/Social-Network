@@ -5,10 +5,7 @@ import com.example.socialnetwork.domain.validators.FriendshipValidator;
 import com.example.socialnetwork.domain.validators.UserValidator;
 import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
-import com.example.socialnetwork.repository.db.AccountsDbRepository;
-import com.example.socialnetwork.repository.db.MessagesDbRepository;
-import com.example.socialnetwork.repository.db.FriendshipsDbRepository;
-import com.example.socialnetwork.repository.db.UsersDbRepository;
+import com.example.socialnetwork.repository.db.*;
 import com.example.socialnetwork.service.*;
 import com.example.socialnetwork.ui.Console;
 import com.example.socialnetwork.domain.Message;
@@ -39,7 +36,18 @@ public class Main {
                 new AccountsDbRepository(Constants.url, Constants.username, Constants.password, null);
         AccountsService accountsService = new AccountsService(accountRepository);
 
-        GlobalService globalService = new GlobalService(usersService, friendshipsService, messagesService, accountsService);
+        Repository<Long, Event> eventRepository =
+                new EventDbRepository(Constants.url, Constants.username, Constants.password);
+        EventService eventService = new EventService(eventRepository);
+
+        Repository<Long, Notification> notificationRepository =
+                new NotificationDbRepository(Constants.url, Constants.username, Constants.password);
+        NotificationService notificationService = new NotificationService(notificationRepository);
+
+
+
+        GlobalService globalService = new GlobalService(usersService, friendshipsService, messagesService,
+                accountsService, eventService, notificationService);
         Console console = new Console(usersService, friendshipsService, globalService, messagesService);
         console.run_console();
     }
