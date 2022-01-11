@@ -15,7 +15,7 @@ public class NotificationDbRepository implements Repository<Long, Notification> 
     private final String password;
     private final String url;
 
-    public NotificationDbRepository(String username, String password, String url) {
+    public NotificationDbRepository(String url, String username, String password) {
         this.username = username;
         this.password = password;
         this.url = url;
