@@ -1,11 +1,11 @@
 package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.domain.Friendship;
-import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.repository.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -124,12 +124,12 @@ public class FriendshipsService {
                 .collect(Collectors.toList());
     }
 
-    public List<Friendship> listaPrieteniiDinPerioadaX(User user, LocalDateTime st, LocalDateTime dr){
+    public List<Friendship> listaPrieteniiDinPerioadaX(User user, LocalDate st, LocalDate dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
                 .filter(prietenie -> (prietenie.getId().getLeft().equals(user.getId()) ||
                         prietenie.getId().getRight().equals(user.getId()))
                         && prietenie.getStatus().equals("approved")
-                        && prietenie.getDate().isAfter(st) && prietenie.getDate().isBefore(dr))
+                        && prietenie.getDate().toLocalDate().isAfter(st) && prietenie.getDate().toLocalDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 }
