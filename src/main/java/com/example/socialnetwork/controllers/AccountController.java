@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -18,32 +19,32 @@ public class AccountController {
     public Label nameLabel;
     public AnchorPane currentPane;
     public HBox mainHBox;
-    public Button logoutBtn;
     public Button friendsBtn;
     public Button chatBtn;
-    public Button logoutBtn1;
     public Button eventsBtn;
+    public ImageView logoutImg;
     private GlobalService globalService;
     private User user;
 
     @FXML
-    void onChatBtnClick() throws IOException {
+    public void onChatBtnClicked() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/chatView.fxml"));
         AnchorPane chatPane = loader.load();
-        MessageController messageController = loader.getController();
-        messageController.setAll(globalService, user);
+        MessagesController messagesController = loader.getController();
+        messagesController.setAll(globalService, user);
         mainHBox.getChildren().set(1, chatPane);
     }
 
     @FXML
-    void onFriendsBtnClick() throws IOException {
+    public void onFriendsBtnClicked() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/friendsView.fxml"));
         AnchorPane friendsPane = fxmlLoader.load();
         FriendsController friendsController = fxmlLoader.getController();
-        friendsController.initController(user, globalService);
+        friendsController.setAll(globalService, user);
         mainHBox.getChildren().set(1, friendsPane);
     }
 
+    @FXML
     public void onEventsBtnClicked() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/eventsView.fxml"));
         AnchorPane eventsPane = loader.load();
@@ -58,8 +59,8 @@ public class AccountController {
         nameLabel.setText(user.getFirstName() + " " + user.getLastName());
     }
 
-    public void onLogoutBtnClicked() throws IOException {
-        Stage accountStage = (Stage) logoutBtn.getScene().getWindow();
+    public void onLogoutImgPress() throws IOException {
+        Stage accountStage = (Stage) logoutImg.getScene().getWindow();
         accountStage.close();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/socialnetwork/loginView.fxml"));

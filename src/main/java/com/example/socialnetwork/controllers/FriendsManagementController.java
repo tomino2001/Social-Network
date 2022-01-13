@@ -23,19 +23,10 @@ public class FriendsManagementController {
     public Button btnDeleteFrdReq;
     private GlobalService globalService;
     private User user;
-
-    public void setService(GlobalService globalService) {
-        this.globalService = globalService;
-    }
-
-    public void setUtilizator(User user) {
-        this.user = user;
-    }
-
     @FXML
     private TableView<Friendship> table;
     @FXML
-    private TableColumn<Friendship, String> sentRecivedCol;
+    private TableColumn<Friendship, String> sentReceivedCol;
     @FXML
     private TableColumn<Friendship, String> firstNameCol;
     @FXML
@@ -44,28 +35,27 @@ public class FriendsManagementController {
     private TableColumn<Friendship, String> statusCol;
     @FXML
     private TableColumn<Friendship, LocalDateTime> dateCol;
-
     private ObservableList<Friendship> data;
 
     @FXML
     void initialize() {
-        sentRecivedCol.setCellValueFactory(cellData -> {
+        sentReceivedCol.setCellValueFactory(cellData -> {
             if (Objects.equals(cellData.getValue().getId().getLeft(), user.getId()))
                 return new SimpleStringProperty("Sent to");
-            return new SimpleStringProperty("Recived from");
+            return new SimpleStringProperty("Received from");
         });
         firstNameCol.setCellValueFactory(cellData -> {
             if (!Objects.equals(cellData.getValue().getId().getLeft(), user.getId()))
-                return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                return new SimpleStringProperty(globalService.getUserService().findOne(
                         cellData.getValue().getId().getLeft()).getFirstName());
-            return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+            return new SimpleStringProperty(globalService.getUserService().findOne(
                     cellData.getValue().getId().getRight()).getFirstName());
         });
         lastNameCol.setCellValueFactory(cellData -> {
             if (!Objects.equals(cellData.getValue().getId().getLeft(), user.getId()))
-                return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+                return new SimpleStringProperty(globalService.getUserService().findOne(
                         cellData.getValue().getId().getLeft()).getLastName());
-            return new SimpleStringProperty(globalService.getUtilizatorService().findOne(
+            return new SimpleStringProperty(globalService.getUserService().findOne(
                     cellData.getValue().getId().getRight()).getLastName());
         });
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -79,64 +69,57 @@ public class FriendsManagementController {
     }
 
     public void onBtnAcceptFriendReqClicked() {
-        Friendship friendshipSelectata = table.getSelectionModel().getSelectedItem();
-        if (friendshipSelectata == null) {
-            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+        Friendship selectedFriendship = table.getSelectionModel().getSelectedItem();
+        if (selectedFriendship == null) {
+            alertMessage(Alert.AlertType.ERROR, "Select a friendship!");
             return;
         }
-        if (Objects.equals(friendshipSelectata.getStatus(), "approved")) {
-            alertMessage(Alert.AlertType.WARNING, "Ati acceptat deja prietenia selectata!");
+        if (Objects.equals(selectedFriendship.getStatus(), "approved")) {
+            alertMessage(Alert.AlertType.WARNING, "Friendship already accepted!");
             return;
         }
-        if (friendshipSelectata.getId().getLeft().equals(user.getId())) {
+        if (selectedFriendship.getId().getLeft().equals(user.getId())) {
             alertMessage(Alert.AlertType.ERROR, "Action denied");
             return;
         }
-        data.remove(friendshipSelectata);
-        friendshipSelectata.setStatus("approved");
-        globalService.getPrietenieService().updatePrietenie(friendshipSelectata);
+        data.remove(selectedFriendship);
+        selectedFriendship.setStatus("approved");
+        globalService.getFriendshipService().updateFriendship(selectedFriendship);
         Friendship friendshipAux = new Friendship
-                (friendshipSelectata.getId().getLeft(), friendshipSelectata.getId().getRight());
+                (selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
         friendshipAux.setStatus("approved");
         friendshipAux.setDate(LocalDateTime.now());
         data.add(friendshipAux);
-        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
     }
 
     public void onBtnCancelFriendReqClicked() {
-        Friendship friendshipSelectata = table.getSelectionModel().getSelectedItem();
-        if (friendshipSelectata == null) {
-            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+        Friendship selectedFriendship = table.getSelectionModel().getSelectedItem();
+        if (selectedFriendship == null) {
+            alertMessage(Alert.AlertType.ERROR, "Select a friendship!");
             return;
         }
-        if (Objects.equals(friendshipSelectata.getStatus(), "approved")) {
-            alertMessage(Alert.AlertType.WARNING, "Prietenia a fost deja acceptata!");
+        if (Objects.equals(selectedFriendship.getStatus(), "approved")) {
+            alertMessage(Alert.AlertType.WARNING, "Friendship already accepted!");
             return;
         }
-        globalService.getPrietenieService().removePrietenie(friendshipSelectata.getId().getLeft(), friendshipSelectata.getId().getRight());
-        data.remove(friendshipSelectata);
-        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+        globalService.getFriendshipService().removeFriendship(selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
+        data.remove(selectedFriendship);
     }
 
     public void onBtnDeleteFriendReqClicked() {
-        Friendship friendshipSelectata = table.getSelectionModel().getSelectedItem();
-        if (friendshipSelectata == null) {
-            alertMessage(Alert.AlertType.ERROR, "Mai intai trebuie selectat o prietenie!");
+        Friendship selectedFriendship = table.getSelectionModel().getSelectedItem();
+        if (selectedFriendship == null) {
+            alertMessage(Alert.AlertType.ERROR, "Select a friendship!");
             return;
         }
-        globalService.getPrietenieService().removePrietenie(friendshipSelectata.getId().getLeft(), friendshipSelectata.getId().getRight());
-        data.remove(friendshipSelectata);
-        alertMessage(Alert.AlertType.CONFIRMATION, "Succes!");
+        globalService.getFriendshipService().removeFriendship(selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
+        data.remove(selectedFriendship);
     }
 
     public void setAll(GlobalService globalService, User user, ObservableList<Friendship> data) {
-        setService(globalService);
-        setUtilizator(user);
-        setObservableList(data);
-        table.setItems(data);
-    }
-
-    private void setObservableList(ObservableList<Friendship> data) {
+        this.globalService = globalService;
+        this.user = user;
         this.data = data;
+        table.setItems(data);
     }
 }

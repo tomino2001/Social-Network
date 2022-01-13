@@ -12,13 +12,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FriendshipsDbRepository implements Repository<Tuple<Long, Long>, Friendship> {
+public class FriendshipDbRepository implements Repository<Tuple<Long, Long>, Friendship> {
     private final String url;
     private final String username;
     private final String password;
     private final Validator<Friendship> validator;
 
-    public FriendshipsDbRepository(String url, String username, String password, Validator<Friendship> validator) {
+    public FriendshipDbRepository(String url, String username, String password, Validator<Friendship> validator) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -34,13 +34,9 @@ public class FriendshipsDbRepository implements Repository<Tuple<Long, Long>, Fr
             statement.setLong(1, id.getLeft());
             statement.setLong(2, id.getRight());
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()){
-                Long id1 = resultSet.getLong("id_friend1");
-                Long id2 = resultSet.getLong("id_friend2");
-                String date = resultSet.getString("creation_date");
-                String status = resultSet.getString("status");
-                Friendship friendship = new Friendship(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
-                friendship.setStatus(status);
+            if (resultSet.next()) {
+                buildFriendship(resultSet);
+                Friendship friendship = buildFriendship(resultSet);
                 return friendship;
             }
         } catch (SQLException e) {
@@ -49,31 +45,37 @@ public class FriendshipsDbRepository implements Repository<Tuple<Long, Long>, Fr
         return null;
     }
 
+    private Friendship buildFriendship(ResultSet resultSet) throws SQLException {
+        Long id1 = resultSet.getLong("id_friend1");
+        Long id2 = resultSet.getLong("id_friend2");
+        String date = resultSet.getString("creation_date");
+        String status = resultSet.getString("status");
+        Friendship friendship = new Friendship(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
+        friendship.setStatus(status);
+        return friendship;
+    }
+
     @Override
     public Iterable<Friendship> findAll() {
-        Set<Friendship> prietenii = new HashSet<>();
+        Set<Friendship> friendships = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("SELECT * from friendships");
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Long id1 = resultSet.getLong("id_friend1");
-                Long id2 = resultSet.getLong("id_friend2");
-                String date = resultSet.getString("creation_date");
-                String status = resultSet.getString("status");
-                Friendship friendship = new Friendship(id1, id2, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME));
-                friendship.setStatus(status);
-                prietenii.add(friendship);
+                Friendship friendship = buildFriendship(resultSet);
+                friendships.add(friendship);
             }
-            return prietenii;
+            return friendships;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return prietenii;
+        return friendships;
     }
 
     @Override
     public Friendship save(Friendship entity) {
+        validator.validate(entity);
         Tuple<Long, Long> id1 = entity.getId();
         Tuple<Long, Long> id2 = new Tuple<>(entity.getId().getRight(), entity.getId().getLeft());
 
@@ -111,11 +113,13 @@ public class FriendshipsDbRepository implements Repository<Tuple<Long, Long>, Fr
 
     @Override
     public void update(Friendship entity) {
+        validator.validate(entity);
         String sql = "update friendships set id_friend1=?, id_friend2=?, creation_date=?, status = ? " +
                 "where id_friend1=? and id_friend2=?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setLong(1, entity.getId().getLeft());
             ps.setLong(2, entity.getId().getRight());
             String dateTime = entity.getDate().format(DateTimeFormatter.ISO_DATE_TIME);

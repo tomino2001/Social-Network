@@ -18,13 +18,15 @@ public class EventService {
         this.repo.update(event);
     }
 
-    public void removeNotifcation(Event event){this.repo.remove(event);}
+    public void removeNotifcation(Event event) {
+        this.repo.remove(event);
+    }
 
-    public Event find_one(Long id) {
+    public Event findOne(Long id) {
         return repo.findOne(id);
     }
 
-    public Iterable<Event> getAll(){
+    public Iterable<Event> getAll() {
         return repo.findAll();
     }
 }

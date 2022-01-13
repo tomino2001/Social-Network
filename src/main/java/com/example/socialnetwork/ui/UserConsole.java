@@ -3,22 +3,22 @@ package com.example.socialnetwork.ui;
 import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.User;
-import com.example.socialnetwork.service.MessagesService;
-import com.example.socialnetwork.service.FriendshipsService;
-import com.example.socialnetwork.service.UsersService;
+import com.example.socialnetwork.service.MessageService;
+import com.example.socialnetwork.service.FriendshipService;
+import com.example.socialnetwork.service.UserService;
 import com.example.socialnetwork.service.GlobalService;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class ConsolaUtilizator extends Console {
+public class UserConsole extends Console {
     private final User userLogat;
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsolaUtilizator(User userLogat,
-                             UsersService usersService, FriendshipsService friendshipsService,
-                             GlobalService globalService, MessagesService messagesService) {
-        super(usersService, friendshipsService, globalService, messagesService);
+    public UserConsole(User userLogat,
+                       UserService userService, FriendshipService friendshipService,
+                       GlobalService globalService, MessageService messageService) {
+        super(userService, friendshipService, globalService, messageService);
         this.userLogat = userLogat;
     }
 
@@ -28,7 +28,7 @@ public class ConsolaUtilizator extends Console {
         while (true) {
             String first_name = readFirstName();
             String last_name = readLastName();
-            User user = usersService.findByName(first_name, last_name);
+            User user = userService.findByName(first_name, last_name);
             if (user == null) try {
                 throw new Exception("Nu exista utilizatorul cu numele si prenumele dat.");
             } catch (Exception e) {
@@ -46,31 +46,31 @@ public class ConsolaUtilizator extends Console {
         String mesaj = scanner.nextLine();
 
         Message message = new Message(userLogat, userList, mesaj, LocalDateTime.now());
-        messagesService.saveMessage(message);
+        messageService.saveMessage(message);
     }
 
     public void run_vizualizare_mesaje_primite() {
-        System.out.println(messagesService.find_all_msg_recived_by_user(userLogat));
+        System.out.println(messageService.findAllMessagesReceivedByUser(userLogat));
     }
 
     public void run_raspunde_la_mesaj() {
         System.out.println("Dati id-ul mesajului la care doriti sa raspundeti: ");
         Long id = scanner.nextLong();
-        Message message = messagesService.find_one(id);
+        Message message = messageService.findOne(id);
 
         scanner.nextLine();
         System.out.println("Mesaj: ");
         String mesaj = scanner.nextLine();
 
         Message message1 = new Message(userLogat, List.of(message.getFrom()), mesaj, LocalDateTime.now());
-        messagesService.saveMessage(message1);
-        messagesService.updateMessage(message);
+        messageService.saveMessage(message1);
+        messageService.updateMessage(message);
     }
 
     public void run_vezi_cereri_prietenie() {
         System.out.println("Cereri primite de la:");
-        friendshipsService.listaCereriPrietenieUtilizator(this.userLogat)
-                .forEach(prietenie -> System.out.println(usersService.findOne(prietenie.getId().getLeft())));
+        friendshipService.userFriendRequestsList(this.userLogat)
+                .forEach(prietenie -> System.out.println(userService.findOne(prietenie.getId().getLeft())));
         System.out.println();
     }
 
@@ -78,21 +78,21 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Introduceti prenumele si numele utilizatorului:");
         String firstName = readFirstName();
         String lastName = readLastName();
-        User userSursa = usersService.findByName(firstName, lastName);
+        User userSursa = userService.findByName(firstName, lastName);
         if (userSursa == null) {
             System.out.println("Nu exista utilizatorul");
             return;
         }
-        Friendship friendship = friendshipsService.findOnePrietenie(userSursa.getId(), userLogat.getId());
+        Friendship friendship = friendshipService.findOneFriendship(userSursa.getId(), userLogat.getId());
         if (friendship == null)
             System.out.println("Nu aveti cerere de la utilizatorul introdus");
         else {
             if (Objects.equals(status, "rejected"))
-                friendshipsService.removePrietenie(userSursa.getId(), userLogat.getId());
+                friendshipService.removeFriendship(userSursa.getId(), userLogat.getId());
             else {
                 friendship.setStatus(status);
                 friendship.setDate(LocalDateTime.now());
-                friendshipsService.updatePrietenie(friendship);
+                friendshipService.updateFriendship(friendship);
             }
         }
     }
@@ -101,7 +101,7 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Cui doriti sa trimiteti cerere?");
         String firstName = readFirstName();
         String lastName = readLastName();
-        User userDestinatie = usersService.findByName(firstName, lastName);
+        User userDestinatie = userService.findByName(firstName, lastName);
         if (userDestinatie == null) {
             System.out.println("Nu exista utilizatorul!");
             return;
@@ -109,7 +109,7 @@ public class ConsolaUtilizator extends Console {
         Friendship friendship = new Friendship(userLogat.getId(), userDestinatie.getId(),
                 LocalDateTime.now());
         friendship.setStatus("pending");
-        if (friendshipsService.addPrietenie(friendship) != null) {
+        if (friendshipService.addFriendship(friendship) != null) {
             System.out.println("Prietenia este deja inregistrata");
         }
     }
@@ -117,8 +117,8 @@ public class ConsolaUtilizator extends Console {
     private void run_replay_all_mesaj() {
         System.out.println("Dati id-ul mesajului la care doriti sa raspundeti: ");
         Long id = scanner.nextLong();
-//        Message message = messagesService.find_one(id);
-        if(messagesService.find_one(id) == null){
+//        Message message = messageService.find_one(id);
+        if(messageService.findOne(id) == null){
             System.out.println("Nu exista mesajul cu id-ul daat!");
             return;
         }
@@ -127,12 +127,12 @@ public class ConsolaUtilizator extends Console {
         System.out.println("Mesaj: ");
         String mesaj = scanner.nextLine();
 
-        messagesService.reply_all(userLogat, id, mesaj);
+        messageService.replyAll(userLogat, id, mesaj);
 //        Message message1 = new Message(utilizatorLogat, List.of(message.getFrom()), mesaj, LocalDateTime.now());
 //
 //
-//        messagesService.saveMessage(message1);
-//        messagesService.updateMessage(message)
+//        messageService.saveMessage(message1);
+//        messageService.updateMessage(message)
     }
 
     public void run_consola_utilizator() {

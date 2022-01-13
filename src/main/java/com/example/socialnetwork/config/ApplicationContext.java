@@ -9,4 +9,3 @@ public class ApplicationContext {
         return PROPERTIES;
     }
 }
-

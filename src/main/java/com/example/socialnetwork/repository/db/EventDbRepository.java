@@ -1,6 +1,7 @@
 package com.example.socialnetwork.repository.db;
 
 import com.example.socialnetwork.domain.Event;
+import com.example.socialnetwork.domain.validators.Validator;
 import com.example.socialnetwork.repository.Repository;
 
 import java.sql.*;
@@ -16,11 +17,30 @@ public class EventDbRepository implements Repository<Long, Event> {
     private final String username;
     private final String password;
     private final String url;
+    private Validator<Event> validator;
 
-    public EventDbRepository(String url, String username, String password) {
+    public EventDbRepository(String url, String username, String password, Validator<Event> eventValidator) {
         this.username = username;
         this.password = password;
         this.url = url;
+        this.validator = eventValidator;
+    }
+
+    private Event buildEvent(Long eventId, String sql, long id, String title, String description, String date) {
+        List<Long> userList = new ArrayList<>();
+        try (Connection connection1 = DriverManager.getConnection(url, username, password);
+             PreparedStatement preparedStatement1 = connection1.prepareStatement(sql)) {
+            preparedStatement1.setLong(1, eventId);
+            ResultSet resultSet1 = preparedStatement1.executeQuery();
+            var userId = resultSet1.getLong("id_user");
+            userList.add(userId);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), userList);
+        event.setId(id);
+        return event;
     }
 
     @Override
@@ -29,7 +49,6 @@ public class EventDbRepository implements Repository<Long, Event> {
             throw new IllegalArgumentException("Id must be not null !");
 
         String sql = "SELECT * FROM events WHERE id = (?)";
-        String sql1 = "Select * FROM user_event WHERE id_event = (?)";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -42,19 +61,7 @@ public class EventDbRepository implements Repository<Long, Event> {
                 String description = resultSet.getString("description");
                 String date = resultSet.getString("sent_date");
 
-                List<Long> userList = new ArrayList<>();
-                try (Connection connection1 = DriverManager.getConnection(url, username, password);
-                PreparedStatement preparedStatement1 = connection1.prepareStatement(sql)){
-                preparedStatement1.setLong(1, eventId);
-                ResultSet resultSet1 = preparedStatement1.executeQuery();
-                    var userId = resultSet1.getLong("id_user");
-                    userList.add(userId);
-                }catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
-
-                Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), userList);
-                event.setId(id);
+                Event event = buildEvent(eventId, sql, id, title, description, date);
                 return event;
             }
         } catch (SQLException exception) {
@@ -66,7 +73,6 @@ public class EventDbRepository implements Repository<Long, Event> {
     @Override
     public Iterable<Event> findAll() {
         String sql = "SELECT * from events";
-        String sql1 = "SELECT * from user_event where id_event = (?)";
         Set<Event> events = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -77,19 +83,7 @@ public class EventDbRepository implements Repository<Long, Event> {
                 String description = resultSet.getString("description");
                 String date = resultSet.getString("date");
 
-                List<Long> userList = new ArrayList<>();
-                try (Connection connection1 = DriverManager.getConnection(url, username, password);
-                     PreparedStatement preparedStatement1 = connection1.prepareStatement(sql)){
-                    preparedStatement1.setLong(1, id);
-                    ResultSet resultSet1 = preparedStatement1.executeQuery();
-                    var userId = resultSet1.getLong("id_user");
-                    userList.add(userId);
-                }catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
-
-                Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), userList);
-                event.setId(id);
+                Event event = buildEvent(id, sql, id, title, description, date);
                 events.add(event);
             }
         } catch (SQLException exception) {
@@ -99,19 +93,20 @@ public class EventDbRepository implements Repository<Long, Event> {
     }
 
     @Override
-    public Event save(Event entity) {
+    public Event save(Event event) {
+        validator.validate(event);
         String sql = "INSERT INTO events (title, description, date) VALUES (?,?,?) RETURNING id";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, entity.getTitle());
-            preparedStatement.setString(2, entity.getDescription());
-            preparedStatement.setString(3, entity.getDate().toString());
+            preparedStatement.setString(1, event.getTitle());
+            preparedStatement.setString(2, event.getDescription());
+            preparedStatement.setString(3, event.getDate().toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 long id = resultSet.getLong("id");
-                entity.setId(id);
-                return entity;
+                event.setId(id);
+                return event;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -133,12 +128,13 @@ public class EventDbRepository implements Repository<Long, Event> {
     }
 
     @Override
-    public void update(Event entity) {
+    public void update(Event event) {
+        validator.validate(event);
         String sql = "INSERT INTO user_event (id_user, id_event) VALUES (?,?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, entity.getId());
-            for (Long idUser: entity.getUsers()) {
+            preparedStatement.setLong(1, event.getId());
+            for (Long idUser : event.getUsers()) {
                 preparedStatement.setLong(2, idUser);
                 preparedStatement.executeUpdate();
             }
@@ -148,7 +144,7 @@ public class EventDbRepository implements Repository<Long, Event> {
     }
 
     @Override
-    public void remove(Event entity) {
+    public void remove(Event event) {
 
     }
 }

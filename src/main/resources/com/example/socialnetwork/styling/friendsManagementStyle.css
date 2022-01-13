@@ -1,0 +1,32 @@
+.button {
+    -fx-background-color: #35858B;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-border-width: 0px;
+}
+
+.button:hover {
+    -fx-background-color: #13b6b3;
+}
+
+.table-view {
+    -fx-background-color: #00ADB5;
+    -fx-text-fill: #EEEEEE;
+    -fx-font-style: italic;
+}
+
+.table-view .table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #93f9b911;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #1dbbdd11;
+}
+
+.root {
+    -fx-background-color: #222831;
+}

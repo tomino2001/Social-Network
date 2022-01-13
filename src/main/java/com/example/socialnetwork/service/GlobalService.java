@@ -1,9 +1,9 @@
 package com.example.socialnetwork.service;
 
-import com.example.socialnetwork.domain.Friendship;
-import com.example.socialnetwork.domain.Message;
-import com.example.socialnetwork.domain.Tuple;
-import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.domain.*;
+import com.example.socialnetwork.domain.validators.*;
+import com.example.socialnetwork.repository.Repository;
+import com.example.socialnetwork.repository.db.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -19,83 +19,118 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
+import static com.example.socialnetwork.domain.Constants.*;
 import static java.util.stream.Collectors.toList;
 
 public class GlobalService {
-    private final UsersService usersService;
-    private final FriendshipsService friendshipsService;
-    private final MessagesService messagesService;
-    private final AccountsService accountsService;
+    public static GlobalService globalService = new GlobalService();
+    private final UserService userService;
+    private final FriendshipService friendshipService;
+    private final MessageService messageService;
+    private final AccountService accountService;
     private final EventService eventService;
     private final NotificationService notificationService;
 
+    private GlobalService() {
+        Validator<User> userValidator = new UserValidator();
+        Validator<Friendship> friendshipValidator = new FriendshipValidator();
+        Validator<Message> messageValidator = new MessageValidator();
+        Validator<Account> accountValidator = new AccountValidator();
+        Validator<Event> eventValidator = new EventValidator();
 
-    public UsersService getUtilizatorService() {
-        return usersService;
+        Repository<Long, User> userDbRepository =
+                new UserDbRepository(Constants.url, Constants.username, Constants.password, userValidator);
+        userService = new UserService(userDbRepository);
+
+        Repository<Tuple<Long, Long>, Friendship> friendshipDbRepository =
+                new FriendshipDbRepository(Constants.url, Constants.username, Constants.password, friendshipValidator);
+        friendshipService = new FriendshipService(friendshipDbRepository);
+
+        Repository<Long, Message> messageDbRepository =
+                new MessageDbRepository(Constants.url, Constants.username, Constants.password, messageValidator);
+        messageService = new MessageService(messageDbRepository);
+
+        Repository<Long, Account> accountRepository =
+                new AccountDbRepository(Constants.url, Constants.username, Constants.password, accountValidator);
+        accountService = new AccountService(accountRepository);
+
+        Repository<Long, Event> eventRepository =
+                new EventDbRepository(Constants.url, Constants.username, Constants.password, eventValidator);
+        eventService = new EventService(eventRepository);
+
+        Repository<Long, Notification> notificationRepository =
+                new NotificationDbRepository(Constants.url, Constants.username, Constants.password);
+        notificationService = new NotificationService(notificationRepository);
     }
 
-    public FriendshipsService getPrietenieService() {
-        return friendshipsService;
+    public static GlobalService getInstance() {
+        return globalService;
     }
 
-    public MessagesService getMesajeService() {
-        return messagesService;
+    ;
+
+    public UserService getUserService() {
+        return userService;
     }
 
-    public AccountsService getAccountService(){return accountsService;}
-
-    public EventService getEventService(){return eventService;}
-
-    public NotificationService getNotificationService(){return notificationService;}
-
-    public GlobalService(UsersService usersService, FriendshipsService friendshipsService, MessagesService messagesService,
-                         AccountsService accountsService, EventService eventService, NotificationService notificationService) {
-        this.usersService = usersService;
-        this.friendshipsService = friendshipsService;
-        this.messagesService = messagesService;
-        this.accountsService = accountsService;
-        this.eventService = eventService;
-        this.notificationService = notificationService;
+    public FriendshipService getFriendshipService() {
+        return friendshipService;
     }
 
-    public void removeUtilizatorAndPrieteniiUtilizator(Long id) {
-        this.usersService.removeUtilizator(id);
-        this.friendshipsService.removePreteniiIfUserIsDeleted(id);
+    public MessageService getMessageService() {
+        return messageService;
     }
 
-    public List<Tuple<Long, LocalDateTime>> prieteniiUtilizator(String firstName, String lastName) {
-        User user = usersService.findByName(firstName, lastName);
-        Iterable<Friendship> prietenii = friendshipsService.getAll();
-        return StreamSupport.stream(prietenii.spliterator(), false)
-                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId())
-                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
-                        && prietenie.getStatus().equals("approved")))
-                .map(prietenie -> mapPrietenie(user, prietenie))
+    public AccountService getAccountService() {
+        return accountService;
+    }
+
+    public EventService getEventService() {
+        return eventService;
+    }
+
+    public NotificationService getNotificationService() {
+        return notificationService;
+    }
+
+    public void removeUserWithFriends(Long id) {
+        this.userService.removeUser(id);
+        this.friendshipService.removeFriendshipsIfUserIsDeleted(id);
+    }
+
+    public List<Tuple<Long, LocalDateTime>> userFriendships(String firstName, String lastName) {
+        User user = userService.findByName(firstName, lastName);
+        Iterable<Friendship> friendships = friendshipService.getAll();
+        return StreamSupport.stream(friendships.spliterator(), false)
+                .filter(friendship -> ((Objects.equals(friendship.getId().getLeft(), user.getId())
+                        || Objects.equals(friendship.getId().getRight(), user.getId()))
+                        && friendship.getStatus().equals("approved")))
+                .map(friendship -> mapFriendship(user, friendship))
                 .collect(toList());
     }
 
-    public List<Friendship> listaPrieteniUtilizator(String firstName, String lastName) {
-        User user = usersService.findByName(firstName, lastName);
-        return StreamSupport.stream(friendshipsService.getAll().spliterator(), false)
-                .filter(prietenie -> ((Objects.equals(prietenie.getId().getLeft(), user.getId()))
-                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
+    public List<Friendship> userFriendsList(String firstName, String lastName) {
+        User user = userService.findByName(firstName, lastName);
+        return StreamSupport.stream(friendshipService.getAll().spliterator(), false)
+                .filter(friendship -> ((Objects.equals(friendship.getId().getLeft(), user.getId()))
+                        || Objects.equals(friendship.getId().getRight(), user.getId()))
                 )
                 .collect(toList());
     }
 
-    public List<Tuple<Long, LocalDateTime>> prieteniiUtilizatorDinLuna(String firstName, String lastName, String luna) {
-        User user = usersService.findByName(firstName, lastName);
-        Iterable<Friendship> prietenii = friendshipsService.getAll();
+    public List<Tuple<Long, LocalDateTime>> userFriendshipsFromMonth(String firstName, String lastName, String month) {
+        User user = userService.findByName(firstName, lastName);
+        Iterable<Friendship> friendships = friendshipService.getAll();
 
-        return StreamSupport.stream(prietenii.spliterator(), false)
-                .filter(prietenie -> (prietenie.getId().getLeft() == user.getId()
-                        || Objects.equals(prietenie.getId().getRight(), user.getId()))
-                        && prietenie.getDate().getMonth() == Month.valueOf(luna.toUpperCase()))
-                .map(prietenie -> mapPrietenie(user, prietenie))
+        return StreamSupport.stream(friendships.spliterator(), false)
+                .filter(friendship -> (friendship.getId().getLeft() == user.getId()
+                        || Objects.equals(friendship.getId().getRight(), user.getId()))
+                        && friendship.getDate().getMonth() == Month.valueOf(month.toUpperCase()))
+                .map(friendship -> mapFriendship(user, friendship))
                 .collect(toList());
     }
 
-    private Tuple<Long, LocalDateTime> mapPrietenie(User user, Friendship friendship) {
+    private Tuple<Long, LocalDateTime> mapFriendship(User user, Friendship friendship) {
         Long left = friendship.getId().getLeft();
         Long right = friendship.getId().getRight();
         Long idUser = user.getId();
@@ -107,26 +142,24 @@ public class GlobalService {
         return tuple;
     }
 
-    public void exportPdfActivitateUtilizatorDinPerioadaX(User user, LocalDate st, LocalDate dr){
-        List<Friendship> friendshipList = friendshipsService.listaPrieteniiDinPerioadaX(user, st, dr);
-        List<Message> messageList = messagesService.listaMesajePrimiteDinPerioadaX(user, st, dr);
-        String pathPrietenie = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Friendship.pdf";
-        String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\Mesaje.pdf";
+    public void exportPdfUserActivityDuringPeriod(User user, LocalDate st, LocalDate dr) {
+        List<Friendship> friendshipList = friendshipService.friendshipsListDuringPeriod(user, st, dr);
+        List<Message> messageList = messageService.messageListReceivedDuringPeriod(user, st, dr);
 
-        writeToPdfPrietenii(friendshipList, pathPrietenie);
+
+        writePdfFriendships(friendshipList, pathFriendship);
         writeToPdfMesaje(messageList, pathMessage);
     }
 
-    public void exportToPdfListaMesajePrimiteDeLaUtilizatorXInPerioadaX(User userLogat, User user
-            , LocalDate st, LocalDate dr ){
-        List<Message> messageList = messagesService.listaMesajePrimiteDeLaUtilizatorXInPerioadaX(userLogat, user, st, dr);
-        String pathMessage = "C:\\Users\\Asus\\IdeaProjects\\socialnetwork\\pdfData\\MesajeV2.pdf";
-        writeToPdfMesaje(messageList, pathMessage);
+    public void exportPdfMessageListReceivedFromUserDuringPeriod(User userLogat, User user
+            , LocalDate st, LocalDate dr) {
+        List<Message> messageList = messageService.messageListFromUserDuringPeriod(userLogat, user, st, dr);
+
+        writeToPdfMesaje(messageList, pathMessageV2);
     }
 
-    public void writeToPdfPrietenii(List<Friendship> valuesToExport, String filePath) {
+    private void abstractWritePdf(List<? extends Entity> entityList, String filePath, PDFont font, int size) {
         try (PDDocument doc = new PDDocument()) {
-            PDFont font = PDType1Font.HELVETICA;
             PDPage page = new PDPage();
             doc.addPage(page);
             PDPageContentStream content = new PDPageContentStream(doc, page);
@@ -134,17 +167,30 @@ public class GlobalService {
             int lines = 1;
             float pageHeight = page.getMediaBox().getHeight();
 
-            for (Friendship row : valuesToExport) {
+            for (Entity entityRow : entityList) {
                 int startX = 0;
-
                 content.beginText();
                 content.newLineAtOffset(startX, pageHeight - 50 * lines);
-                startX += startX + 100;
-                content.showText("From: " + usersService.findOne(row.getId().getLeft()).getFirstName() + " " +
-                        usersService.findOne(row.getId().getLeft()).getLastName() + ", to: " +
-                        usersService.findOne(row.getId().getRight()).getFirstName()  + " " +
-                        usersService.findOne(row.getId().getRight()).getLastName() + " " +
-                        row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) + " " + row.getStatus());
+
+                String text = "";
+                if (entityRow instanceof Friendship) {
+                    Friendship row = (Friendship) entityRow;
+                    text = "From: " + userService.findOne(row.getId().getLeft()).getFirstName() + " " +
+                            userService.findOne(row.getId().getLeft()).getLastName() + ", to: " +
+                            userService.findOne(row.getId().getRight()).getFirstName() + " " +
+                            userService.findOne(row.getId().getRight()).getLastName() + " " +
+                            row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))) + " " + row.getStatus();
+                } else if (entityRow instanceof Message) {
+                    Message row = (Message) entityRow;
+                    text = "From: " + row.getFrom().getFirstName() + " " +
+                            row.getFrom().getLastName() + ", to: " +
+                            row.getTo().get(0).getFirstName() + " " + row.getTo().get(0).getLastName() + ", message: " +
+                            row.getContent() + " " +
+                            row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss")));
+                    text = text.replace("\n", "").replace("\r", "");
+
+                }
+                content.showText(text);
                 content.endText();
                 ++lines;
 
@@ -161,47 +207,13 @@ public class GlobalService {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void writePdfFriendships(List<Friendship> valuesToExport, String filePath) {
+        abstractWritePdf(valuesToExport, filePath, PDType1Font.HELVETICA, 12);
     }
 
     public void writeToPdfMesaje(List<Message> valuesToExport, String filePath) {
-        try (PDDocument doc = new PDDocument()) {
-            PDFont font = PDType1Font.TIMES_BOLD_ITALIC;
-            PDPage page = new PDPage();
-            doc.addPage(page);
-            PDPageContentStream content = new PDPageContentStream(doc, page);
-            content.setFont(font, 10);
-            int lines = 1;
-            float pageHeight = page.getMediaBox().getHeight();
-
-            for (Message row : valuesToExport) {
-                int startX = 0;
-
-                content.beginText();
-                content.newLineAtOffset(startX, pageHeight - 50 * lines);
-                startX += startX + 100;
-                String string = "From: " + row.getFrom().getFirstName() + " " +
-                        row.getFrom().getLastName() + ", to: " +
-                        row.getTo().get(0).getFirstName()  + " " + row.getTo().get(0).getLastName() + ", message: " +
-                        row.getMessage() + " " +
-                        row.getDate().format((DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss")));
-                string = string.replace("\n", "").replace("\r", "");
-                content.showText(string);
-                content.endText();
-                ++lines;
-
-                if (lines > 10) {
-                    page = new PDPage();
-                    doc.addPage(page);
-                    content.close();
-                    content = new PDPageContentStream(doc, page);
-                    content.setFont(font, 12);
-                }
-            }
-            content.close();
-            doc.save(filePath);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        abstractWritePdf(valuesToExport, filePath, PDType1Font.TIMES_BOLD_ITALIC, 10);
     }
 }
-

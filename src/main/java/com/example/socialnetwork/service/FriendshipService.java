@@ -13,26 +13,26 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class FriendshipsService {
+public class FriendshipService {
     private final Repository<Tuple<Long, Long>, Friendship> repo;
 
-    public FriendshipsService(Repository<Tuple<Long, Long>, Friendship> repo) {
+    public FriendshipService(Repository<Tuple<Long, Long>, Friendship> repo) {
         this.repo = repo;
     }
 
-    public Friendship findOnePrietenie(long l, long l1) {
+    public Friendship findOneFriendship(long l, long l1) {
         return repo.findOne(new Tuple<>(l, l1));
     }
 
-    public Friendship addPrietenie(Friendship messageTask) {
-        return repo.save(messageTask);
+    public Friendship addFriendship(Friendship friendship) {
+        return repo.save(friendship);
     }
 
-    public void removePrietenie(long l, long l1) {
+    public void removeFriendship(long l, long l1) {
         this.repo.delete(new Tuple<>(l, l1));
     }
 
-    public void updatePrietenie(Friendship friendship) {
+    public void updateFriendship(Friendship friendship) {
         repo.update(friendship);
     }
 
@@ -42,19 +42,19 @@ public class FriendshipsService {
 
     public Iterable<Friendship> getAllApproved() {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(prietenie -> prietenie.getStatus().equals("approved"))
+                .filter(friendship -> friendship.getStatus().equals("approved"))
                 .collect(Collectors.toList());
     }
 
-    public int numarComponenteConexe() {
+    public int nrOfConnectedComponents() {
         return dfs().getLeft();
     }
 
-    public List<Friendship> celMaiLungDrum() {
+    public List<Friendship> longestRoad() {
         return dfs().getRight();
     }
 
-    public void removePreteniiIfUserIsDeleted(Long id) {
+    public void removeFriendshipsIfUserIsDeleted(Long id) {
         List<Friendship> friendshipList = new ArrayList<>();
         for (Friendship friendship : this.repo.findAll()) {
             if (Objects.equals(friendship.getId().getLeft(), id) || Objects.equals(friendship.getId().getRight(), id)) {
@@ -72,7 +72,7 @@ public class FriendshipsService {
         if (isEmpty) {
             return new Tuple<>(0, new ArrayList<>());
         }
-        int nrCompConexe = 1;
+        int connectedComponents = 1;
         List<Friendship> visited = dfsWithoutRecursion(friendships.iterator().next(), friendships);
         List<Friendship> longestVisited = visited;
         List<Friendship> globalVisited = new ArrayList<>(visited);
@@ -83,10 +83,10 @@ public class FriendshipsService {
                     longestVisited = visited;
                 }
                 globalVisited.addAll(visited);
-                nrCompConexe++;
+                connectedComponents++;
             }
         }
-        return new Tuple<>(nrCompConexe, longestVisited);
+        return new Tuple<>(connectedComponents, longestVisited);
     }
 
     private List<Friendship> dfsWithoutRecursion(Friendship first, Iterable<Friendship> friendships) {
@@ -110,26 +110,19 @@ public class FriendshipsService {
         return visited;
     }
 
-    public List<Friendship> listaCereriPrietenieUtilizator(User user) {
+    public List<Friendship> userFriendRequestsList(User user) {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(prietenie -> prietenie.getId().getRight().equals(user.getId())
-                        && prietenie.getStatus().equals("pending"))
+                .filter(friendship -> friendship.getId().getRight().equals(user.getId())
+                        && friendship.getStatus().equals("pending"))
                 .collect(Collectors.toList());
     }
 
-    public List<Friendship> listaCereriPrietenieUtilizatorALL(User user) {
+    public List<Friendship> friendshipsListDuringPeriod(User user, LocalDate st, LocalDate dr){
         return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(prietenie -> prietenie.getId().getRight().equals(user.getId())
-                        || prietenie.getId().getLeft().equals(user.getId()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Friendship> listaPrieteniiDinPerioadaX(User user, LocalDate st, LocalDate dr){
-        return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(prietenie -> (prietenie.getId().getLeft().equals(user.getId()) ||
-                        prietenie.getId().getRight().equals(user.getId()))
-                        && prietenie.getStatus().equals("approved")
-                        && prietenie.getDate().toLocalDate().isAfter(st) && prietenie.getDate().toLocalDate().isBefore(dr))
+                .filter(friendship -> (friendship.getId().getLeft().equals(user.getId()) ||
+                        friendship.getId().getRight().equals(user.getId()))
+                        && friendship.getStatus().equals("approved")
+                        && friendship.getDate().toLocalDate().isAfter(st) && friendship.getDate().toLocalDate().isBefore(dr))
                 .collect(Collectors.toList());
     }
 }

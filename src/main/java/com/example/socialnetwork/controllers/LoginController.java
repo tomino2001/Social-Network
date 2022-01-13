@@ -3,7 +3,6 @@ package com.example.socialnetwork.controllers;
 import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.User;
 import com.example.socialnetwork.service.GlobalService;
-import com.example.socialnetwork.service.HashPasswordService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +16,6 @@ import java.io.IOException;
 
 public class LoginController {
     private static GlobalService globalService;
-    private static final HashPasswordService hashPasswordService = new HashPasswordService();
     public Button btnRegister;
 
     @FXML
@@ -35,12 +33,12 @@ public class LoginController {
     @FXML
     public void onLoginButtonClicked() throws IOException {
         String username = textFieldUsername.getText();
-        String password = hashPasswordService.hashPassword(textFieldPassword.getText());
+        String password = globalService.getAccountService().hashPassword(textFieldPassword.getText());
         Account account = globalService.getAccountService().getAccountByUsernameAndPassword(username, password);
         if (account == null)
             labelUserInexistent.setText("Username or password wrong!");
         else {
-            User user = globalService.getUtilizatorService().findOne(account.getId());
+            User user = globalService.getUserService().findOne(account.getId());
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.close();
             enterAccount(user);
