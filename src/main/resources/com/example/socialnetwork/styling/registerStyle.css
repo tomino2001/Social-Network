@@ -1,0 +1,34 @@
+.root {
+    -fx-background-color: #072227;
+}
+
+.button {
+    -fx-background-color: #35858B;
+    -fx-text-alignment: center;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.button:hover {
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-font-style: italic;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.password-field {
+    -fx-font-style: italic;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.label {
+    -fx-text-fill: lightblue;
+}
+
+.image-view {
+    -fx-background-color: #072227;
+}

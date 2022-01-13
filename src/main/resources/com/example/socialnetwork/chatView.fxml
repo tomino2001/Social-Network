@@ -6,28 +6,61 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="590.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.MessageController">
+<AnchorPane prefHeight="692.0" prefWidth="826.0" stylesheets="@styling/chatStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.MessagesController">
    <children>
-      <TableView fx:id="table" prefHeight="247.0" prefWidth="795.0">
+      <TableView fx:id="table" prefHeight="289.0" prefWidth="826.0">
         <columns>
-          <TableColumn fx:id="firstNameCol" prefWidth="104.00000154972076" text="First Name" />
-          <TableColumn fx:id="lastNameCol" prefWidth="112.79991912841797" text="Last Name" />
-          <TableColumn fx:id="messageCol" prefWidth="444.8000793457031" text="Message" />
-          <TableColumn fx:id="dateCol" prefWidth="131.20000000000005" text="Date" />
+          <TableColumn fx:id="firstNameCol" prefWidth="200.0" text="First Name" />
+          <TableColumn fx:id="lastNameCol" prefWidth="170.0" text="Last Name" />
+          <TableColumn fx:id="messageCol" prefWidth="241.0" text="Message" />
+          <TableColumn fx:id="dateCol" prefWidth="214.0" text="Date" />
         </columns>
       </TableView>
-      <Button fx:id="btnReply" layoutX="576.0" layoutY="491.0" mnemonicParsing="false" onAction="#onBtnReplyClicked" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: green;" text="Reply" />
-      <Button fx:id="btnDeleteMessage" layoutX="576.0" layoutY="432.0" mnemonicParsing="false" onAction="#onBtnDeleteMessageClicked" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: red;" text="Delete message" />
-      <TextArea fx:id="txtMessage" layoutY="247.0" prefHeight="306.0" prefWidth="488.0" promptText="write a message" />
-      <HBox layoutY="554.0" prefHeight="35.0" prefWidth="795.0" style="-fx-background-color: SLATEGREY;" />
-      <Button fx:id="btnShowMessage" layoutX="501.0" layoutY="367.0" mnemonicParsing="false" onAction="#onBtnShowMessageClicked" prefHeight="35.0" prefWidth="130.0" text="Show message" />
-      <Button fx:id="btnExportPdf" layoutX="650.0" layoutY="367.0" mnemonicParsing="false" onAction="#onBtnExportPdfClicked" prefHeight="35.0" prefWidth="130.0" text="Export pdf" />
-      <DatePicker fx:id="dateStart" layoutX="501.0" layoutY="262.0" prefHeight="26.0" prefWidth="130.0" promptText="begin" />
-      <DatePicker fx:id="dateEnd" layoutX="650.0" layoutY="262.0" prefHeight="26.0" prefWidth="130.0" promptText="end" />
-      <TextField fx:id="firstNameTxt" layoutX="501.0" layoutY="313.0" prefHeight="26.0" prefWidth="130.0" promptText="First name" />
-      <TextField fx:id="lastNameTxt" layoutX="650.0" layoutY="313.0" prefHeight="26.0" prefWidth="130.0" promptText="Last name" />
+      <TextArea fx:id="txtMessage" layoutX="272.0" layoutY="481.0" prefHeight="211.0" prefWidth="554.0" promptText="Write a message, select multiple users from the table and then click on the reply icon to send" />
+      <ImageView fx:id="deleteImg" fitHeight="64.0" fitWidth="64.0" layoutX="171.0" layoutY="572.0" onMousePressed="#onDeleteImgPress" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/delete_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="replyImg" fitHeight="64.0" fitWidth="66.0" layoutX="55.0" layoutY="572.0" onMousePressed="#onReplyImgPress" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/reply_icon.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="firstNameTxt" layoutX="452.0" layoutY="360.0" prefHeight="26.0" prefWidth="130.0" promptText="First name" />
+      <DatePicker fx:id="dateStart" layoutX="452.0" layoutY="321.0" prefHeight="26.0" prefWidth="130.0" promptText="begin" />
+      <DatePicker fx:id="dateEnd" layoutX="599.0" layoutY="321.0" prefHeight="26.0" prefWidth="130.0" promptText="end" />
+      <TextField fx:id="lastNameTxt" layoutX="599.0" layoutY="360.0" prefHeight="26.0" prefWidth="130.0" promptText="Last name" />
+      <Button fx:id="btnShowMessage" layoutX="599.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBtnShowMessageClicked" prefHeight="35.0" prefWidth="130.0" text="Show message">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnExportPdf" layoutX="452.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBtnExportPdfClicked" prefHeight="35.0" prefWidth="130.0" text="Export pdf">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Text fill="WHITE" layoutX="24.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To export/see the messages from a certain user, please ">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="27.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fill in the following, then press the corresponding button">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="24.0" layoutY="436.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To delete, select from table then press the delete icon.">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

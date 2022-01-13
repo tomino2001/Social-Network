@@ -71,19 +71,19 @@ public class NotificationDbRepository implements Repository<Long, Notification> 
     }
 
     @Override
-    public Notification save(Notification entity) {
-        String sql = "INSERT INTO notifications (receiver, message, date) VALUES (?,?,?) RETURNING id";
+    public Notification save(Notification notification) {
+        String sql = "INSERT INTO notifications (id_receiver, message, date) VALUES (?,?,?) RETURNING id";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, entity.getReceiver());
-            preparedStatement.setString(2, entity.getMessage());
-            preparedStatement.setString(3, entity.getDate().toString());
+            preparedStatement.setLong(1, notification.getReceiver());
+            preparedStatement.setString(2, notification.getMessage());
+            preparedStatement.setString(3, notification.getDate().toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 long id = resultSet.getLong("id");
-                entity.setId(id);
-                return entity;
+                notification.setId(id);
+                return notification;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -105,14 +105,14 @@ public class NotificationDbRepository implements Repository<Long, Notification> 
     }
 
     @Override
-    public void update(Notification entity) {
-        String sql = "UPDATE notifications SET receiver = (?), message=(?), date=(?) WHERE id = (?)";
+    public void update(Notification notification) {
+        String sql = "UPDATE notifications SET id_receiver = (?), message=(?), date=(?) WHERE id = (?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, entity.getReceiver());
-            preparedStatement.setString(2, entity.getMessage());
-            preparedStatement.setString(3, entity.getDate().toString());
-            preparedStatement.setLong(4, entity.getId());
+            preparedStatement.setLong(1, notification.getReceiver());
+            preparedStatement.setString(2, notification.getMessage());
+            preparedStatement.setString(3, notification.getDate().toString());
+            preparedStatement.setLong(4, notification.getId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {

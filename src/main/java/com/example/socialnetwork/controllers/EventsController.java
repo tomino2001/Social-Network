@@ -61,11 +61,11 @@ public class EventsController {
         this.globalService = globalService;
     }
 
-    public void setUtilizator(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public void  setData(){
+    public void setData(){
         dataEvent.addAll((Collection<? extends Event>) globalService.getEventService().getAll());
         dataNotification.addAll((Collection<? extends Notification>) globalService.getNotificationService().get_all());
     }
@@ -88,14 +88,14 @@ public class EventsController {
 
     public void setAll(GlobalService globalService, User user) {
         setService(globalService);
-        setUtilizator(user);
+        setUser(user);
         setData();
         tableEvent.setItems(dataEvent);
         tableNotification.setItems(dataNotification);
     }
 
-    private void alertMessage(Alert.AlertType tipAlerta, String mesaj) {
-        Alert alert = new Alert(tipAlerta, mesaj);
+    private void alertMessage(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType, message);
         alert.show();
     }
 
@@ -111,6 +111,6 @@ public class EventsController {
     public void onBtnCreateNotificationClicked() {
     }
 
-    public void onBtnDeleteNotificationClicked(ActionEvent actionEvent) {
+    public void onBtnDeleteNotificationClicked() {
     }
 }

@@ -3,6 +3,7 @@ package com.example.socialnetwork.controllers;
 import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Message;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.exceptions.ValidationException;
 import com.example.socialnetwork.service.GlobalService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FriendsController {
+    private final ObservableList<Friendship> data = FXCollections.observableArrayList();
     public Button btnShowAllFrdReq;
     public Button btnAddFriend;
     public Button btnRemoveFriend;
@@ -30,38 +32,26 @@ public class FriendsController {
     public DatePicker startDate;
     public DatePicker endDate;
     public Button btnExportActivityToPdf;
-
-
     private GlobalService globalService;
     private User user;
-
-
-    public FriendsController() {
-    }
-
-    private final ObservableList<Friendship> data = FXCollections.observableArrayList();
-
     @FXML
     private TableView<Friendship> tableView;
-
     @FXML
     private TableColumn<Friendship, String> columnFirstName;
-
     @FXML
     private TableColumn<Friendship, String> columnLastName;
-
     @FXML
     private TextField txtFirstName;
-
     @FXML
     private TextField txtLastName;
-
     @FXML
     private TextArea txtMessage;
     @FXML
     private DatePicker dateStart;
     @FXML
     private DatePicker dateEnd;
+    public FriendsController() {
+    }
 
     @FXML
     private void initialize() {
@@ -73,23 +63,23 @@ public class FriendsController {
     public SimpleStringProperty extractFriendLastName(TableColumn.CellDataFeatures<Friendship, String> cellData, boolean extractFirst) {
         if (!Objects.equals(cellData.getValue().getStatus(), "approved"))
             return new SimpleStringProperty("-----");
-        User prieten;
+        User friend;
         Long left = cellData.getValue().getId().getLeft();
         Long right = cellData.getValue().getId().getRight();
         if (left.equals(user.getId()))
-            prieten = globalService.getUtilizatorService().findOne(right);
+            friend = globalService.getUserService().findOne(right);
         else
-            prieten = globalService.getUtilizatorService().findOne(left);
+            friend = globalService.getUserService().findOne(left);
         if (extractFirst)
-            return new SimpleStringProperty(prieten.getFirstName());
+            return new SimpleStringProperty(friend.getFirstName());
         else
-            return new SimpleStringProperty(prieten.getLastName());
+            return new SimpleStringProperty(friend.getLastName());
     }
 
-    public void initController(User user, GlobalService globalService) {
+    public void setAll(GlobalService globalService, User user) {
         this.globalService = globalService;
         this.user = user;
-        data.addAll(this.globalService.listaPrieteniUtilizator(user.getFirstName(), user.getLastName()));
+        data.addAll(this.globalService.userFriendsList(user.getFirstName(), user.getLastName()));
         tableView.setItems(data);
     }
 
@@ -100,7 +90,7 @@ public class FriendsController {
         Parent parent = loader.load();
 
         data.clear();
-        data.addAll(this.globalService.listaPrieteniUtilizator(user.getFirstName(), user.getLastName()));
+        data.addAll(this.globalService.userFriendsList(user.getFirstName(), user.getLastName()));
         tableView.setItems(data);
 
         FriendsManagementController friendsManagementController = loader.getController();
@@ -116,35 +106,35 @@ public class FriendsController {
     public void onBtnAddFriendClicked() {
         String firstName = txtFirstName.getText();
         String lastName = txtLastName.getText();
-        User prieten = globalService.getUtilizatorService().findByName(firstName, lastName);
-        if (prieten == null) {
+        User friend = globalService.getUserService().findByName(firstName, lastName);
+        if (friend == null) {
             alertMessage(Alert.AlertType.WARNING, "User does not exist");
             return;
         }
-        Friendship friendship = new Friendship(user.getId(), prieten.getId(), LocalDateTime.now());
+        Friendship friendship = new Friendship(user.getId(), friend.getId(), LocalDateTime.now());
         friendship.setStatus("pending");
-        if (globalService.getPrietenieService().addPrietenie(friendship) == null)
+        if (globalService.getFriendshipService().addFriendship(friendship) == null)
             data.add(friendship);
         alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
     }
 
-    private void alertMessage(Alert.AlertType tipAlerta, String mesaj) {
-        Alert alert = new Alert(tipAlerta, mesaj);
+    private void alertMessage(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType, message);
         alert.show();
     }
 
     public void onBtnRemoveFriendClicked() {
-        Friendship friendshipSelectata = tableView.getSelectionModel().getSelectedItem();
-        if (friendshipSelectata == null) {
+        Friendship selectedFriendship = tableView.getSelectionModel().getSelectedItem();
+        if (selectedFriendship == null) {
             alertMessage(Alert.AlertType.ERROR, "First select an user");
             return;
         }
-        globalService.getPrietenieService().removePrietenie(
-                friendshipSelectata.getId().getLeft(), friendshipSelectata.getId().getRight());
-        globalService.getPrietenieService().removePrietenie(
-                friendshipSelectata.getId().getRight(), friendshipSelectata.getId().getLeft());
+        globalService.getFriendshipService().removeFriendship(
+                selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
+        globalService.getFriendshipService().removeFriendship(
+                selectedFriendship.getId().getRight(), selectedFriendship.getId().getLeft());
 
-        data.remove(friendshipSelectata);
+        data.remove(selectedFriendship);
         alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
     }
 
@@ -154,19 +144,24 @@ public class FriendsController {
         String message = txtMessage.getText();
 
         for (Friendship friendship : friendshipList) {
-            if(friendship.getId().getLeft().equals(user.getId()))
-                userList.add(globalService.getUtilizatorService().findOne(friendship.getId().getRight()));
+            if (friendship.getId().getLeft().equals(user.getId()))
+                userList.add(globalService.getUserService().findOne(friendship.getId().getRight()));
             else
-                userList.add(globalService.getUtilizatorService().findOne(friendship.getId().getLeft()));
+                userList.add(globalService.getUserService().findOne(friendship.getId().getLeft()));
         }
-        Message message1 = new Message(user, userList, message, LocalDateTime.now());
-        globalService.getMesajeService().saveMessage(message1);
-        alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
+        try {
+            Message message1 = new Message(user, userList, message, LocalDateTime.now());
+            globalService.getMessageService().saveMessage(message1);
+            alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
+        } catch (ValidationException ve) {
+            alertMessage(Alert.AlertType.ERROR, ve.getMessage());
+        }
+
     }
 
     public void onBtnRefreshClicked() {
         data.clear();
-        data.addAll(this.globalService.listaPrieteniUtilizator(user.getFirstName(), user.getLastName()));
+        data.addAll(this.globalService.userFriendsList(user.getFirstName(), user.getLastName()));
         tableView.setItems(data);
     }
 
@@ -174,13 +169,13 @@ public class FriendsController {
         LocalDate startDate = dateStart.getValue();
         LocalDate endDate = dateEnd.getValue();
 
-        List<Friendship> friendshipList = globalService.getPrietenieService().listaPrieteniiDinPerioadaX(user, startDate, endDate);
+        List<Friendship> friendshipList = globalService.getFriendshipService().friendshipsListDuringPeriod(user, startDate, endDate);
 
         data.clear();
         data.addAll(friendshipList);
         tableView.setItems(data);
 
-        globalService.exportPdfActivitateUtilizatorDinPerioadaX(user, startDate, endDate);
+        globalService.exportPdfUserActivityDuringPeriod(user, startDate, endDate);
 
         alertMessage(Alert.AlertType.INFORMATION, "Exported in pdfData file.");
     }

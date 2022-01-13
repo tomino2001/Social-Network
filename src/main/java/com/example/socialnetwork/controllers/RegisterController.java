@@ -2,22 +2,25 @@ package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.domain.Account;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.exceptions.ValidationException;
 import com.example.socialnetwork.service.GlobalService;
-import com.example.socialnetwork.service.HashPasswordService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class RegisterController {
     private static GlobalService globalService;
-    private static final HashPasswordService hashPasswordService = new HashPasswordService();
     public Button btnCreateAccount;
+    public ImageView backImg;
     @FXML
     private TextField txtFieldFirstName;
     @FXML
@@ -35,15 +38,26 @@ public class RegisterController {
         String firstName = txtFieldFirstName.getText();
         String lastName = txtFieldLastName.getText();
         String username = txtFieldUsername.getText();
-        String password = hashPasswordService.hashPassword(txtFieldPassword.getText());
+        String password = globalService.getAccountService().hashPassword(txtFieldPassword.getText());
 
         User user = new User(firstName, lastName);
         user.setId(1000L);
-        globalService.getUtilizatorService().addUtilizator(user);
-        Account account = new Account(username, password);
-        account.setId(1000L);
-        globalService.getAccountService().addUAccount(account);
+        try {
+            globalService.getUserService().addUser(user);
+            Account account = new Account(username, password);
+            account.setId(1000L);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Success");
+            alert.show();
+            globalService.getAccountService().addUAccount(account);
+            
+        } catch (ValidationException ve) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, ve.getMessage());
+            alert.show();
+        }
 
+    }
+
+    public void onBackImgPress(MouseEvent mouseEvent) throws IOException {
         Stage accountStage = (Stage) btnCreateAccount.getScene().getWindow();
         accountStage.close();
 

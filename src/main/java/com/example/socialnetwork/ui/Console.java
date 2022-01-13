@@ -4,28 +4,30 @@ package com.example.socialnetwork.ui;
 import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.User;
-import com.example.socialnetwork.service.MessagesService;
-import com.example.socialnetwork.service.FriendshipsService;
-import com.example.socialnetwork.service.UsersService;
+import com.example.socialnetwork.service.FriendshipService;
 import com.example.socialnetwork.service.GlobalService;
+import com.example.socialnetwork.service.MessageService;
+import com.example.socialnetwork.service.UserService;
 
 import java.security.KeyException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Console {
-    protected final UsersService usersService;
-    protected final FriendshipsService friendshipsService;
+    protected final UserService userService;
+    protected final FriendshipService friendshipService;
     protected final GlobalService globalService;
-    protected final MessagesService messagesService;
+    protected final MessageService messageService;
     private Scanner scanner = new Scanner(System.in);
 
-    public Console(UsersService usersService, FriendshipsService friendshipsService,
-                   GlobalService globalService, MessagesService messagesService) {
-        this.usersService = usersService;
-        this.friendshipsService = friendshipsService;
+    public Console(UserService userService, FriendshipService friendshipService,
+                   GlobalService globalService, MessageService messageService) {
+        this.userService = userService;
+        this.friendshipService = friendshipService;
         this.globalService = globalService;
-        this.messagesService = messagesService;
+        this.messageService = messageService;
     }
 
 
@@ -66,7 +68,7 @@ public class Console {
                     String firstName = readFirstName();
                     String lastName = readLastName();
                     User user = new User(firstName, lastName);
-                    this.usersService.addUtilizator(user);
+                    this.userService.addUser(user);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -74,8 +76,8 @@ public class Console {
                 try {
                     System.out.println("Dati id-ul utilizatoruli de sters: ");
                     Long id = scanner.nextLong();
-                    //this.usersService.removeUtilizator(id);
-                    globalService.removeUtilizatorAndPrieteniiUtilizator(id);
+                    //this.userService.removeUtilizator(id);
+                    globalService.removeUserWithFriends(id);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -87,20 +89,20 @@ public class Console {
                     String lastName = readLastName();
                     User user = new User(firstName, lastName);
                     user.setId(id);
-                    this.usersService.updateUtilizator(user);
+                    this.userService.updateUser(user);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "4")) {
                 try {
-                    this.usersService.getAll().forEach(System.out::println);
+                    this.userService.getAll().forEach(System.out::println);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "5")) {
                 String firstName = readFirstName();
                 String lastName = readLastName();
-                User user = usersService.findByName(firstName, lastName);
+                User user = userService.findByName(firstName, lastName);
                 if (user != null)
                     System.out.println(user);
                 else
@@ -130,14 +132,14 @@ public class Console {
             if (Objects.equals(optiune, "1")) {
                 try {
                     Long id1 = readPrietenieID1();
-                    User user = usersService.findOne(id1);
+                    User user = userService.findOne(id1);
                     if (user == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
                     Long id2 = readPrietenieID2();
-                    user = usersService.findOne(id2);
+                    user = userService.findOne(id2);
                     if (user == null) throw new KeyException("Nu exista utilizatorul cu id-ul dat");
                     Friendship friendship = new Friendship(id1, id2, LocalDateTime.now());
                     friendship.setStatus("approved");
-                    if (this.friendshipsService.addPrietenie(friendship) != null)
+                    if (this.friendshipService.addFriendship(friendship) != null)
                         System.out.println("Prietenia este deja inregistrata");
                 } catch (Exception e) {
                     System.out.println(e);
@@ -147,7 +149,7 @@ public class Console {
                     System.out.println("Dati id-ul prieteniei de sters: ");
                     long id1 = scanner.nextLong();
                     long id2 = scanner.nextLong();
-                    this.friendshipsService.removePrietenie(id1, id2);
+                    this.friendshipService.removeFriendship(id1, id2);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -157,27 +159,27 @@ public class Console {
                     Long id2 = readPrietenieID2();
                     Friendship friendship = new Friendship(id1, id2, LocalDateTime.now());
                     friendship.setStatus("approved");
-                    this.friendshipsService.updatePrietenie(new Friendship(id1, id2, LocalDateTime.now()));
+                    this.friendshipService.updateFriendship(new Friendship(id1, id2, LocalDateTime.now()));
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "4")) {
                 try {
-                    this.friendshipsService.getAllApproved().forEach(System.out::println);
+                    this.friendshipService.getAllApproved().forEach(System.out::println);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "5")) {
                 try {
 
-                    System.out.println("Numarul de componete conexe:  " + friendshipsService.numarComponenteConexe());
+                    System.out.println("Numarul de componete conexe:  " + friendshipService.nrOfConnectedComponents());
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             } else if (Objects.equals(optiune, "6")) {
                 try {
                     System.out.println("Cel mai sociabila comunitate este: ");
-                    System.out.println(friendshipsService.celMaiLungDrum());
+                    System.out.println(friendshipService.longestRoad());
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -194,9 +196,9 @@ public class Console {
         String firstName = readFirstName();
         String lastName = readLastName();
         List<Tuple<Long, LocalDateTime>> rezultat = globalService.
-                prieteniiUtilizator(firstName, lastName);
+                userFriendships(firstName, lastName);
         rezultat.forEach(p -> {
-            User user = usersService.findOne(p.getLeft());
+            User user = userService.findOne(p.getLeft());
             System.out.println(user.getLastName() + '|' + user.getFirstName()
                     + '|' + p.getRight().toString());
         });
@@ -209,42 +211,41 @@ public class Console {
         System.out.println("Luna a anului(in engleza): ");
         String monthName = scanner.next();
         List<Tuple<Long, LocalDateTime>> rezultat = globalService.
-                prieteniiUtilizatorDinLuna(firstName, lastName, monthName);
+                userFriendshipsFromMonth(firstName, lastName, monthName);
         rezultat.forEach(p -> {
-            User user = usersService.findOne(p.getLeft());
+            User user = userService.findOne(p.getLeft());
             System.out.println(user.getLastName() + '|' + user.getFirstName()
                     + '|' + p.getRight().toString());
         });
     }
 
 
-
-    public void run_gmail_meniu(){
+    public void run_gmail_meniu() {
         System.out.println("Va rugam sa va autentificati.");
         String first_name_log_in = readFirstName();
         String last_name_log_in = readLastName();
-        User userLogat = usersService.findByName(first_name_log_in, last_name_log_in);
-        if(userLogat == null){
+        User userLogat = userService.findByName(first_name_log_in, last_name_log_in);
+        if (userLogat == null) {
             System.out.println("Nu exista utilizatorul cu numele si prenumele dat.");
             return;
         }
-        ConsolaUtilizator consolaUtilizator = new ConsolaUtilizator(userLogat,
-                usersService, friendshipsService, globalService, messagesService);
-        consolaUtilizator.run_consola_utilizator();
+        UserConsole userConsole = new UserConsole(userLogat,
+                userService, friendshipService, globalService, messageService);
+        userConsole.run_consola_utilizator();
     }
 
-    public void run_show_all_msg_btw_2_users_cronologicaly_ordered(){
+    public void run_show_all_msg_btw_2_users_cronologicaly_ordered() {
         System.out.println("Utilizator1: ");
         String frist_name = readFirstName();
         String last_name = readLastName();
-        User user1 = usersService.findByName(frist_name, last_name);
+        User user1 = userService.findByName(frist_name, last_name);
 
         System.out.println("Utilizator2: ");
         frist_name = readFirstName();
         last_name = readLastName();
-        User user2 = usersService.findByName(frist_name, last_name);
+        User user2 = userService.findByName(frist_name, last_name);
 
-        System.out.println(messagesService.find_all_msg_btw_2_users_cronologicaly_ordered(user1, user2));
+        System.out.println(messageService.findConversationBetweenUsersChronologically(user1, user2));
     }
 
     public void run_console() {
@@ -272,9 +273,9 @@ public class Console {
                 prieteniiUtilizatorDinLuna();
             } else if (Objects.equals(optiune, "5")) {
                 run_gmail_meniu();
-            }else if(Objects.equals(optiune,"6")){
+            } else if (Objects.equals(optiune, "6")) {
                 run_show_all_msg_btw_2_users_cronologicaly_ordered();
-            }else if (Objects.equals(optiune, "x")) {
+            } else if (Objects.equals(optiune, "x")) {
                 return;
             } else {
                 System.out.println("Optiune invalida. Reincercati!");

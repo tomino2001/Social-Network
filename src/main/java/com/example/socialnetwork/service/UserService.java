@@ -1,24 +1,24 @@
 package com.example.socialnetwork.service;
 
-import com.example.socialnetwork.repository.Repository;
 import com.example.socialnetwork.domain.User;
+import com.example.socialnetwork.repository.Repository;
 
-public class UsersService {
+public class UserService {
     private final Repository<Long, User> repo;
 
-    public UsersService(Repository<Long, User> repo) {
+    public UserService(Repository<Long, User> repo) {
         this.repo = repo;
     }
 
-    public void addUtilizator(User user) {
+    public void addUser(User user) {
         repo.save(user);
     }
 
-    public void removeUtilizator(Long id) {
+    public void removeUser(Long id) {
         repo.delete(id);
     }
 
-    public void updateUtilizator(User user) {
+    public void updateUser(User user) {
         repo.update(user);
     }
 

@@ -2,12 +2,13 @@ package com.example.socialnetwork.config;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class Config {
 
-    public static String CONFIG_LOCATION = Config.class.getClassLoader()
-            .getResource("com/example/socialnetwork/config.properties").getFile();
+    public static String CONFIG_LOCATION = Objects.requireNonNull(Config.class.getClassLoader()
+            .getResource("com/example/socialnetwork/config.properties")).getFile();
 
     public static Properties getProperties() {
         Properties properties = new Properties();

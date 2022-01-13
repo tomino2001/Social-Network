@@ -1,0 +1,25 @@
+.root {
+    -fx-background-color: #072227;
+}
+
+.label {
+    -fx-text-fill: #00ADB5;
+}
+
+.button {
+    -fx-background-color: #35858B;
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0px;
+    -fx-border-color: #262222;
+    -fx-border-width: 2;
+}
+
+.button:hover {
+    -fx-background-color: #4FBDBA;
+    -fx-opacity: 1;
+}
+
+.stackPaneStyle {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+}
