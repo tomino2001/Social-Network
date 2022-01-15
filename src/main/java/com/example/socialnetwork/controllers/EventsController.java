@@ -186,6 +186,9 @@ public class EventsController {
     }
 
     public void onRefreshIconPress() {
+        dataEvents.clear();
+        dataEvents.addAll((Collection<? extends Event>) globalService.getEventService().getAll());
+
         dataNotifications.clear();
         List<Event> notifiableEvents = globalService.getParticipationService().getAllUserParticipations(user, true)
                 .stream()
