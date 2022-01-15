@@ -26,8 +26,19 @@
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
     -fx-border-width: 0px;
+    -fx-text-fill: #AEFEFF;
 }
 
 .button:hover {
     -fx-background-color: #13b6b3;
+}
+
+.text-area {
+    -fx-font-family: Consolas;
+    -fx-text-fill: #AEFEFF;
+    -fx-background-color: #000000;
+}
+
+.text-area .content {
+    -fx-background-color: #105b64;
 }

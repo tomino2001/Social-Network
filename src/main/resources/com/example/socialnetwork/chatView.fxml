@@ -22,13 +22,13 @@
           <TableColumn fx:id="dateCol" prefWidth="214.0" text="Date" />
         </columns>
       </TableView>
-      <TextArea fx:id="txtMessage" layoutX="272.0" layoutY="481.0" prefHeight="211.0" prefWidth="554.0" promptText="Write a message, select multiple users from the table and then click on the reply icon to send" />
-      <ImageView fx:id="deleteImg" fitHeight="64.0" fitWidth="64.0" layoutX="171.0" layoutY="572.0" onMousePressed="#onDeleteImgPress" pickOnBounds="true" preserveRatio="true">
+      <TextArea fx:id="txtMessage" layoutX="266.0" layoutY="481.0" prefHeight="211.0" prefWidth="560.0" promptText="Write a message, select multiple users from the table and then click on the reply icon to send" />
+      <ImageView fx:id="deleteImg" fitHeight="64.0" fitWidth="64.0" layoutX="171.0" layoutY="604.0" onMousePressed="#onDeleteImgPress" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/delete_icon.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="replyImg" fitHeight="64.0" fitWidth="66.0" layoutX="55.0" layoutY="572.0" onMousePressed="#onReplyImgPress" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="replyImg" fitHeight="64.0" fitWidth="66.0" layoutX="43.0" layoutY="604.0" onMousePressed="#onReplyImgPress" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/reply_icon.png" />
          </image>
@@ -37,7 +37,7 @@
       <DatePicker fx:id="dateStart" layoutX="452.0" layoutY="321.0" prefHeight="26.0" prefWidth="130.0" promptText="begin" />
       <DatePicker fx:id="dateEnd" layoutX="599.0" layoutY="321.0" prefHeight="26.0" prefWidth="130.0" promptText="end" />
       <TextField fx:id="lastNameTxt" layoutX="599.0" layoutY="360.0" prefHeight="26.0" prefWidth="130.0" promptText="Last name" />
-      <Button fx:id="btnShowMessage" layoutX="599.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBtnShowMessageClicked" prefHeight="35.0" prefWidth="130.0" text="Show message">
+      <Button fx:id="btnShowMessage" layoutX="599.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBtnShowMessageClicked" prefHeight="35.0" prefWidth="130.0" text="Show messages">
          <font>
             <Font size="15.0" />
          </font>
@@ -52,15 +52,20 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="27.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fill in the following, then press the corresponding button">
+      <Text fill="WHITE" layoutX="27.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fill in the following, then press the corresponding button.">
          <font>
             <Font size="15.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="24.0" layoutY="436.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To delete, select from table then press the delete icon.">
+      <Text fill="WHITE" layoutX="24.0" layoutY="436.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To delete, select from the table then press the delete icon.">
          <font>
             <Font size="15.0" />
          </font>
       </Text>
+      <ImageView fitHeight="64.0" fitWidth="64.0" layoutX="107.0" layoutY="505.0" onMousePressed="#onRefreshIconPress" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/refresh_icon.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

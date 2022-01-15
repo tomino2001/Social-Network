@@ -2,17 +2,17 @@ package com.example.socialnetwork.repository.db;
 
 import com.example.socialnetwork.domain.Event;
 import com.example.socialnetwork.domain.validators.Validator;
-import com.example.socialnetwork.repository.Repository;
+import com.example.socialnetwork.repository.paging.Page;
+import com.example.socialnetwork.repository.paging.Pageable;
+import com.example.socialnetwork.repository.paging.PagingRepository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class EventDbRepository implements Repository<Long, Event> {
+public class EventDbRepository implements PagingRepository<Long, Event> {
 
     private final String username;
     private final String password;
@@ -26,29 +26,12 @@ public class EventDbRepository implements Repository<Long, Event> {
         this.validator = eventValidator;
     }
 
-    private Event buildEvent(Long eventId, String sql, long id, String title, String description, String date) {
-        List<Long> userList = new ArrayList<>();
-        try (Connection connection1 = DriverManager.getConnection(url, username, password);
-             PreparedStatement preparedStatement1 = connection1.prepareStatement(sql)) {
-            preparedStatement1.setLong(1, eventId);
-            ResultSet resultSet1 = preparedStatement1.executeQuery();
-            var userId = resultSet1.getLong("id_user");
-            userList.add(userId);
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
-
-        Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), userList);
-        event.setId(id);
-        return event;
-    }
-
     @Override
     public Event findOne(Long eventId) {
         if (eventId == null)
             throw new IllegalArgumentException("Id must be not null !");
 
-        String sql = "SELECT * FROM events WHERE id = (?)";
+        String sql = "SELECT * FROM events WHERE id = ?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -59,9 +42,10 @@ public class EventDbRepository implements Repository<Long, Event> {
                 long id = resultSet.getLong("id");
                 String title = resultSet.getString("title");
                 String description = resultSet.getString("description");
-                String date = resultSet.getString("sent_date");
+                String date = resultSet.getString("date");
 
-                Event event = buildEvent(eventId, sql, id, title, description, date);
+                Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), null);
+                event.setId(id);
                 return event;
             }
         } catch (SQLException exception) {
@@ -83,7 +67,8 @@ public class EventDbRepository implements Repository<Long, Event> {
                 String description = resultSet.getString("description");
                 String date = resultSet.getString("date");
 
-                Event event = buildEvent(id, sql, id, title, description, date);
+                Event event = new Event(title, description, LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME), null);
+                event.setId(id);
                 events.add(event);
             }
         } catch (SQLException exception) {
@@ -116,7 +101,7 @@ public class EventDbRepository implements Repository<Long, Event> {
 
     @Override
     public void delete(Long eventId) {
-        String sql = "DELETE FROM messages WHERE id = (?)";
+        String sql = "DELETE FROM messages WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, eventId);
@@ -146,5 +131,10 @@ public class EventDbRepository implements Repository<Long, Event> {
     @Override
     public void remove(Event event) {
 
+    }
+
+    @Override
+    public Page<Event> findAll(Pageable pageable) {
+        return null;
     }
 }

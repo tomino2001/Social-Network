@@ -11,7 +11,8 @@
     -fx-border-radius: 0px;
     -fx-background-radius: 0px;
     -fx-border-color: #262222;
-    -fx-border-width: 2;
+    -fx-border-width: 0.2;
+    -fx-text-fill: #AEFEFF;
 }
 
 .button:hover {

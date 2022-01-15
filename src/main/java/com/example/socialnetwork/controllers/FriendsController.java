@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -26,11 +27,6 @@ public class FriendsController {
     private final ObservableList<Friendship> data = FXCollections.observableArrayList();
     public Button btnShowAllFrdReq;
     public Button btnAddFriend;
-    public Button btnRemoveFriend;
-    public Button btnSendMessage;
-    public Button btnRefresh;
-    public DatePicker startDate;
-    public DatePicker endDate;
     public Button btnExportActivityToPdf;
     private GlobalService globalService;
     private User user;
@@ -50,6 +46,7 @@ public class FriendsController {
     private DatePicker dateStart;
     @FXML
     private DatePicker dateEnd;
+
     public FriendsController() {
     }
 
@@ -97,6 +94,7 @@ public class FriendsController {
         friendsManagementController.setAll(globalService, user, data);
 
         Scene scene = new Scene(parent);
+
         Stage stage = new Stage();
         stage.setTitle(user.getFirstName() + ' ' + user.getLastName() + " - Friendship requestes");
         stage.setScene(scene);
@@ -112,9 +110,13 @@ public class FriendsController {
             return;
         }
         Friendship friendship = new Friendship(user.getId(), friend.getId(), LocalDateTime.now());
-        friendship.setStatus("pending");
-        if (globalService.getFriendshipService().addFriendship(friendship) == null)
-            data.add(friendship);
+        try {
+            friendship.setStatus("pending");
+            if (globalService.getFriendshipService().addFriendship(friendship) == null)
+                data.add(friendship);
+        } catch (ValidationException ve) {
+            alertMessage(Alert.AlertType.ERROR, ve.getMessage());
+        }
         alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
     }
 
@@ -123,22 +125,7 @@ public class FriendsController {
         alert.show();
     }
 
-    public void onBtnRemoveFriendClicked() {
-        Friendship selectedFriendship = tableView.getSelectionModel().getSelectedItem();
-        if (selectedFriendship == null) {
-            alertMessage(Alert.AlertType.ERROR, "First select an user");
-            return;
-        }
-        globalService.getFriendshipService().removeFriendship(
-                selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
-        globalService.getFriendshipService().removeFriendship(
-                selectedFriendship.getId().getRight(), selectedFriendship.getId().getLeft());
-
-        data.remove(selectedFriendship);
-        alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
-    }
-
-    public void onBtnSendMessageClicked() {
+    public void onSendIconPress() {
         List<Friendship> friendshipList = tableView.getSelectionModel().getSelectedItems();
         List<User> userList = new ArrayList<>();
         String message = txtMessage.getText();
@@ -159,12 +146,6 @@ public class FriendsController {
 
     }
 
-    public void onBtnRefreshClicked() {
-        data.clear();
-        data.addAll(this.globalService.userFriendsList(user.getFirstName(), user.getLastName()));
-        tableView.setItems(data);
-    }
-
     public void onBtnExportActivityClicked() {
         LocalDate startDate = dateStart.getValue();
         LocalDate endDate = dateEnd.getValue();
@@ -176,7 +157,26 @@ public class FriendsController {
         tableView.setItems(data);
 
         globalService.exportPdfUserActivityDuringPeriod(user, startDate, endDate);
-
         alertMessage(Alert.AlertType.INFORMATION, "Exported in pdfData file.");
+    }
+
+    public void onRefreshIconPress() {
+        data.clear();
+        data.addAll(this.globalService.userFriendsList(user.getFirstName(), user.getLastName()));
+    }
+
+    public void onDeleteImgPress(MouseEvent mouseEvent) {
+        Friendship selectedFriendship = tableView.getSelectionModel().getSelectedItem();
+        if (selectedFriendship == null) {
+            alertMessage(Alert.AlertType.ERROR, "First select a user");
+            return;
+        }
+        globalService.getFriendshipService().removeFriendship(
+                selectedFriendship.getId().getLeft(), selectedFriendship.getId().getRight());
+        globalService.getFriendshipService().removeFriendship(
+                selectedFriendship.getId().getRight(), selectedFriendship.getId().getLeft());
+
+        data.remove(selectedFriendship);
+        alertMessage(Alert.AlertType.CONFIRMATION, "Success!");
     }
 }

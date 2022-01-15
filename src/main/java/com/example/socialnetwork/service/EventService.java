@@ -10,16 +10,8 @@ public class EventService {
         this.repo = repo;
     }
 
-    public Event saveNotification(Event event) {
+    public Event saveEvent(Event event) {
         return repo.save(event);
-    }
-
-    public void updateNotification(Event event) {
-        this.repo.update(event);
-    }
-
-    public void removeNotifcation(Event event) {
-        this.repo.remove(event);
     }
 
     public Event findOne(Long id) {

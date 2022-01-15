@@ -99,8 +99,6 @@ public class MessagesController {
         data.clear();
         data.addAll(messageList);
         table.setItems(data);
-
-        alertMessage(Alert.AlertType.INFORMATION, "Exported in pdfData file.");
     }
 
     public void onBtnExportPdfClicked() {
@@ -152,5 +150,10 @@ public class MessagesController {
             Alert alert = new Alert(Alert.AlertType.ERROR, ve.getMessage());
             alert.show();
         }
+    }
+
+    public void onRefreshIconPress() {
+        data.clear();
+        data.setAll(globalService.getMessageService().findAllMessagesReceivedByUser(user));
     }
 }

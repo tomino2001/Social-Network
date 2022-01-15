@@ -5,9 +5,10 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="433.0" prefWidth="661.0" stylesheets="@styling/friendsManagementStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.FriendsManagementController">
-    <TableView fx:id="table" prefHeight="310.0" prefWidth="701.0">
+<AnchorPane prefHeight="498.0" prefWidth="780.0" stylesheets="@styling/friendsManagementStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.FriendsManagementController">
+    <TableView fx:id="table" prefHeight="310.0" prefWidth="782.0">
         <columns>
             <TableColumn fx:id="sentReceivedCol" prefWidth="126.39999085664749" text="Sent/Received" />
             <TableColumn fx:id="firstNameCol" prefWidth="144.8000030517578" text="First name" />
@@ -16,16 +17,21 @@
             <TableColumn fx:id="dateCol" prefWidth="138.0" text="Date" />
         </columns>
     </TableView>
-    <Button fx:id="btnAcceptFrdReq" layoutX="536.0" layoutY="350.0" mnemonicParsing="false" onAction="#onBtnAcceptFriendReqClicked" prefHeight="31.0" prefWidth="151.0" text="Accept">
+    <Button fx:id="btnAcceptFrdReq" layoutX="617.0" layoutY="435.0" mnemonicParsing="false" onAction="#onBtnAcceptFriendReqClicked" prefHeight="31.0" prefWidth="151.0" text="Accept">
       <font>
          <Font size="15.0" />
       </font></Button>
-    <Button fx:id="btnCancelFrdReq" layoutX="14.0" layoutY="350.0" mnemonicParsing="false" onAction="#onBtnCancelFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Cancel ">
+    <Button fx:id="btnCancelFrdReq" layoutX="14.0" layoutY="435.0" mnemonicParsing="false" onAction="#onBtnCancelFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Cancel ">
       <font>
          <Font size="15.0" />
       </font></Button>
-    <Button fx:id="btnDeleteFrdReq" layoutX="275.0" layoutY="350.0" mnemonicParsing="false" onAction="#onBtnDeleteFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Delete">
+    <Button fx:id="btnDeleteFrdReq" layoutX="316.0" layoutY="435.0" mnemonicParsing="false" onAction="#onBtnDeleteFriendReqClicked" prefHeight="26.0" prefWidth="151.0" text="Delete">
       <font>
          <Font size="15.0" />
       </font></Button>
+   <Text fill="WHITE" layoutX="227.0" layoutY="386.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a user then press the coresponding button.">
+      <font>
+         <Font size="15.0" />
+      </font>
+   </Text>
 </AnchorPane>

@@ -29,7 +29,7 @@ public class GlobalService {
     private final MessageService messageService;
     private final AccountService accountService;
     private final EventService eventService;
-    private final NotificationService notificationService;
+    private final ParticipationService participationService;
 
     private GlobalService() {
         Validator<User> userValidator = new UserValidator();
@@ -58,16 +58,14 @@ public class GlobalService {
                 new EventDbRepository(Constants.url, Constants.username, Constants.password, eventValidator);
         eventService = new EventService(eventRepository);
 
-        Repository<Long, Notification> notificationRepository =
-                new NotificationDbRepository(Constants.url, Constants.username, Constants.password);
-        notificationService = new NotificationService(notificationRepository);
+        Repository<Tuple<Long, Long>, Participation> participationRepository =
+                new ParticipationDbRepository(Constants.url, Constants.username, Constants.password);
+        participationService = new ParticipationService(participationRepository);
     }
 
     public static GlobalService getInstance() {
         return globalService;
     }
-
-    ;
 
     public UserService getUserService() {
         return userService;
@@ -89,8 +87,8 @@ public class GlobalService {
         return eventService;
     }
 
-    public NotificationService getNotificationService() {
-        return notificationService;
+    public ParticipationService getParticipationService() {
+        return participationService;
     }
 
     public void removeUserWithFriends(Long id) {
@@ -145,7 +143,6 @@ public class GlobalService {
     public void exportPdfUserActivityDuringPeriod(User user, LocalDate st, LocalDate dr) {
         List<Friendship> friendshipList = friendshipService.friendshipsListDuringPeriod(user, st, dr);
         List<Message> messageList = messageService.messageListReceivedDuringPeriod(user, st, dr);
-
 
         writePdfFriendships(friendshipList, pathFriendship);
         writeToPdfMesaje(messageList, pathMessage);

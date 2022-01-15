@@ -5,64 +5,88 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="692.0" prefWidth="826.0" stylesheets="@styling/eventStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetwork.controllers.EventsController">
-   <children>
-      <TableView fx:id="tableEvent" layoutX="20.0" layoutY="90.0" prefHeight="232.0" prefWidth="387.0">
-        <columns>
-            <TableColumn fx:id="titleCol" prefWidth="127.99996566772461" text="title" />
-            <TableColumn fx:id="descriptionCol" prefWidth="151.0" text="description" />
-            <TableColumn fx:id="dateEventCol" minWidth="0.0" prefWidth="110.0" text="date" />
-        </columns>
-      </TableView>
-      <TableView fx:id="tableNotification" layoutX="455.0" layoutY="90.0" prefHeight="232.0" prefWidth="342.0">
-        <columns>
-          <TableColumn fx:id="messageCol" prefWidth="172.0" text="message" />
-          <TableColumn fx:id="dateNotificationCol" prefWidth="169.0" text="date" />
-        </columns>
-      </TableView>
-      <Button fx:id="btnCreateEvent" layoutX="20.0" layoutY="495.0" mnemonicParsing="false" onAction="#onBtnCreateEvenetClicked" prefHeight="46.0" prefWidth="104.0" text="Create event">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnJoinEvent" layoutX="140.0" layoutY="496.0" mnemonicParsing="false" onAction="#onBtnJoinEventClicked" prefHeight="45.0" prefWidth="104.0" text="Join event">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnDeleteEvent" layoutX="254.0" layoutY="496.0" mnemonicParsing="false" onAction="#onBtnDeleteEventClicked" prefHeight="45.0" prefWidth="104.0" text="Delete event">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <TextField fx:id="txtNotificationMessage" layoutX="506.0" layoutY="361.0" prefHeight="26.0" prefWidth="186.0" promptText="notification message" />
-      <DatePicker fx:id="dateNotificationReminder" layoutX="507.0" layoutY="400.0" prefHeight="26.0" prefWidth="185.0" promptText="notification reminder date" />
-      <Button fx:id="btnCreateNotification" layoutX="530.0" layoutY="496.0" mnemonicParsing="false" onAction="#onBtnCreateNotificationClicked" prefHeight="46.0" prefWidth="186.0" text="Create notification">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <TextField fx:id="txtEventTitle" layoutX="42.0" layoutY="361.0" prefHeight="26.0" prefWidth="234.0" promptText="event title" />
-      <TextField fx:id="txtEventDescription" layoutX="42.0" layoutY="400.0" prefHeight="26.0" prefWidth="234.0" promptText="event descrpition" />
-      <DatePicker fx:id="dateEventStart" layoutX="42.0" layoutY="445.0" prefHeight="26.0" prefWidth="234.0" promptText="event date" />
-      <Button fx:id="btnDeleteNotification" layoutX="530.0" layoutY="564.0" mnemonicParsing="false" onAction="#onBtnDeleteNotificationClicked" prefHeight="46.0" prefWidth="186.0" text="Delete notification">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <Label layoutX="20.0" layoutY="30.0" text="Events">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Label>
-      <Label layoutX="455.0" layoutY="30.0" text="Notifications">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Label>
-   </children>
+    <children>
+        <TableView fx:id="tableEvents" layoutX="413.0" layoutY="70.0" prefHeight="270.0" prefWidth="412.0">
+            <columns>
+                <TableColumn fx:id="titleCol" prefWidth="127.99996566772461" text="Title" />
+                <TableColumn fx:id="descriptionCol" prefWidth="151.0" text="Description" />
+                <TableColumn fx:id="dateEventCol" minWidth="0.0" prefWidth="132.0" text="Date" />
+            </columns>
+        </TableView>
+        <TableView fx:id="tableNotifications" layoutX="-1.0" layoutY="463.0" prefHeight="232.0" prefWidth="412.0">
+            <columns>
+                <TableColumn fx:id="notifEventTitleCol" prefWidth="202.0" text="Event Title" />
+                <TableColumn fx:id="notifTimeRemainingCol" prefWidth="209.0" text="Time Remaining" />
+            </columns>
+        </TableView>
+        <Button fx:id="btnCreateEvent" layoutX="709.0" layoutY="490.0" mnemonicParsing="false" onAction="#onBtnCreateEventClicked" prefHeight="46.0" prefWidth="104.0" text="Create event" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Button fx:id="btnJoinEvent" layoutX="709.0" layoutY="557.0" mnemonicParsing="false" onAction="#onBtnJoinEventClicked" prefHeight="45.0" prefWidth="104.0" text="Join event" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Button fx:id="btnLeaveEvent" layoutX="709.0" layoutY="622.0" mnemonicParsing="false" onAction="#onBtnLeaveEventAction" prefHeight="46.0" prefWidth="104.0" text="Leave event" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <TextField fx:id="txtEventTitle" layoutX="454.0" layoutY="494.0" prefHeight="26.0" prefWidth="234.0" promptText="event title" />
+        <DatePicker fx:id="dateEventStart" layoutX="454.0" layoutY="639.0" prefHeight="26.0" prefWidth="234.0" promptText="event date" />
+        <Label layoutX="411.0" layoutY="20.0" text="Public Events">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <Label layoutY="412.0" text="Notifications">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <TextArea fx:id="txtEventDescription" layoutX="454.0" layoutY="533.0" prefHeight="81.0" prefWidth="234.0" promptText="event description" />
+        <Text fill="WHITE" layoutX="428.0" layoutY="362.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To join or leave an event, click it on the table and press the button.">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Text>
+        <ImageView fitHeight="60.0" fitWidth="56.0" layoutX="591.0" layoutY="403.0" onMousePressed="#onRefreshIconPress" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@images/refresh_icon.png" />
+            </image>
+        </ImageView>
+        <Label layoutY="20.0" text="Events you are in">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <TableView fx:id="tableEventsJoined" layoutX="-1.0" layoutY="70.0" prefHeight="270.0" prefWidth="412.0">
+            <columns>
+                <TableColumn fx:id="titleJoinedCol" prefWidth="127.99996566772461" text="Title" />
+                <TableColumn fx:id="descriptionJoinedCol" prefWidth="151.0" text="Description" />
+                <TableColumn fx:id="dateEventJoinedCol" minWidth="0.0" prefWidth="132.0" text="Date" />
+            </columns>
+        </TableView>
+        <Button layoutX="196.0" layoutY="357.0" mnemonicParsing="false" onAction="#onSubscribeButtonAction" prefHeight="46.0" prefWidth="104.0" text="Subscribe">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Button layoutX="307.0" layoutY="357.0" mnemonicParsing="false" onAction="#OnUnsubscribeButtonAction" prefHeight="46.0" prefWidth="104.0" text="Unsubscribe">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+    </children>
 </AnchorPane>

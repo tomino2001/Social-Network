@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -60,11 +62,11 @@
     </Label>
     <StackPane id="styleStackPane" prefHeight="400.0" prefWidth="308.0" stylesheets="@styling/loginStyle.css">
         <children>
-            <Label fx:id="helloLabel" layoutX="146.0" layoutY="202.0" text="Hello!">
-                <font>
-                    <Font size="50.0" />
-                </font>
-            </Label>
+         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@images/login_icon.gif" />
+            </image>
+         </ImageView>
         </children>
     </StackPane>
 </AnchorPane>

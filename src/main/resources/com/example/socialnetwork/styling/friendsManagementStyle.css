@@ -7,6 +7,7 @@
 
 .button:hover {
     -fx-background-color: #13b6b3;
+    -fx-text-fill: #AEFEFF;
 }
 
 .table-view {

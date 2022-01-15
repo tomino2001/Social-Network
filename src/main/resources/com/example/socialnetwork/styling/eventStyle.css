@@ -21,6 +21,7 @@
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
     -fx-border-width: 0px;
+    -fx-text-fill: #AEFEFF;
 }
 
 .button:hover {
@@ -35,4 +36,14 @@
 
 .date-picker {
     -fx-font-style: italic;
+}
+
+.text-area {
+    -fx-font-family: Consolas;
+    -fx-text-fill: #AEFEFF;
+    -fx-background-color: #000000;
+}
+
+.text-area .content {
+    -fx-background-color: #105b64;
 }

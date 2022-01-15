@@ -3,6 +3,7 @@
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
     -fx-border-width: 0px;
+    -fx-text-fill: #AEFEFF;
 }
 
 .button:hover {
@@ -31,4 +32,14 @@
     -fx-font-style: italic;
     -fx-border-radius: 10px;
     -fx-background-radius: 10px;
+}
+
+.text-area {
+    -fx-font-family: Consolas;
+    -fx-text-fill: #AEFEFF;
+    -fx-background-color: #000000;
+}
+
+.text-area .content {
+    -fx-background-color: #105b64;
 }

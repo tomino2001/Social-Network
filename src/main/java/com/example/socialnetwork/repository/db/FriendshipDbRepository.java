@@ -4,7 +4,9 @@ package com.example.socialnetwork.repository.db;
 import com.example.socialnetwork.domain.Friendship;
 import com.example.socialnetwork.domain.Tuple;
 import com.example.socialnetwork.domain.validators.Validator;
-import com.example.socialnetwork.repository.Repository;
+import com.example.socialnetwork.repository.paging.Page;
+import com.example.socialnetwork.repository.paging.Pageable;
+import com.example.socialnetwork.repository.paging.PagingRepository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -12,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FriendshipDbRepository implements Repository<Tuple<Long, Long>, Friendship> {
+public class FriendshipDbRepository implements PagingRepository<Tuple<Long, Long>, Friendship> {
     private final String url;
     private final String username;
     private final String password;
@@ -138,4 +140,8 @@ public class FriendshipDbRepository implements Repository<Tuple<Long, Long>, Fri
 
     }
 
+    @Override
+    public Page<Friendship> findAll(Pageable pageable) {
+        return null;
+    }
 }

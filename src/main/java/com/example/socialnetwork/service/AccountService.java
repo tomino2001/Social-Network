@@ -18,14 +18,10 @@ public class AccountService {
         repo.save(account);
     }
 
-//    public void deleteAccount(Long id) {
-//        repo.delete(id);
-//    }
-
     public Account findOne(Long id) {
         return repo.findOne(id);
     }
-    
+
     public Account getAccountByUsernameAndPassword(String username, String password) {
         Iterable<Account> accounts = repo.findAll();
         Account accountRes = null;
