@@ -28,17 +28,17 @@
                 <TableColumn fx:id="notifTimeRemainingCol" prefWidth="209.0" text="Time Remaining" />
             </columns>
         </TableView>
-        <Button fx:id="btnCreateEvent" layoutX="709.0" layoutY="490.0" mnemonicParsing="false" onAction="#onBtnCreateEventClicked" prefHeight="46.0" prefWidth="104.0" text="Create event" textFill="WHITE">
+        <Button fx:id="btnCreateEvent" layoutX="709.0" layoutY="556.0" mnemonicParsing="false" onAction="#onBtnCreateEventClicked" prefHeight="46.0" prefWidth="104.0" text="Create event" textFill="WHITE">
             <font>
                 <Font size="15.0" />
             </font>
         </Button>
-        <Button fx:id="btnJoinEvent" layoutX="709.0" layoutY="557.0" mnemonicParsing="false" onAction="#onBtnJoinEventClicked" prefHeight="45.0" prefWidth="104.0" text="Join event" textFill="WHITE">
+        <Button fx:id="btnJoinEvent" layoutX="709.0" layoutY="381.0" mnemonicParsing="false" onAction="#onBtnJoinEventClicked" prefHeight="45.0" prefWidth="104.0" text="Join event" textFill="WHITE">
             <font>
                 <Font size="15.0" />
             </font>
         </Button>
-        <Button fx:id="btnLeaveEvent" layoutX="709.0" layoutY="622.0" mnemonicParsing="false" onAction="#onBtnLeaveEventAction" prefHeight="46.0" prefWidth="104.0" text="Leave event" textFill="WHITE">
+        <Button fx:id="btnLeaveEvent" layoutX="9.0" layoutY="357.0" mnemonicParsing="false" onAction="#onBtnLeaveEventAction" prefHeight="46.0" prefWidth="104.0" text="Leave event" textFill="WHITE">
             <font>
                 <Font size="15.0" />
             </font>
@@ -61,7 +61,7 @@
                 <Font size="13.0" />
             </font>
         </Text>
-        <ImageView fitHeight="60.0" fitWidth="56.0" layoutX="591.0" layoutY="403.0" onMousePressed="#onRefreshIconPress" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="60.0" fitWidth="56.0" layoutX="761.0" onMousePressed="#onRefreshIconPress" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@images/refresh_icon.png" />
             </image>

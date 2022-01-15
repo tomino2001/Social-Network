@@ -36,7 +36,7 @@ public class LoginController {
         String password = globalService.getAccountService().hashPassword(textFieldPassword.getText());
         Account account = globalService.getAccountService().getAccountByUsernameAndPassword(username, password);
         if (account == null)
-            labelUserInexistent.setText("Username or password wrong!");
+            labelUserInexistent.setText("Wrong username or password!");
         else {
             User user = globalService.getUserService().findOne(account.getId());
             Stage stage = (Stage) btnLogin.getScene().getWindow();
