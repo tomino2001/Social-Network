@@ -27,3 +27,15 @@ If two users don't get along with each other anymore, they can sadly delete them
 
 ![DeleteFriend](https://user-images.githubusercontent.com/83927837/161362603-b8b1a6f5-1478-41ad-8fbb-5013f16c7288.gif)
 
+A conversation can be started with just one click:
+
+![InitiateConversation](https://user-images.githubusercontent.com/83927837/161386881-af564a8c-c643-48c9-a4ca-5c907327eb1c.gif)
+
+To reply, the user needs to simply select a message, write a response then send it.
+
+![Reply](https://user-images.githubusercontent.com/83927837/161389333-a8c1bb01-8c1a-4b78-91b9-3e7864fa2525.gif)
+
+He can also delete messages:
+
+
+
