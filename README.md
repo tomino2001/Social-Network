@@ -39,7 +39,7 @@ He can also delete messages by selecting them:
 
 ![DeleteMessage](https://user-images.githubusercontent.com/83927837/161389865-44a90762-b5b6-4661-82cd-0f13d23c74e0.gif)
 
-Last but not least, he can create a public event by filling the required fields, join some selected events and even subscribe to events to see how much time is left until the event starts:
+The user is provided with an interface for creating a public event by filling the required fields, join some selected events and even subscribe to events to see how much time is left until the event starts:
 
 ![Events](https://user-images.githubusercontent.com/83927837/161390093-1b5d7758-0c9e-4c4c-aaf0-f7bb6c423037.gif)
 
