@@ -1,2 +1,3 @@
 This is a personal project made together with a mate by extending a lab project from a course call Advanced Programming Methods.
-![vieo](https://user-images.githubusercontent.com/83927837/161357996-dd740bbe-e1d0-4d72-9379-d16ecdb41265.png)
+
+![Animation](https://user-images.githubusercontent.com/83927837/161360133-81976d7d-1329-4919-ba10-84164b7dac82.gif)
