@@ -31,11 +31,19 @@ A conversation can be started with just one click:
 
 ![InitiateConversation](https://user-images.githubusercontent.com/83927837/161386881-af564a8c-c643-48c9-a4ca-5c907327eb1c.gif)
 
-To reply, the user needs to simply select a message, write a response then send it.
+To reply, the user needs to simply select one or more messages to which he wannts to reply, write a response then send it:
 
 ![Reply](https://user-images.githubusercontent.com/83927837/161389333-a8c1bb01-8c1a-4b78-91b9-3e7864fa2525.gif)
 
-He can also delete messages:
+He can also delete messages by selecting them:
 
+![DeleteMessage](https://user-images.githubusercontent.com/83927837/161389865-44a90762-b5b6-4661-82cd-0f13d23c74e0.gif)
 
+Last but not least, he can create a public event by filling the required fields, join some selected events and even subscribe to events to see how much time is left until the event starts:
+
+![Events](https://user-images.githubusercontent.com/83927837/161390093-1b5d7758-0c9e-4c4c-aaf0-f7bb6c423037.gif)
+
+Last but not least, when he is done with socialising for the moment, he can simply logout and come back later:
+
+![Logout](https://user-images.githubusercontent.com/83927837/161390090-8d33213a-e246-4c63-845c-b22605db2e94.gif)
 
