@@ -43,6 +43,8 @@ The user is provided with an interface for creating a public event by filling th
 
 ![Events](https://user-images.githubusercontent.com/83927837/161390093-1b5d7758-0c9e-4c4c-aaf0-f7bb6c423037.gif)
 
+If he wants to have a report of his activity during a certain period, he can specify a starting and an ending date, followed by clicking the corresponding button.
+
 Last but not least, when he is done with socialising for the moment, he can simply logout and come back later:
 
 ![Logout](https://user-images.githubusercontent.com/83927837/161390090-8d33213a-e246-4c63-845c-b22605db2e94.gif)
